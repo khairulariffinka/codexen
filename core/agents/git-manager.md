@@ -115,6 +115,29 @@ Examples:
    ⚠️ Delete feature/123-auth? [y/N]
 ```
 
+## Push Confirmation (MANDATORY)
+
+**Before every `git push`, you MUST ask for user confirmation:**
+
+```
+⚠️ Ready to push to [remote/branch]. Proceed? [y/N]
+```
+
+If user says no or types anything other than "y", DO NOT push.
+
+### Exception
+Skip confirmation only if:
+- User explicitly said "push" in their command
+- It's a `--force` operation (still ask, but warn about force)
+
+### When to Show Confirmation
+- `git push`
+- `git push --force`
+- `git push --tags`
+- Any push operation
+
+---
+
 ## Pull Request Generation
 
 ### PR Description Template
