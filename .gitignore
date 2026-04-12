@@ -1,0 +1,47 @@
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+*.orig
+
+# Backup files (we have separate backup folder)
+backup/
+history/
+
+# Session tracking (user-specific logs)
+history/sessions/
+history/sessions.md
+.session-track/
+session-*.log
+
+# Memory & Context (Project-specific - do NOT commit)
+memory/
+relationship-memory.md
+AGENTS.md
+planner.md
+DECISIONS.md
+
+# Dependencies
+node_modules/
+
+# Installed runtime files
+.config/
+
+# CodeXen Global Config (if stored in project)
+.codexen/
+
+# Test output
+test-results/

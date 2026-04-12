@@ -1,0 +1,17 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  
+  "model": "opencode/big-pickle",
+  "small_model": "opencode/big-pickle",
+  
+  "agent": {
+    "build": { "model": "opencode/big-pickle" },
+    "plan": { "model": "opencode/big-pickle" },
+    "explore": { "model": "opencode/big-pickle" },
+    "backend-coder": { "model": "opencode/big-pickle" },
+    "frontend-coder": { "model": "opencode/big-pickle" },
+    "test-coder": { "model": "opencode/big-pickle" },
+    "security-auditor": { "model": "opencode/big-pickle" },
+    "style-auditor": { "model": "opencode/big-pickle" }
+  }
+}

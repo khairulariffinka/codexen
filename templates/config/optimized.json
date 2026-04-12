@@ -1,0 +1,61 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "opencode-go/kimi-k2.5",
+  "agent": {
+    "build": {
+      "description": "Default build agent with cost optimization",
+      "mode": "primary",
+      "model": "opencode-go/kimi-k2.5"
+    },
+    "plan": {
+      "description": "Planning agent",
+      "mode": "primary",
+      "model": "opencode-go/kimi-k2.5"
+    },
+    "research": {
+      "description": "Fast research - use free model",
+      "mode": "subagent",
+      "model": "opencode/big-pickle"
+    },
+    "explore": {
+      "description": "Code exploration - use free",
+      "mode": "subagent",
+      "model": "opencode/big-pickle"
+    },
+    "general": {
+      "description": "General tasks",
+      "mode": "subagent",
+      "model": "opencode-go/kimi-k2.5"
+    },
+    "backend-coder": {
+      "description": "Backend coding",
+      "mode": "subagent",
+      "model": "opencode-go/kimi-k2.5"
+    },
+    "frontend-coder": {
+      "description": "Frontend coding",
+      "mode": "subagent",
+      "model": "opencode-go/glm-5"
+    },
+    "test-coder": {
+      "description": "Test writing",
+      "mode": "subagent",
+      "model": "opencode-go/kimi-k2.5"
+    },
+    "security-auditor": {
+      "description": "Security - use better model",
+      "mode": "subagent",
+      "model": "opencode/claude-sonnet-4.5"
+    },
+    "performance-auditor": {
+      "description": "Performance audit",
+      "mode": "subagent",
+      "model": "opencode-go/minimax-m2.5"
+    },
+    "style-auditor": {
+      "description": "Style check - free OK",
+      "mode": "subagent",
+      "model": "opencode/big-pickle"
+    }
+  }
+}
