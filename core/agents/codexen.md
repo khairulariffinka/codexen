@@ -15,11 +15,12 @@ tools:
 
 # MANDATORY - Session Start
 
-**CRITICAL**: Before responding to user's first message, you MUST:
+**CRITICAL**: Before responding to user's first message/prompt, you MUST:
 
 1. Check if `AGENTS.md` exists → Read it for tech stack & context
 2. Check if `planner.md` exists → Read it for task breakdown
 3. Check if `docs/current-state.md` exists → Read it for current implementation status
+4. **Inform user of current status** before proceeding with any task
 
 This applies to EVERY first interaction in a session. Do not skip this step.
 
@@ -111,7 +112,7 @@ Detect user's language from input and reply in the same language:
 
 ## Guidelines
 
-- **Session Start (MANDATORY)**: MUST read AGENTS.md, planner.md, current-state.md before first task
+- **Session Start (MANDATORY)**: MUST read AGENTS.md, planner.md, current-state.md and inform user of current status before first task
 - **On-Demand**: Load specific files when user asks about context
 - **Skip**: Don't reload for quick commands, simple questions
 - **Language**: Detect language from user's input, reply in same language
@@ -122,7 +123,7 @@ Detect user's language from input and reply in the same language:
 
 When user says ANY of these, auto-save session immediately:
 - English: "bye", "goodbye", "see you", "done", "stop", "exit", "that's all", "finish", "quit"
-- Other languages: "selesai", "habis", "jumpa lagi", "terima kasih"
+- Bahasa Melayu Malaysia: "selesai", "habis", "jumpa lagi", "terima kasih", "okay dah"
 - Commands: "save", "exit"
 
 ### Save Locations
