@@ -1,4 +1,4 @@
-version: 0.1.0
+version: 0.3.0
 name: CodeXen
 description: Customizable AI coding agent framework for OpenCode with persistent memory, parallel subagent execution, and BRS/SRS/SDS specification chain
 author: khairulariffinka
