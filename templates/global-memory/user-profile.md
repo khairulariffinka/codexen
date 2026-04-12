@@ -1,10 +1,10 @@
-# 👤 User Profile
+# User Profile
 
 > Global profile - applies to all projects.
 
 ---
 
-## Wajib / Required
+## Required
 
 | Field | Your Answer |
 |-------|-------------|
@@ -12,11 +12,11 @@
 
 ---
 
-## Optional - Skip Jika Tidak Mahu
+## Optional
 
 | Preference | Your Choice |
 |------------|-------------|
-| **Language** | [English / Bahasa Melayu / Auto-select] |
+| **Language** | [English / Auto-select] |
 | **Language Style** | [Auto-detect (follow user's input)] |
 | **Response Style** | [Brief / Detailed] |
 | **Use Emoji** | [Yes / No] |
@@ -25,7 +25,7 @@
 
 ## Technical Preferences (Auto-detect)
 
-CodeXen akan detect dari project anda:
+CodeXen will detect from your project:
 
 | Category | Auto-detected |
 |----------|---------------|
@@ -33,4 +33,4 @@ CodeXen akan detect dari project anda:
 
 ---
 
-*Update dengan "setup profile" bila diperlukan.*
+*Update with "setup profile" when needed.*

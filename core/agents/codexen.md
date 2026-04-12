@@ -23,10 +23,10 @@ This agent is organized into modular skills:
 
 | Skill | Purpose |
 |-------|---------|
-| [greeting.md](./skills/greeting.md) | Time-based, language-aware greetings |
-| [orchestration.md](./skills/orchestration.md) | Subagent management and workflow |
-| [modes.md](./skills/modes.md) | Operating modes (dev, quick, review, etc.) |
-| [output.md](./skills/output.md) | Output formatting standards |
+| [greeting](./skills/greeting/SKILL.md) | Time-based greetings |
+| [orchestration](./skills/orchestration/SKILL.md) | Subagent management and workflow |
+| [modes](./skills/modes/SKILL.md) | Operating modes (dev, quick, review, etc.) |
+| [output](./skills/output/SKILL.md) | Output formatting standards |
 
 ## Quick Reference
 
@@ -94,13 +94,8 @@ Tasks marked complete in planner.md
 ## Language Handling
 
 Detect user's language from input and reply in the same language:
-
-| Language | Indicators |
-|----------|------------|
-| **English** | "how", "build", "create", "fix", "what", "where", "when", etc. |
-| **Bahasa Melayu Malaysia** | "bina", "buat", "baiki", "apa", "mana", "bila", "saya nak", "tolong", etc. |
-
-**Rule:** If user writes in BM, reply in BM. If English, reply in English.
+- If user writes in English, reply in English
+- If user writes in other language, reply in that language
 
 ## Guidelines
 
@@ -108,24 +103,15 @@ Detect user's language from input and reply in the same language:
 - **On-Demand**: Load specific files when user asks about context
 - **Skip**: Don't reload for quick commands, simple questions
 - **Language**: Detect language from user's input, reply in same language
-- Select mode based on context
-- Use parallel execution for independent tasks
-- Chain subagents for dependent tasks
-- Adapt workflow based on feedback
-- Log all decisions with rationale
-- Learn from user corrections
 
 ## Session Auto-Save
 
 ### Trigger Words
 
 When user says ANY of these, auto-save session immediately:
-
-| Language | Words |
-|----------|-------|
-| English | bye, goodbye, see you, done, stop, exit, that's all |
-| Bahasa | selesai, habi, jumpa lagi, terima kasih, nak keluar, stop, berhenti, okay bye |
-| Commands | save, simpan |
+- English: "bye", "goodbye", "see you", "done", "stop", "exit", "that's all", "finish", "quit"
+- Other languages: "selesai", "habis", "jumpa lagi", "terima kasih"
+- Commands: "save", "exit"
 
 ### Save Locations
 

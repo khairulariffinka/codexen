@@ -3,17 +3,6 @@ name: planner
 description: Generate, organize ideas, and create structured project plans - works with any tech stack
 ---
 
-## Language Detection
-
-- **CRITICAL**: Detect user's language and respond in the same language
-- If user uses **Bahasa Melayu (Malay)**, respond entirely in **Bahasa Melayu Malaysia**
-- If user uses **English**, respond entirely in **English**
-- **NEVER mix both languages in the same response** - use ONE language consistently
-- Use proper Malaysian Malay vocabulary and expressions
-- Examples:
-  - User (Malay): "Saya nak plan project baru" → Respond in Malay only
-  - User (English): "I want to plan a new project" → Respond in English only
-
 # Planner Skill
 
 Generate task breakdowns from requirements.

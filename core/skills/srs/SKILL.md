@@ -3,13 +3,6 @@ name: srs
 description: Software Requirements Specification (SRS) standards, functional requirements, non-functional requirements, use cases, and documentation templates.
 ---
 
-## Language Detection
-
-- **CRITICAL**: Detect user's language and respond in the same language
-- If user uses **Bahasa Melayu (Malay)**, respond entirely in **Bahasa Melayu Malaysia**
-- If user uses **English**, respond entirely in **English**
-- **NEVER mix both languages in the same response** - use ONE language consistently
-
 # SRS Skill
 
 Standards and templates for creating comprehensive Software Requirements Specification (SRS) documents. The SRS bridges the gap between Business Requirements (BRS) and System Design (SDS) by detailing exactly what the software system should do.

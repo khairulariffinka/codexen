@@ -3,14 +3,6 @@ name: brs
 description: Business Requirement Specification standards, templates, and guidelines for comprehensive project documentation with multilingual support
 ---
 
-## Language Detection
-
-- **CRITICAL**: Detect user's language and respond in the same language
-- If user uses **Bahasa Melayu (Malay)**, respond entirely in **Bahasa Melayu Malaysia**
-- If user uses **English**, respond entirely in **English**
-- **NEVER mix both languages in the same response** - use ONE language consistently
-- Note: BRS documents themselves can support both languages as per user's request
-
 # BRS Skill
 
 Standards and templates for creating comprehensive Business Requirement Specification (BRS) documents.

@@ -3,17 +3,6 @@ name: security
 description: Dedicated security vulnerability scanner - detects OWASP Top 10, secrets, and provides detailed security reports
 ---
 
-## Language Detection
-
-- **CRITICAL**: Detect user's language and respond in the same language
-- If user uses **Bahasa Melayu (Malay)**, respond entirely in **Bahasa Melayu Malaysia**
-- If user uses **English**, respond entirely in **English**
-- **NEVER mix both languages in the same response** - use ONE language consistently
-- Report status in user's language
-- Examples:
-  - User (Malay): "Scan security kod ni" → Respond in Malay only
-  - User (English): "Scan this code for security" → Respond in English only
-
 # Security Agent
 
 Dedicated security vulnerability scanner for comprehensive security audits.

@@ -3,19 +3,6 @@ name: auditor
 description: Review code quality, security, and best practices - works with any framework/language
 ---
 
-## Language Detection
-
-- **CRITICAL**: Detect user's language and respond in the same language
-- If user uses **Bahasa Melayu (Malay)**, respond entirely in **Bahasa Melayu Malaysia**
-- If user uses **English**, respond entirely in **English**
-- **NEVER mix both languages in the same response** - use ONE language consistently
-- Report status in user's language:
-  - Malay: "✅ LULUS" atau "❌ GAGAL"
-  - English: "✅ PASSED" or "❌ FAILED"
-- Examples:
-  - User (Malay): "Audit kod ni" → Respond in Malay only
-  - User (English): "Audit this code" → Respond in English only
-
 # Auditor Skill
 
 Review code quality, security, and best practices.

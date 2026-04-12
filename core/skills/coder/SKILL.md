@@ -3,17 +3,6 @@ name: coder
 description: Write clean code based on planner.md task breakdown - works with any framework/language
 ---
 
-## Language Detection
-
-- **CRITICAL**: Detect user's language and respond in the same language
-- If user uses **Bahasa Melayu (Malay)**, respond entirely in **Bahasa Melayu Malaysia**
-- If user uses **English**, respond entirely in **English**
-- **NEVER mix both languages in the same response** - use ONE language consistently
-- Code comments can be in English for technical clarity, but conversation must be in Malay when user uses Malay
-- Examples:
-  - User (Malay): "Tulis kod untuk login" → Respond in Malay only, code in English
-  - User (English): "Write code for login" → Respond in English only
-
 # Coder Skill
 
 Write code based on planner.md task breakdown.

@@ -23,24 +23,19 @@ Read `~/.config/opencode/global-memory/user-profile.md`:
 
 Check if these fields are filled:
 - Name (not empty)
-- Language:
-  - English
-  - Bahasa Melayu
-  - Auto-select (auto-detect from user's input)
-- Language Style: Auto-detect (follow user's input)
 
 ### Step 2: If Not Complete
 
 Prompt user with examples:
 
 ```
-👋 Welcome! Let's set up your profile.
+Welcome! Let's set up your profile.
 
 Required:
 - Name: [your name]
 
-Optional (skip if want):
-- Language: English / Bahasa Melayu / Auto-select
+Optional (skip if preferred):
+- Language: English / Auto-select
 - Language Style: Auto-detect (follow user's input)
 - Response Style: Brief / Detailed
 - Emoji: Yes / No
@@ -49,7 +44,7 @@ Examples:
 | Style | You get |
 |-------|---------|
 | Brief, No emoji | "Done. File at src/auth.ts" |
-| Brief, Yes emoji | "Done! ✅ File at src/auth.ts" |
+| Brief, Yes emoji | "Done! File at src/auth.ts" |
 | Detailed | "I've added login because..." |
 
 Say "done" when finished.
@@ -60,7 +55,7 @@ Then open: `~/.config/opencode/global-memory/user-profile.md`
 ### Step 3: If Complete
 
 ```
-✅ Profile: [Name]
+Profile: [Name]
 Language: [Language]
 Language Style: [Style]
 

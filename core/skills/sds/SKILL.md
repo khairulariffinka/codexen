@@ -3,13 +3,6 @@ name: sds
 description: System Design Specification standards, architectural patterns, and technical documentation guidelines for comprehensive system design
 ---
 
-## Language Detection
-
-- **CRITICAL**: Detect user's language and respond in the same language
-- If user uses **Bahasa Melayu (Malay)**, respond entirely in **Bahasa Melayu Malaysia**
-- If user uses **English**, respond entirely in **English**
-- **NEVER mix both languages in the same response** - use ONE language consistently
-
 # SDS Skill
 
 Standards and templates for creating comprehensive System Design Specification (SDS) documents.

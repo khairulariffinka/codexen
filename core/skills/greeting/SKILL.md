@@ -1,6 +1,6 @@
 ---
 name: greeting
-description: Time-based and language-aware greetings for CodeXen.
+description: Time-based greetings for CodeXen.
 ---
 
 # Greeting System
@@ -11,6 +11,12 @@ description: Time-based and language-aware greetings for CodeXen.
 - Every time user switches to this agent's tab
 - NOT every time @agentname is invoked in chat
 
+## Language Handling
+
+Detect user's language from input and reply in the same language:
+- If user writes in English, reply in English
+- If user writes in other language, reply in that language
+
 ## Session Time Tracking
 
 ### Auto-Start Session (First Prompt)
@@ -19,7 +25,6 @@ description: Time-based and language-aware greetings for CodeXen.
 
 1. **Check if session tracking is active:**
    ```bash
-   # Check if .session-track/current-session-start exists
    if [ -f ".session-track/current-session-start" ]; then
        # Session already started - continue tracking
    else
@@ -35,14 +40,14 @@ description: Time-based and language-aware greetings for CodeXen.
 
 ### Benefits of Auto-Start
 
-- ✅ **No manual start needed** - Session starts on first interaction
-- ✅ **Accurate time tracking** - Captures exact start time
-- ✅ **Zero effort** - Works transparently in background
-- ✅ **Universal** - Works across all projects
+- No manual start needed - Session starts on first interaction
+- Accurate time tracking - Captures exact start time
+- Zero effort - Works transparently in background
+- Universal - Works across all projects
 
 ### End Time - Farewell Detection
 
-**When farewell word detected** (selesai, bye, goodbye, etc.):
+**When farewell word detected** (bye, goodbye, done, etc.):
 
 1. **Auto-save session** using the session tracker:
    ```bash
@@ -92,53 +97,23 @@ If you need manual control:
 
 **Date:** 2026-03-17 14:30:15
 **Project:** my-project
-**⏱️ Time Spent:** Started: 14:15:00 | Duration: 15m 15s
+**Time Spent:** Started: 14:15:00 | Duration: 15m 15s
 ```
 
 ---
-
-## Language Detection
-
-Check in this order:
-1. `relationship-memory.md` → `language` field
-2. `AGENTS.md` → `language` setting
-3. Previous session → Last used language
-4. Default → English
-
-**CRITICAL RULE:**
-- If user uses **Bahasa Melayu Malaysia**, respond entirely in **Bahasa Melayu Malaysia only**
-- If user uses **English**, respond entirely in **English only**
-- **NEVER mix both languages in the same response** - use ONE language consistently
-
-Note: Bahasa Melayu means **Bahasa Melayu Malaysia** (NOT Indonesia).
 
 ## Time-Based Greetings
 
 ### Morning (06:00 - 11:59)
 
-**Bahasa Melayu Malaysia:**
 ```
-🌅 Selamat pagi!
+Good morning!
 
-Saya [agent-name], pembantu AI anda untuk projek ini.
-
-Boleh saya bantu:
-- Bina ciri baharu
-- Review kod
-- Tulis ujian
-- Setup CI/CD
-
-Apa yang anda nak buat hari ni?
-```
-
-**English:**
-```
-🌅 Good morning!
-
-I'm [agent-name] 👋
+I'm [agent-name]
 
 I can help you:
 - Build new features
+- Write code
 - Review code
 - Write tests
 - Setup CI/CD
@@ -146,28 +121,12 @@ I can help you:
 What would you like to do?
 ```
 
-### Tengah Hari / Afternoon (12:00 - 13:59)
+### Afternoon (12:00 - 13:59)
 
-**Bahasa Melayu Malaysia:**
 ```
-☀️ Selamat tengah hari!
+Good afternoon!
 
-Saya [agent-name] 👋
-
-Sedia membantu anda dengan:
-- Pembangunan Frontend & Backend
-- Semakan Kod & Audit Keselamatan
-- Penulisan Ujian Unit
-- Docker & CI/CD Setup
-
-Apa yang anda nak buat hari ni?
-```
-
-**English:**
-```
-☀️ Good afternoon!
-
-I'm [agent-name] 👋
+I'm [agent-name]
 
 Ready to help with:
 - Development tasks
@@ -178,28 +137,12 @@ Ready to help with:
 What's on your mind?
 ```
 
-### Petang / Evening (14:00 - 18:29)
+### Evening (14:00 - 18:29)
 
-**Bahasa Melayu Malaysia:**
 ```
-🌆 Selamat petang!
+Good evening!
 
-[agent-name] di sini 👋
-
-Perkhidmatan tersedia:
-- Tulis kod
-- Cipta ujian
-- Audit keselamatan
-- Semakan prestasi
-
-Apa yang boleh saya bantu?
-```
-
-**English:**
-```
-🌆 Good evening!
-
-[agent-name] here 👋
+[agent-name] here
 
 Available services:
 - Write code
@@ -210,27 +153,12 @@ Available services:
 What can I do for you?
 ```
 
-### Malam / Night (19:00 - 05:59)
+### Night (19:00 - 05:59)
 
-**Bahasa Melayu Malaysia:**
 ```
-🌙 Selamat malam!
+Good night!
 
-Saya [agent-name] - masih bertugas! 💪
-
-Waktu malam tidak menghalang saya:
-- Quick fixes
-- Review kod
-- Perancangan (Planning)
-
-Perlukan bantuan?
-```
-
-**English:**
-```
-🌙 Good night!
-
-I'm [agent-name] - still working! 💪
+I'm [agent-name] - still working!
 
 Night hours don't stop me:
 - Quick fixes
@@ -246,46 +174,34 @@ The greeting uses the **current agent's configured name** from:
 1. Agent definition file (name field)
 2. User's custom configuration
 
-## Learning
-
-After user responds:
-- If user replies in different language → Update memory
-- Save preference to relationship-memory.md
-
----
-
 ## Farewell (When User Says "Bye")
 
 ### What to Do
 
 When user says any of these words/phrases, trigger farewell:
-- English: "bye", "goodbye", "see you", "stop", "exit", "that's all", "done"
-- Bahasa Melayu Malaysia: "selesai", "habis", "jumpa lagi", "terima kasih", "nak keluar", "stop", "berhenti", "okay bye"
+- English: "bye", "goodbye", "see you", "stop", "exit", "that's all", "done", "finish", "quit"
+- Other languages: "selesai", "habis", "jumpa lagi", "terima kasih"
 
-Or when user ends the session:
-
-### Auto-Save Session (NEW)
+### Auto-Save Session
 
 **Step 1: Save Session Automatically**
 ```bash
-# Run session save with summary
 session save "Completed: [brief summary of work done]"
 ```
 
 This will:
-- ✅ Record end time automatically
-- ✅ Calculate duration (e.g., "15m 30s")
-- ✅ Save to project history
-- ✅ Archive to global work diary
-- ✅ Clean up tracking files
+- Record end time automatically
+- Calculate duration (e.g., "15m 30s")
+- Save to project history
+- Archive to global work diary
+- Clean up tracking files
 
 **Step 2: Show Summary to User**
-Display what was accomplished:
 ```
-✅ Session Saved!
+Session Saved!
 
-⏱️ Duration: 15m 30s
-💾 Saved to:
+Duration: 15m 30s
+Saved to:
   - Project history
   - Global work diary
 
@@ -328,30 +244,6 @@ If auto-save fails, use manual method:
    - [Any additional notes or learnings]
    ```
 
-   **Example filled session:**
-   ```markdown
-   ## Session Summary
-
-   **What was accomplished:**
-   - [x] Created user authentication system
-   - [x] Added JWT token validation
-   - [x] Wrote unit tests for auth module
-
-   **Challenges faced:**
-   - Token expiration handling was complex
-   - Database connection timeout issues
-
-   **Solutions found:**
-   - Implemented refresh token mechanism
-   - Added connection pooling with 30s timeout
-
-   **Key decisions:**
-   - Used bcrypt for password hashing (more secure than SHA256)
-
-   **Notes:**
-   - Need to add rate limiting in next session
-   ```
-
    - Write updated content to the file
 
 2. **Archive to Work Diary** (if significant)
@@ -374,38 +266,19 @@ If auto-save fails, use manual method:
 - **ALWAYS try auto-save first** - Run `session save` command
 - **ALWAYS read file before writing** - Use Read tool first
 - **Fill all 3 main sections** - Accomplished, Challenges, Solutions
-- **Be specific** - "Fixed login bug" → "Fixed JWT token validation error on line 45"
+- **Be specific** - "Fixed login bug" - "Fixed JWT token validation error on line 45"
 - **Include key decisions** - Note why you chose solution A over B
 - **Keep it concise** - 3-5 bullet points per section is ideal
-- If file doesn't exist → Create from template
-- Use `[x]` for completed tasks, `[ ]` for incomplete
+- If file does not exist - Create from template
+- Use [x] for completed tasks, [ ] for incomplete
 
-### Farewell Messages
+### Farewell Message
 
-**Bahasa Melayu Malaysia:**
 ```
-Selamat tinggal! 👋
+Goodbye!
 
-✅ Session disimpan!
-⏱️ Masa bekerja: [DURATION]
-
-Terima kasih kerana menggunakan CodeXen!
-
-Untuk mulakan semula:
-1. Taip: opencode
-2. Panggil: codexen, hello!
-
-Untuk tutup OpenCode, taip: exit
-
-Jumpa lagi!
-```
-
-**English:**
-```
-Goodbye! 👋
-
-✅ Session saved!
-⏱️ Time worked: [DURATION]
+Session saved!
+Time worked: [DURATION]
 
 Thanks for using CodeXen!
 

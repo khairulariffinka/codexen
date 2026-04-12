@@ -5,14 +5,7 @@ description: Analyze codebase and gather context before planning
 
 # Research Skill
 
-## Language Detection
 
-- **CRITICAL**: Detect user's language and respond in the same language
-- If user uses **Bahasa Melayu (Malay)**, respond entirely in **Bahasa Melayu Malaysia**
-- If user uses **English**, respond entirely in **English**
-- **NEVER mix both languages in the same response** - use ONE language consistently
-
----
 
 ## Purpose
 
