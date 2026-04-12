@@ -23,7 +23,11 @@ Read `~/.config/opencode/global-memory/user-profile.md`:
 
 Check if these fields are filled:
 - Name (not empty)
-- Language (English / Bahasa Melayu)
+- Language:
+  - English
+  - Bahasa Melayu
+  - Auto-select (auto-detect from user's input)
+- Language Style: Auto-detect (follow user's input)
 
 ### Step 2: If Not Complete
 
@@ -32,15 +36,16 @@ Prompt user with examples:
 ```
 👋 Welcome! Let's set up your profile.
 
-Just fill in 2 fields:
+Required:
 - Name: [your name]
-- Language: [English / Bahasa Melayu]
 
 Optional (skip if want):
+- Language: English / Bahasa Melayu / Auto-select
+- Language Style: Auto-detect (follow user's input)
 - Response Style: Brief / Detailed
 - Emoji: Yes / No
 
-Examples how you'll sound:
+Examples:
 | Style | You get |
 |-------|---------|
 | Brief, No emoji | "Done. File at src/auth.ts" |
@@ -57,6 +62,7 @@ Then open: `~/.config/opencode/global-memory/user-profile.md`
 ```
 ✅ Profile: [Name]
 Language: [Language]
+Language Style: [Style]
 
 Update anytime: "setup profile"
 ```
@@ -70,6 +76,7 @@ Update anytime: "setup profile"
 
 ## Notes
 
-- Only 2 fields required: Name + Language
-- Others auto-detect from your project
+- Required: Name only
+- Language: Auto-select by default (follows user's input)
+- Language Style: Auto-detect (follow user's input)
 - Profile is GLOBAL - all projects
