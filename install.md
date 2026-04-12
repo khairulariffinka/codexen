@@ -13,7 +13,7 @@ That's it!
 | Action | Location |
 |--------|---------|
 | Copies 23 agents | `~/.config/opencode/agents/` |
-| Copies 14 skills | `~/.config/opencode/skills/` |
+| Copies 17 skills | `~/.config/opencode/skills/` |
 | Creates memory templates | `~/.config/opencode/global-memory/` |
 
 ---
