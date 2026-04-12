@@ -51,3 +51,16 @@ cp -r core/agents/* ~/.config/opencode/agents/
 cp -r core/skills/* ~/.config/opencode/skills/
 cp -r templates/global-memory/* ~/.config/opencode/global-memory/
 ```
+
+## Development
+
+To push changes, use a separate branch and create a PR. ALWAYS ask before pushing to main:
+
+```bash
+git checkout -b feature/your-feature
+git add -A
+git commit -m "your message"
+git push -u origin feature/your-feature
+```
+
+Then create a Pull Request on GitHub.

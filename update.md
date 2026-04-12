@@ -13,7 +13,7 @@ That's it!
 | Action | Description |
 |--------|-----------|
 | Update agents | Copy 23 agents |
-| Update skills | Copy 14 skills |
+| Update skills | Copy 17 skills |
 | Update version | Mark as current |
 
 ---
@@ -41,5 +41,26 @@ If update doesn't work, manually run:
 ```bash
 cp -r core/agents/* ~/.config/opencode/agents/
 cp -r core/skills/* ~/.config/opencode/skills/
-cp -r templates/skills/* ~/.config/opencode/skills/
+cp -r templates/global-memory/* ~/.config/opencode/global-memory/
+```
+
+---
+
+## Development Workflow
+
+For contributors - NEVER push directly to main. ALWAYS ask before pushing. Use branches:
+
+```bash
+# Create a new branch
+git checkout -b feature/your-feature
+
+# Make changes and commit
+git add -A
+git commit -m "feat: your feature"
+
+# Push and create PR
+git push -u origin feature/your-feature
+# Then create Pull Request on GitHub
+
+# IMPORTANT: Ask before pushing to main
 ```

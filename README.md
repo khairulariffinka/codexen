@@ -131,10 +131,9 @@ Change AI model configs:
 
 ```
 codexen/
-├── agent/                 # Primary agent
 ├── core/
 │   ├── agents/            # 23 subagents
-│   └── skills/            # 14 skills
+│   └── skills/            # 17 skills
 ├── templates/             # Templates
 └── VERSION.yaml          # Version
 ```
