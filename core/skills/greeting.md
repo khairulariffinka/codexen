@@ -1,6 +1,9 @@
-# Greeting System
+---
+name: greeting
+description: Time-based and language-aware greetings for CodeXen.
+---
 
-Time-based and language-aware greetings for CodeXen.
+# Greeting System
 
 ## When to Show Greeting
 

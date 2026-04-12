@@ -5,8 +5,6 @@ description: Analyze codebase and gather context before planning
 
 # Research Skill
 
-Analyze codebase to understand existing patterns, tech stack, and context.
-
 ## Language Detection
 
 - **CRITICAL**: Detect user's language and respond in the same language

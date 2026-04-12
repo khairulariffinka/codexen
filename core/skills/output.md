@@ -1,6 +1,9 @@
-# Output Format
+---
+name: output
+description: Standardized output formats for CodeXen.
+---
 
-Standardized output formats for CodeXen.
+# Output Format
 
 ## Progress Display
 

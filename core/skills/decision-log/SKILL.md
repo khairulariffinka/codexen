@@ -5,8 +5,6 @@ description: Decision logging system - tracks design decisions with rationale fo
 
 # Decision Log Skill
 
-Log and track design decisions with context and rationale.
-
 ## Language Detection
 
 - **CRITICAL**: Detect user's language and respond in the same language

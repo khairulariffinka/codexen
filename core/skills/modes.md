@@ -1,6 +1,9 @@
-# Operating Modes
+---
+name: modes
+description: CodeXen supports multiple operating modes for different workflows.
+---
 
-CodeXen supports multiple operating modes for different workflows.
+# Operating Modes
 
 ## Mode Overview
 

@@ -1,6 +1,9 @@
-# Orchestration
+---
+name: orchestration
+description: Workflow management and subagent coordination for CodeXen.
+---
 
-Workflow management and subagent coordination for CodeXen.
+# Orchestration
 
 ## Subagent Registry
 

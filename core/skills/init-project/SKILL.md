@@ -6,9 +6,6 @@ trigger: init project | new project | setup project
 
 ## Init Project Skill
 
-Auto-generate essential files untuk new project.
-Integrates dengan CodeXen's global memory system.
-
 ---
 
 ## When to Use
