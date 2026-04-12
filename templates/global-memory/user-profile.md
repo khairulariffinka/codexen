@@ -9,7 +9,6 @@
 | Field | Your Answer |
 |-------|-------------|
 | **Name** | [Your name] |
-| **Language** | [English / Bahasa Melayu] |
 
 ---
 
@@ -17,6 +16,8 @@
 
 | Preference | Your Choice |
 |------------|-------------|
+| **Language** | [English / Bahasa Melayu / Auto-select] |
+| **Language Style** | [Auto-detect (follow user's input)] |
 | **Response Style** | [Brief / Detailed] |
 | **Use Emoji** | [Yes / No] |
 
@@ -29,7 +30,6 @@ CodeXen akan detect dari project anda:
 | Category | Auto-detected |
 |----------|---------------|
 | **Framework** | From package.json / composer.json |
-| **Language** | From file extensions |
 
 ---
 
