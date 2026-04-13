@@ -6,10 +6,10 @@
 
 ## Context
 
-When this file is loaded, AI harus tahu:
-- User nak uninstall/remove CodeXen
-- bukan nak baca fail jer
-- AI perlu execute uninstall steps
+When this file is loaded, AI must know:
+- User wants to uninstall/remove CodeXen
+- NOT just reading the file
+- AI must execute uninstall steps
 
 ## Confirm
 

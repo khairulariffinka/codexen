@@ -12,10 +12,10 @@ That's it!
 
 ## Context
 
-When this file is loaded, AI harus tahu:
-- User nak update files ke latest version
-- bukan nak baca fail jer
-- AI perlu execute update steps
+When this file is loaded, AI must know:
+- User wants to update to latest version
+- NOT just reading the file
+- AI must execute update steps
 
 ## What It Does
 

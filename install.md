@@ -12,10 +12,10 @@ That's it!
 
 ## Context
 
-When this file is loaded, AI harus tahu:
-- User nak copy files ke ~/.config/opencode/
-- bukan nak baca fail jer
-- AI perlu execute install steps
+When this file is loaded, AI must know:
+- User wants to install/copy files to ~/.config/opencode/
+- NOT just reading the file
+- AI must execute install steps
 
 ## What It Does
 

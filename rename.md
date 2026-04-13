@@ -8,10 +8,10 @@ AI-assisted protocol to rename the primary agent from "codexen" to a custom name
 
 ## Context
 
-When this file is loaded, AI harus tahu:
-- User nak rename agent CodeXen
+When this file is loaded, AI must know:
+- User wants to rename agent CodeXen
 - Current name: `codexen`
-- AI perlu tanya user nak rename kepada apa
+- AI must ask user what to rename to
 
 ## Usage
 
