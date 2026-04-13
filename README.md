@@ -32,6 +32,14 @@ build a user authentication system
 
 ---
 
+## Docs
+
+- [Quick Start Guide](QUICKSTART.md)
+- [Commands Reference](COMMANDS.md)
+- [Tutorials](TUTORIALS.md)
+
+---
+
 ## What Can It Do?
 
 | Task | Example |
