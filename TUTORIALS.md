@@ -2,6 +2,12 @@
 
 > **New here?** Start with [README.md](./README.md) for quick setup.
 > 
+> **First clone:**
+> ```bash
+> git clone https://github.com/khairulariffinka/codexen.git
+> cd codexen
+> ```
+> 
 > 📚 **For command reference, see [COMMANDS.md](./COMMANDS.md)**
 >
 > This page is for **detailed guides** when you want to learn more.
