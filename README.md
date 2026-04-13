@@ -14,17 +14,24 @@ Give it a task, it handles the rest.
 
 ## Get Started
 
-### 1. Install
+### 1. Clone / Download
+
+```bash
+git clone https://github.com/khairulariffinka/codexen.git
+cd codexen
+```
+
+### 2. Install
 
 ```
 "Load install.md"
 ```
 
-### 2. Activate
+### 3. Activate
 
 Press `TAB` until you see `codexen`
 
-### 3. Use
+### 4. Use
 
 ```
 build a user authentication system
