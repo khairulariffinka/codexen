@@ -183,4 +183,4 @@ For detailed flow diagrams, see [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md).
 
 MIT License
 
-**Version**: 0.3.0
+**Version**: 0.4.0
