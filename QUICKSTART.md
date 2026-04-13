@@ -4,7 +4,16 @@
 
 ---
 
-## Step 1: Install
+## Step 1: Clone / Download
+
+```bash
+git clone https://github.com/khairulariffinka/codexen.git
+cd codexen
+```
+
+---
+
+## Step 2: Install
 
 Load the install documentation:
 
@@ -21,7 +30,7 @@ Done!
 
 ---
 
-## Step 2: Setup Profile (Optional but Recommended)
+## Step 3: Setup Profile (Optional but Recommended)
 
 ```
 "setup profile"
@@ -34,7 +43,7 @@ This sets up your global profile so CodeXen knows:
 
 Just fill in the fields and say "done" when finished.
 
-## Step 3: Test It Works
+## Step 4: Test It Works
 
 Restart your terminal, then type:
 
