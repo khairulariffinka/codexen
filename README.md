@@ -188,6 +188,33 @@ Check for updates:
 
 ---
 
+## Advanced: Switch Config (Optional)
+
+> For **advanced users only** - Optional feature, skip if unsure.
+
+Switch between different OpenCode model configurations to optimize cost vs quality:
+
+| Config | Cost | Best For |
+|--------|------|----------|
+| Free | $0/mo | Learning, testing |
+| Budget | $5-10/mo | Daily coding |
+| Quality | $30-50/mo | Professional work |
+| Optimized | Mixed | Power users |
+
+**Referensi:**
+- https://opencode.ai/docs/zen/ - Untuk Quality config
+- https://opencode.ai/docs/go/ - Untuk Budget config
+
+**Cara switch:**
+
+```
+"load switch-config"
+```
+
+Then pilih config dari option dan restart OpenCode.
+
+---
+
 ## Architecture
 
 For detailed flow diagrams, see [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md).
