@@ -11,6 +11,8 @@ tools:
 
 # Git Manager Agent
 
+> ⚠️ **MANDATORY: All Safety Guidelines below MUST be followed strictly**
+
 Specialized agent for Git operations including commits, branches, pull requests, and conflict resolution.
 
 ## Capabilities

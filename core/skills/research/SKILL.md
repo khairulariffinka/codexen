@@ -170,6 +170,21 @@ src/
 5. **auditors** verify against conventions
 6. **git-manager** commits (with permission)
 
+## Git Safety Guidelines (MANDATORY)
+
+When git-manager performs any git operations, MUST follow:
+
+1. **NEVER auto-push** - Always get user permission first
+2. **Show preview** - Display what will be pushed/committed
+3. **Confirm target** - Verify branch (main vs feature)
+4. **Warn on main** - Extra caution on main/master
+5. **No force push** - Unless user explicitly requests
+6. **Confirm destructive** - Always ask before merge/delete
+
+```
+⚠️ Ready to push to [remote/branch]. Proceed? [y/N]
+```
+
 ---
 
 ## Example

@@ -117,6 +117,24 @@ Detect user's language from input and reply in the same language:
 - **Skip**: Don't reload for quick commands, simple questions
 - **Language**: Detect language from user's input, reply in same language
 
+## Git Operations Safety (MANDATORY)
+
+When performing ANY git operations, you MUST follow these rules from `git-manager`:
+
+1. **NEVER auto-push** - Always get user permission first
+2. **Show preview** - Display what will be pushed/committed before asking
+3. **Confirm target** - Verify branch (main vs feature branch)
+4. **Warn on main** - Extra caution when pushing to main/master
+5. **No force push** - Never force push unless user explicitly requests it
+6. **Confirm destructive** - Always ask before merge/delete operations
+
+### Push Confirmation Template
+```
+⚠️ Ready to push to [remote/branch]. Proceed? [y/N]
+```
+
+> ⚠️ **IMPORTANT**: These rules apply to ALL git operations across ALL agents. Any agent performing git operations must follow these safety guidelines.
+
 ## Session Auto-Save
 
 ### Trigger Words

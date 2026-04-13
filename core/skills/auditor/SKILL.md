@@ -156,3 +156,18 @@ Always read AGENTS.md to get:
 - Always ask for commit confirmation (don't auto-commit)
 - Be helpful, not harsh in feedback
 - Adapt to any framework/language
+
+## Git Safety (MANDATORY for commit operations)
+
+When committing/pushing after audit, MUST follow:
+
+1. **NEVER auto-push** - Always get user permission
+2. **Show preview** - Display commit message and files
+3. **Confirm target** - Verify branch
+4. **Warn on main** - Extra caution on main
+5. **No force push** - Unless explicitly requested
+6. **Confirm destructive** - Ask before merge/delete
+
+```
+⚠️ Ready to push to [remote/branch]. Proceed? [y/N]
+```
