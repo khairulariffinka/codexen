@@ -1,16 +1,25 @@
 # Rename Protocol
 
+> **When user loads this file:** User wants to rename their primary agent.
+
 AI-assisted protocol to rename the primary agent from "codexen" to a custom name.
 
 **Works for:** OpenCode
+
+## Context
+
+When this file is loaded, AI harus tahu:
+- User nak rename agent CodeXen
+- Current name: `codexen`
+- AI perlu tanya user nak rename kepada apa
 
 ## Usage
 
 ```
 User: "Load rename.md"
 AI: "What would you like to rename 'codexen' to?"
-User: "nova" (or any name)
-AI: [Executes rename steps]
+User: "nova"
+AI: [Execute rename steps]
 ```
 
 ## Rename Steps
