@@ -1,6 +1,15 @@
 # Uninstall CodeXen
 
+> **When user loads this file:** User wants to uninstall CodeXen from their system.
+
 ---
+
+## Context
+
+When this file is loaded, AI harus tahu:
+- User nak uninstall/remove CodeXen
+- bukan nak baca fail jer
+- AI perlu execute uninstall steps
 
 ## Confirm
 

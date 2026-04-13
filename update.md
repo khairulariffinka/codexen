@@ -1,5 +1,7 @@
 # Update CodeXen
 
+> **When user loads this file:** User wants to update CodeXen to latest version.
+
 ```
 "load update.md"
 ```
@@ -7,6 +9,13 @@
 That's it!
 
 ---
+
+## Context
+
+When this file is loaded, AI harus tahu:
+- User nak update files ke latest version
+- bukan nak baca fail jer
+- AI perlu execute update steps
 
 ## What It Does
 
