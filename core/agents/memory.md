@@ -324,6 +324,31 @@ You can enable auto-compression:
 
 ## Workflow
 
+### Global Work-Diary (Cross-Project Memory)
+
+The global work-diary stores sessions across all projects for long-term tracking.
+
+**Location:** `~/.config/opencode/global-memory/work-diary/`
+
+**Template:** `diary-YYYY-MM.md` - Copy this template when creating new monthly diary
+
+**AI Execution Rules:**
+1. At end of session, check if diary file exists for current month
+2. If not exists, create new file from template:
+   ```bash
+   WORK_DIARY_DIR="$HOME/.config/opencode/global-memory/work-diary"
+   TODAY=$(date +%Y-%m)
+   if [ ! -f "$WORK_DIARY_DIR/diary-$TODAY.md" ]; then
+     cp "$WORK_DIARY_DIR/diary-YYYY-MM.md" "$WORK_DIARY_DIR/diary-$TODAY.md"
+   fi
+   ```
+3. Add session entry with:
+   - Date & session number
+   - Project name
+   - Duration
+   - Summary of what was accomplished
+   - Tasks completed
+
 ### Start of Session
 1. Load project.md (context)
 2. Load relevant decisions.md entries
@@ -338,9 +363,17 @@ You can enable auto-compression:
 
 ### End of Session
 9. Auto-save to history.md with semantic tags
-10. Summarize if session is long
-11. Update patterns.md with new findings
-12. Link to decisions made
+10. Update global work-diary:
+    - Check `~/.config/opencode/global-memory/work-diary/`
+    - If no diary file exists for current month, create new file from template:
+      ```
+      cp ~/.config/opencode/global-memory/work-diary/diary-YYYY-MM.md \
+         ~/.config/opencode/global-memory/work-diary/diary-$(date +%Y-%m).md
+      ```
+    - Add session entry to the diary file
+11. Summarize if session is long
+12. Update patterns.md with new findings
+13. Link to decisions made
 
 ## Output Format
 
