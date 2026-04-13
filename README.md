@@ -124,22 +124,6 @@ Cross-project memory that follows you:
 - Session tracking
 - Work diary
 
-### Switch Config
-
-Change AI model configs:
-```
-"switch to free config"
-"switch to budget"
-"switch to quality"
-```
-
-| Config | Cost | Models |
-|--------|------|--------|
-| Free | $0 | big-pickle |
-| Budget | $5-10/mo | kimi-k2.5 |
-| Quality | $30-50/mo | Claude Sonnet |
-| Optimized | Mixed | Smart selection |
-
 ---
 
 ## Project Structure
@@ -201,11 +185,11 @@ Switch between different OpenCode model configurations to optimize cost vs quali
 | Quality | $30-50/mo | Professional work |
 | Optimized | Mixed | Power users |
 
-**Referensi:**
-- https://opencode.ai/docs/zen/ - Untuk Quality config
-- https://opencode.ai/docs/go/ - Untuk Budget config
+**References:**
+- https://opencode.ai/docs/zen/ - For Quality config
+- https://opencode.ai/docs/go/ - For Budget config
 
-**Cara switch:**
+**How to switch:**
 
 ```
 "load switch-config"
