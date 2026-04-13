@@ -1,5 +1,7 @@
 # Install CodeXen
 
+> **When user loads this file:** User wants to install/copy CodeXen files to their system.
+
 ```
 "load install.md"
 ```
@@ -7,6 +9,13 @@
 That's it!
 
 ---
+
+## Context
+
+When this file is loaded, AI harus tahu:
+- User nak copy files ke ~/.config/opencode/
+- bukan nak baca fail jer
+- AI perlu execute install steps
 
 ## What It Does
 
