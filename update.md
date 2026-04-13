@@ -44,6 +44,18 @@ cp -r core/skills/* ~/.config/opencode/skills/
 cp -r templates/global-memory/* ~/.config/opencode/global-memory/
 ```
 
+### Important: Preserve Custom Names
+
+If you renamed `codexen.md` to a custom name (e.g., `myagent.md`), the update will restore it to the original name. To preserve your custom name:
+
+1. After updating, rename the file manually:
+
+```bash
+mv ~/.config/opencode/agents/codexen.md ~/.config/opencode/agents/myagent.md
+```
+
+2. Or use the rename feature before updating:
+
 ---
 
 ## Development Workflow
