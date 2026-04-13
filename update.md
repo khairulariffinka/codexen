@@ -30,7 +30,7 @@ In OpenCode:
 
 ## Version
 
-Current: **0.3.0**
+Current: **0.4.0**
 
 ---
 
