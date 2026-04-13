@@ -16,6 +16,15 @@ When this file is loaded, AI must know:
 - User wants to install/copy files to ~/.config/opencode/
 - NOT just reading the file
 - AI must execute install steps
+- IMPORTANT: Skip copying global-memory if it already contains files
+
+## AI Execution
+
+When executing install, use this conditional copy for global-memory:
+
+```bash
+[ -z "$(ls -A ~/.config/opencode/global-memory 2>/dev/null)" ] && cp -r templates/global-memory/* ~/.config/opencode/global-memory/ || echo "Skipping global-memory (already exists)"
+```
 
 ## What It Does
 
@@ -23,7 +32,7 @@ When this file is loaded, AI must know:
 |--------|---------|
 | Copies 23 agents | `~/.config/opencode/agents/` |
 | Copies 17 skills | `~/.config/opencode/skills/` |
-| Creates memory templates | `~/.config/opencode/global-memory/` |
+| Creates memory templates (if not exists) | `~/.config/opencode/global-memory/` |
 
 ---
 
@@ -58,7 +67,8 @@ If something goes wrong, manually run:
 mkdir -p ~/.config/opencode/agents ~/.config/opencode/skills ~/.config/opencode/global-memory
 cp -r core/agents/* ~/.config/opencode/agents/
 cp -r core/skills/* ~/.config/opencode/skills/
-cp -r templates/global-memory/* ~/.config/opencode/global-memory/
+# Only copy global-memory if directory is empty
+[ -z "$(ls -A ~/.config/opencode/global-memory 2>/dev/null)" ] && cp -r templates/global-memory/* ~/.config/opencode/global-memory/ || echo "Skipping global-memory (already exists)"
 ```
 
 ## Development

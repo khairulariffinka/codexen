@@ -16,6 +16,15 @@ When this file is loaded, AI must know:
 - User wants to update to latest version
 - NOT just reading the file
 - AI must execute update steps
+- IMPORTANT: Skip copying global-memory if it already contains files
+
+## AI Execution
+
+When executing update, use this conditional copy for global-memory:
+
+```bash
+[ -z "$(ls -A ~/.config/opencode/global-memory 2>/dev/null)" ] && cp -r templates/global-memory/* ~/.config/opencode/global-memory/ || echo "Skipping global-memory (already exists)"
+```
 
 ## What It Does
 
@@ -23,6 +32,7 @@ When this file is loaded, AI must know:
 |--------|-----------|
 | Update agents | Copy 23 agents |
 | Update skills | Copy 17 skills |
+| Update memory templates (if not exists) | Skip if exists |
 | Update version | Mark as current |
 
 ---
@@ -50,7 +60,8 @@ If update doesn't work, manually run:
 ```bash
 cp -r core/agents/* ~/.config/opencode/agents/
 cp -r core/skills/* ~/.config/opencode/skills/
-cp -r templates/global-memory/* ~/.config/opencode/global-memory/
+# Only copy global-memory if directory is empty
+[ -z "$(ls -A ~/.config/opencode/global-memory 2>/dev/null)" ] && cp -r templates/global-memory/* ~/.config/opencode/global-memory/ || echo "Skipping global-memory (already exists)"
 ```
 
 ---
