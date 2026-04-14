@@ -23,7 +23,7 @@ Generates comprehensive System Design Specification (SDS) documents from Busines
 | **Architecture** | High-level and component-level architecture design |
 | **Database Design** | ERD, schema definitions, indexes, optimization |
 | **API Specifications** | OpenAPI 3.0 compliant endpoint documentation |
-| **Decision Log** | Tracks architectural decisions dengan rationale |
+| **Decision Log** | Tracks architectural decisions with rationale |
 | **Mermaid Diagrams** | Auto-generates architecture, ERD, flow diagrams |
 
 ## Workflow

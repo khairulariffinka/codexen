@@ -10,15 +10,15 @@ Standards and templates for creating comprehensive Business Requirement Specific
 ## When to Use
 
 - Starting new project and need formal requirements document
-- Client asks for "formal proposal" atau "requirement specs"
+- Client asks for "formal proposal" or "requirement specs"
 - Managing scope creep and need protection clause
 - Stakeholder alignment required
 - Budget approval needed from management
 
 ## BRS Structure (16 Sections)
 
-### 1. Executive Summary / Ringkasan Eksekutif
-**Purpose:** One-page overview untuk busy stakeholders
+### 1. Executive Summary
+**Purpose:** One-page overview for busy stakeholders
 
 **Content:**
 - Project name and brief description
@@ -32,14 +32,14 @@ Standards and templates for creating comprehensive Business Requirement Specific
 **English:**
 [Detailed English description]
 
-**[BM] Ringkasan Eksekutif:**
-[Ringkasan dalam Bahasa Melayu Malaysia]
+**[BM] Executive Summary:**
+[Summary in Malay]
 ```
 
 ---
 
-### 2. Stakeholders / Pemegang Taruh
-**Purpose:** Identify siapa involved dan their roles
+### 2. Stakeholders
+**Purpose:** Identify who is involved and their roles
 
 **Template:**
 ```markdown
@@ -58,8 +58,8 @@ Standards and templates for creating comprehensive Business Requirement Specific
 
 ---
 
-### 3. Business Objectives / Objektif Perniagaan
-**Purpose:** SMART objectives yang measurable
+### 3. Business Objectives
+**Purpose:** SMART objectives that are measurable
 
 **Template:**
 ```markdown
@@ -68,22 +68,22 @@ Standards and templates for creating comprehensive Business Requirement Specific
 2. Reduce order processing time from 2 hours to 30 minutes
 3. Achieve 500 monthly active users by Month 6
 
-**[BM] Objektif:**
-1. Tingkatkan jualan dalam talian sebanyak 40% dalam 12 bulan
-2. Kurangkan masa pemprosesan pesanan dari 2 jam ke 30 minit
-3. Capai 500 pengguna aktif bulanan menjelang Bulan 6
+**[BM] Objectives:**
+1. Increase online sales by 40% within 12 months
+2. Reduce order processing time from 2 hours to 30 minutes
+3. Achieve 500 monthly active users by Month 6
 ```
 
 **Quality Check:**
 - ✅ Specific (not vague)
-- ✅ Measurable (ada numbers)
+- ✅ Measurable (has numbers)
 - ✅ Achievable (realistic)
 - ✅ Relevant (to business)
-- ✅ Time-bound (ada deadline)
+- ✅ Time-bound (has deadline)
 
 ---
 
-### 4. User Personas / Profil Pengguna
+### 4. User Personas
 **Purpose:** Understand target users
 
 **Template (3-4 personas):**
@@ -96,18 +96,18 @@ Standards and templates for creating comprehensive Business Requirement Specific
 - **Pain Points:** [Current frustrations]
 - **Quote:** "[Typical statement]"
 
-**[BM] Profil:**
-- **Umur:** 25-35
-- **Pekerjaan:** Profesional
-- **Kemahiran Teknologi:** Tinggi
+**[BM] Profile:**
+- **Age:** 25-35
+- **Occupation:** Professional
+- **Tech Skills:** High
 ```
 
 ---
 
-### 5. Functional Requirements / Keperluan Fungsi
+### 5. Functional Requirements
 **Purpose:** What system must do (MoSCoW method)
 
-#### 5.1 MUST HAVE / MESTI ADA
+#### 5.1 MUST HAVE
 Critical - System cannot function without these
 
 **Format:**
@@ -121,10 +121,10 @@ Critical - System cannot function without these
 
 **Numbering:** REQ-001, REQ-002, REQ-003... (for traceability)
 
-**[BM] Keperluan Mesti Ada:**
-Keperluan kritikal yang sistem tidak boleh berfungsi tanpa.
+**[BM] Must Have Requirements:**
+Critical requirements that the system cannot function without.
 
-#### 5.2 SHOULD HAVE / ELOK ADA
+#### 5.2 SHOULD HAVE
 Important but not critical
 
 ```markdown
@@ -134,10 +134,10 @@ Important but not critical
 | REQ-012 | Customer reviews | Medium | Rate 1-5 stars, write reviews |
 ```
 
-**[BM] Keperluan Elok Ada:**
-Keperluan penting tetapi bukan kritikal.
+**[BM] Should Have Requirements:**
+Important requirements but not critical.
 
-#### 5.3 NICE TO HAVE / KALAU SEMPAT
+#### 5.3 NICE TO HAVE
 Desirable if time permits
 
 ```markdown
@@ -147,8 +147,8 @@ Desirable if time permits
 | REQ-022 | AI recommendations | Low | Product suggestions |
 ```
 
-**[BM] Keperluan Kalau Sempat:**
-Keperluan yang diinginkan jika masa membenarkan.
+**[BM] Nice To Have Requirements:**
+Requirements desired if time permits.
 
 ---
 
@@ -168,14 +168,14 @@ Keperluan yang diinginkan jika masa membenarkan.
 | **Usability** | Mobile Responsive | Works on all devices |
 | **Compliance** | PDPA | Malaysian data protection |
 
-**[BM] Keperluan Bukan Fungsi:**
-Sifat kualiti sistem (prestasi, keselamatan, kebolehgunaan).
+**[BM] Non-Functional Requirements:**
+System quality attributes (performance, security, usability).
 
 ---
 
 ### 7. Constraints & Dependencies
 
-#### 7.1 Constraints / Batasan
+#### 7.1 Constraints
 ```markdown
 **English:**
 1. **Budget:** Fixed at RM 50,000 (cannot exceed without approval)
@@ -183,14 +183,14 @@ Sifat kualiti sistem (prestasi, keselamatan, kebolehgunaan).
 3. **Technical:** Must use cloud hosting (no on-premise)
 4. **Resources:** Maximum 3 developers
 
-**[BM] Batasan:**
-1. **Bajet:** Tetap RM 50,000 (tidak boleh melebihi)
-2. **Jadual:** Mesti dilancarkan menjelang April 2024
-3. **Teknikal:** Mesti guna hosting awan
-4. **Sumber:** Maksimum 3 pembangun
+**[BM] Constraints:**
+1. **Budget:** Fixed at RM 50,000 (cannot exceed)
+2. **Schedule:** Must launch by April 2024
+3. **Technical:** Must use cloud hosting
+4. **Resources:** Max 3 developers
 ```
 
-#### 7.2 Dependencies / Kebergantungan
+#### 7.2 Dependencies
 ```markdown
 | Dependency | Type | Risk Level | Mitigation |
 |------------|------|------------|------------|
@@ -201,15 +201,15 @@ Sifat kualiti sistem (prestasi, keselamatan, kebolehgunaan).
 
 ---
 
-### 8. Scope Exclusions / Skop Dikecualikan ⭐ CRITICAL
+### 8. Scope Exclusions ⭐ CRITICAL
 **Purpose:** EXPLICITLY state what is NOT included (scope protection)
 
 **Format:**
 ```markdown
-## Scope Exclusions / Skop Dikecualikan
+## Scope Exclusions
 
-**⚠️ IMPORTANT / PENTING:**
-The following items are NOT included dalam Phase 1:
+**⚠️ IMPORTANT:**
+The following items are NOT included in Phase 1:
 
 **English:**
 ### Excluded Features:
@@ -230,38 +230,35 @@ The following items are NOT included dalam Phase 1:
 - ❌ **Email marketing campaigns**
   - *Reason:* Basic notifications only
 
-**[BM] Ciri Dikecualikan:**
-Item berikut TIDAK termasuk dalam Fasa 1:
+**[BM] Excluded Features:**
+The following items are NOT included in Phase 1:
 
-- ❌ **Aplikasi mudah alih asli** (Web responsif sahaja)
-  - *Sebab:* Batasan bajet, item Fasa 2
-- ❌ **Fungsi luar talian**
-- ❌ **Sembang masa nyata**
-- ❌ **Marketplace pelbagai vendor**
-  - *Sebab:* Skop kedai tunggal sahaja
-- ❌ **Analitik lanjutan**
-- ❌ **Penghantaran antarabangsa**
-- ❌ **Siaran automatik media sosial**
-- ❌ **Kempen pemasaran emel**
+- ❌ **Native mobile app** (Web responsive only)
+  - *Reason:* Budget constraint, Phase 2 item
+- ❌ **Offline functionality**
+- ❌ **Real-time chat**
+- ❌ **Multi-vendor marketplace**
+  - *Reason:* Single store scope only
+- ❌ **Advanced analytics**
+- ❌ **International shipping**
+- ❌ **Social media auto-posting**
+- ❌ **Email marketing campaigns**
 
 ---
 
-**Note / Nota:**
+**Note:**
 *These exclusions protect both parties from scope creep. 
-Any item above can be added in Future Phases dengan additional cost and timeline extension.*
-
-*Pengecualian ini melindungi kedua-dua pihak daripada penambahan skop.
-Mana-mana item di atas boleh ditambah dalam Fasa Seterusnya dengan kos dan lanjutan jadual tambahan.*
+Any item above can be added in Future Phases with additional cost and timeline extension.*
 ```
 
 **Why This Matters:**
-Kalau client tanya "Kenapa tak ada TikTok auto-post?"
-→ Buka Section 8: "Ini dalam Scope Exclusions. Kalau nak tambah, kena ada Change Request dan budget tambahan."
+If client asks "Why no TikTok auto-post?"
+→ Open Section 8: "This is in Scope Exclusions. To add, need Change Request and additional budget."
 
 ---
 
-### 9. Future Phases / Fasa Seterusnya
-**Purpose:** Roadmap untuk upsell
+### 9. Future Phases
+**Purpose:** Roadmap for upsell
 
 ```markdown
 ## Phase 2: Mobile App (Month 4-6)
@@ -275,9 +272,9 @@ Kalau client tanya "Kenapa tak ada TikTok auto-post?"
 - Advanced analytics
 - Budget: +RM 30,000
 
-**[BM] Fasa Seterusnya:**
-Fasa 2: Aplikasi Mudah Alih (Bulan 4-6)
-Fasa 3: Ciri Lanjutan (Bulan 7-12)
+**[BM] Future Phases:**
+Phase 2: Mobile App (Months 4-6)
+Phase 3: Advanced Features (Months 7-12)
 ```
 
 ---
@@ -302,7 +299,7 @@ Fasa 3: Ciri Lanjutan (Bulan 7-12)
 
 ---
 
-### 11. Budget Estimate / Anggaran Bajet
+### 11. Budget Estimate
 
 **Detailed Breakdown:**
 ```markdown
@@ -314,18 +311,18 @@ Fasa 3: Ciri Lanjutan (Bulan 7-12)
 | **Third-party APIs** | 1,200 | SMS, payment gateway |
 | **Testing & QA** | 1,500 | Manual + automated |
 | **Documentation** | 700 | User guides, API docs |
-| **Contingency (10%)** | 4,840 | Buffer untuk unexpected |
+| **Contingency (10%)** | 4,840 | Buffer for unexpected |
 | **TOTAL** | **RM 53,240** | Rounded: **RM 50,000** |
 
-**[BM] Pecahan Bajet:**
-Pembangunan: RM 40,000
-Reka Bentuk UI/UX: RM 3,000
-Infrastruktur: RM 2,000
-API Pihak Ketiga: RM 1,200
-Ujian & QA: RM 1,500
-Dokumentasi: RM 700
-Kontingensi: RM 4,840
-**JUMLAH: RM 50,000**
+**[BM] Budget Breakdown:**
+Development: RM 40,000
+UI/UX Design: RM 3,000
+Infrastructure: RM 2,000
+Third-party APIs: RM 1,200
+Testing & QA: RM 1,500
+Documentation: RM 700
+Contingency: RM 4,840
+**TOTAL: RM 50,000**
 ```
 
 ---
@@ -341,15 +338,15 @@ Kontingensi: RM 4,840
 | Technical complexity | Medium | Medium | 4 | Proof of concepts |
 | Client approval delays | Medium | Medium | 4 | Weekly check-ins |
 
-**[BM] Penilaian Risiko:**
-Kebarangkalian: Rendah | Sederhana | Tinggi
-Impak: Rendah | Sederhana | Tinggi
-Skor = Kebarangkalian × Impak (1-9)
+**[BM] Risk Assessment:**
+Probability: Low | Medium | High
+Impact: Low | Medium | High
+Score = Probability × Impact (1-9)
 ```
 
 ---
 
-### 13. Assumptions / Andaian
+### 13. Assumptions
 
 ```markdown
 **English:**
@@ -359,17 +356,17 @@ Skor = Kebarangkalian × Impak (1-9)
 4. Client has stable internet connection for demos
 5. No major changes to business requirements during development
 
-**[BM] Andaian:**
-1. Klien akan menyediakan kandungan produk dalam masa 1 minggu
-2. Akaun gerbang pembayaran akan diluluskan dalam 2 minggu
-3. API pihak ketiga (SMS, emel) akan kekal tersedia
-4. Klien mempunyai sambungan internet stabil
-5. Tiada perubahan besar ke atas keperluan perniagaan semasa pembangunan
+**[BM] Assumptions:**
+1. Client will provide product content within 1 week
+2. Payment gateway account will be approved within 2 weeks
+3. Third-party APIs (SMS, email) will remain available
+4. Client has stable internet connection
+5. No major changes to business requirements during development
 ```
 
 ---
 
-### 14. Approval Matrix / Matriks Kelulusan
+### 14. Approval Matrix
 
 ```markdown
 | Role | Name | Signature | Date | Status |
@@ -378,16 +375,15 @@ Skor = Kebarangkalian × Impak (1-9)
 | **Project Manager** | [PM Name] | _____________ | ______ | [ ] Approved [ ] Rejected |
 | **Technical Lead** | [Lead Name] | _____________ | ______ | [ ] Approved [ ] Rejected |
 
-**Instructions / Arahan:**
+**Instructions:**
 Please type your full name in the "Signature" column as digital acknowledgment.
-Sila taip nama penuh anda dalam kolum "Tandatangan" sebagai pengiktirafan digital.
 
 **Date Format / Format Tarikh:** DD/MM/YYYY
 ```
 
 ---
 
-### 15. Change Log / Log Perubahan
+### 15. Change Log
 
 ```markdown
 | Version | Date | Changes | Approved By | Date Approved |
@@ -396,10 +392,10 @@ Sila taip nama penuh anda dalam kolum "Tandatangan" sebagai pengiktirafan digita
 | 1.1 | [Date] | Added CR-001: TikTok integration | [Name] | [Date] |
 | 1.2 | [Date] | Modified REQ-005: Added GrabPay | [Name] | [Date] |
 
-**[BM] Log Perubahan:**
-Versi 1.0: BRS asal
-Versi 1.1: Tambah CR-001: Integrasi TikTok
-Versi 1.2: Ubah REQ-005: Tambah GrabPay
+**[BM] Change Log:**
+Version 1.0: Initial BRS
+Version 1.1: Added CR-001: TikTok integration
+Version 1.2: Modified REQ-005: Added GrabPay
 ```
 
 ---
@@ -417,25 +413,25 @@ When client wants to change scope, use this format:
 - **Date:** [Date]
 - **Priority:** High/Medium/Low
 
-## Change Description / Penerangan Perubahan
+## Change Description
 **English:** [What they want]
-**[BM]:** [Dalam Bahasa Melayu Malaysia]
+**[BM]:** [In Malaysian Malay]
 
-## Impact Analysis / Analisis Impak
+## Impact Analysis
 - **Technical Impact:** [What needs to change technically]
 - **Timeline Impact:** +X weeks
 - **Cost Impact:** +RM X,XXX
 - **Risk Level:** High/Medium/Low
 
-## Options / Pilihan
-1. **Accept:** Implement dengan additional cost/time
+## Options
+1. **Accept:** Implement with additional cost/time
 2. **Defer:** Move to Future Phase
 3. **Reject:** Not feasible
 
-## Recommendation / Cadangan
+## Recommendation
 [What you recommend and why]
 
-## Approval / Kelulusan
+## Approval
 | Role | Name | Decision | Date |
 |------|------|----------|------|
 | Business Owner | | [ ] Accept [ ] Reject | |
@@ -480,7 +476,7 @@ BM primary, English summary boxes.
 
 ❌ **Vague requirements:** "Fast system" → ✅ "Page load < 2 seconds"
 ❌ **Missing exclusions:** Client assumes everything included
-❌ **Unrealistic timeline:** "1 week untuk complete e-commerce"
+❌ **Unrealistic timeline:** "1 week to complete e-commerce"
 ❌ **No version control:** Changes not tracked
 ❌ **Skipping approvals:** No formal sign-off
 
@@ -488,7 +484,7 @@ BM primary, English summary boxes.
 
 Good BRS should:
 - 📋 Prevent 80% of scope creep
-- ✅ Get client approval dalam 48 hours
-- 🎯 Be clear enough untuk developer to start
+- ✅ Get client approval within 48 hours
+- 🎯 Be clear enough for developer to start
 - 💰 Provide accurate budget estimate (±10%)
 - 📅 Give realistic timeline (±1 week)

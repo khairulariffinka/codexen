@@ -1,82 +1,47 @@
 ---
 name: init-project
-description: Initialize new project with essential files - integrates with CodeXen (generic for any language)
+description: Initialize new project with Modular Memory, Decision-Log, and Current State - integrates with CodeXen
 trigger: init project | new project | setup project
 ---
 
-## Init Project Skill
-
----
-
-## When to Use
-
-- New project folder (empty or just created)
-- First time setting up project for CodeXen
+# Init Project Skill (Modular & State Sync)
 
 ---
 
 ## Workflow
 
-```
 1. User: "init project"
-2. Skill: Auto-create all files in current folder
-3. Skill: Ask user to update AGENTS.md
-4. Ready untuk develop!
-```
+2. Skill: Auto-create modular folders (`docs/context/`, `docs/decisions/`)
+3. Skill: Generate Index `AGENTS.md` and Dashboard `docs/current-state.md`
+4. Skill: Initialize `DECISIONS.md` and `planner.md`
 
 ---
-
-<!-- @exec -->
 
 ## Execute
 
 ```bash
-mkdir -p docs
+# 1. Create Folder Structure
+mkdir -p docs/context
+mkdir -p docs/decisions
 
-AGENTS_FILE="AGENTS.md"
-if [ -f "$AGENTS_FILE" ]; then
-  echo "AGENTS.md dah ada, skip..."
-else
+# 2. Generate AGENTS.md (As Index)
 cat > AGENTS.md << 'AGENTS_EOF'
 # Project: PROJECT_NAME
 
-## Status
-- [ ] Initial setup
+## Tech Stack Index
+- **Frontend:** Refer to `docs/context/frontend.md`
+- **Backend:** Refer to `docs/context/backend.md`
+- **Database:** Refer to `docs/context/database.md`
 
-## Tech Stack
-- **Language:**
-- **Framework:**
-- **Database:**
-- **Hosting:**
-
-## Project Mode
-**Description:**
-
-## Core Features (MVP)
-
-### 1. Feature Name
-- Description
-
-## Architecture
-```
-project/
-├── src/
-├── components/
-└── tests/
-```
-
-## Decisions Log
-- DATE: Initial setup - Pending tech stack decision
+## Active Decisions
+- Refer to `DECISIONS.md` for architectural history.
 
 ---
 **Last Updated:** DATE
-**Status:** IN PROGRESS
+**Status:** INITIALIZED
 AGENTS_EOF
 
-sed -i "s/PROJECT_NAME/$(basename "$PWD")/g" AGENTS.md
-sed -i "s/DATE/$(date +%Y-%m-%d)/g" AGENTS.md
-fi
-
+# 3. Generate docs/current-state.md (As Dashboard)
 cat > docs/current-state.md << 'EOF'
 # PROJECT_NAME - Current State
 
@@ -85,271 +50,86 @@ cat > docs/current-state.md << 'EOF'
 
 ---
 
-## Project Overview
-
-| Field | Value |
-|-------|-------|
-| **Project Name** | PROJECT_NAME |
-| **Status** | In Progress |
-| **Started** | DATE |
-
----
-
-## Implemented Features
-
-### Core Features
-- [ ] Feature 1
-
-### Infrastructure
-- [ ] Basic setup
+## 🚀 Snapshot Status
+| Component | Status | Context Reference |
+| :--- | :--- | :--- |
+| **Backend** | Initializing | `docs/context/backend.md` |
+| **Frontend** | Initializing | `docs/context/frontend.md` |
+| **Database** | Initializing | `docs/context/database.md` |
 
 ---
 
-## File Structure
-
-```
-PROJECT_NAME/
-├── src/
-├── docs/
-└── tests/
-```
+## ✅ Implemented Features
+- [x] Initial Project Setup (Modular Structure) [Ref: DEC-DATE-001]
+- [ ] Base Infrastructure (Pending)
 
 ---
 
-## Configuration
-
-User perlu update sendiri based on tech stack.
-
----
-
-## How to Run
-
-B depends on tech stack. User will update based on AGENTS.md.
+## 🛠️ Current Environment
+- **Branch:** main
+- **Last Commit:** None
+- **Active Decision:** DEC-DATE-001
 
 ---
 
-## Notes
-
-- Initial setup completed
-- Add features as you build
-
----
-
-**Version 1.0** - DATE - Initial setup
+**AI Note:** This file will be automatically updated by agents at the end of each session.
 EOF
 
-sed -i "s/PROJECT_NAME/$(basename "$PWD")/g" docs/current-state.md
-sed -i "s/DATE/$(date +%Y-%m-%d)/g" docs/current-state.md
+# 4. Generate DECISIONS.md (First Decision Log)
+cat > DECISIONS.md << 'EOF'
+# Project Decisions
 
-cat > docs/session-diary.md << 'EOF'
-# Session Diary - Development Log
+## DEC-DATE-001: Initial Project Setup
+**Date:** DATE
+**Status:** ✅ ACTIVE
 
-> Log setiap session development.
+### Context
+Initialization of a new project with Modular Context and Current State tracking.
 
----
-
-## Session Summary
-
-| Metric | Value |
-|--------|-------|
-| Total Sessions | 1 |
-| First Session | DATE |
-| Last Session | DATE |
-| Git Commits | 0 |
-| Status | IN PROGRESS |
-
----
-
-## DATE - Session #1 (Initial Setup)
-
-**Time:** TIME
-**Duration:** ~
-**Project:** PROJECT_NAME
-
-### Tasks Done
-
-1. **Project Initialization**:
-   - Created project structure
-   - Initialized git repository
-   - Created AGENTS.md
-   - Created docs/current-state.md
-   - Created docs/session-diary.md
-
-### Status
-- ✅ COMPLETE - INITIAL SETUP DONE
-
----
-
-*Add new sessions above this line*
+### Impacted Files
+- `AGENTS.md`
+- `docs/current-state.md`
+- `docs/context/`
 EOF
 
-sed -i "s/DATE/$(date +%Y-%m-%d)/g" docs/session-diary.md
-sed -i "s/TIME/$(date +"%H:%M")/g" docs/session-diary.md
-sed -i "s/PROJECT_NAME/$(basename "$PWD")/g" docs/session-diary.md
-
+# 5. Generate AI-AGENT-PROTOCOL.md ⭐
 cat > docs/AI-AGENT-PROTOCOL.md << 'EOF'
-# AI Agent Documentation Protocol
+# AI Agent Documentation Protocol (Modular Version)
 
-> **Purpose:** Standard protocol for AI agents
-> **Usage:** After completing any development session
-
----
-
-## Session End Protocol
-
-### Step 1: Update AGENTS.md
-- [ ] Mark feature yang siap
-- [ ] Update Decisions Log
-- [ ] Update "Last Updated"
-
-### Step 2: Update docs/current-state.md
-- [ ] Update "Last Updated"
-- [ ] Update feature list
-
-### Step 3: Update docs/session-diary.md
-- Add new entry at TOP
-
-### Step 4: Update Work Diary (Global Memory)
-```bash
-WORK_DIARY_DIR="$HOME/.config/opencode/global-memory/work-diary"
-mkdir -p "$WORK_DIARY_DIR"
-WORK_DIARY="$WORK_DIARY_DIR/diary-$(date +%Y-%m).md"
-
-if [ ! -f "$WORK_DIARY" ]; then
-  cp "$HOME/.config/opencode/global-memory/work-diary/diary-YYYY-MM.md" "$WORK_DIARY" 2>/dev/null || true
-fi
-
-if [ -f "$WORK_DIARY" ]; then
-  SESSION_DATE=$(date +%Y-%m-%d)
-  SESSION_TIME=$(date +"%H:%M")
-  PROJECT_NAME=$(basename "$PWD")
-  
-  sed -i "1i\\
-### $SESSION_DATE - Session #\\
-**Time:** $SESSION_TIME\\
-**Project:** $PROJECT_NAME\\
-**Duration:** ~\\
-\\
-**Summary:**\\
-- Initial setup\\
-\\
-**Tasks:**\\
-- [x] Project initialization\\
-\\
----\\
-" "$WORK_DIARY"
-fi
-```
-
-### Step 5: Git Commit
-```bash
-git add -A
-git commit -m "feat: description"
-```
+> **Purpose:** Ensure all agents maintain synchronicity between code, decisions, and context.
 
 ---
 
-## Quick Reference
+## 🛑 Every Session MUST:
 
-| File | Purpose |
-|------|---------|
-| `AGENTS.md` | AI context |
-| `docs/current-state.md` | Snapshot |
-| `docs/session-diary.md` | Log |
+1. **Read Index FIRST**: Start by reading `AGENTS.md` and `docs/current-state.md`.
+2. **Load Specific Context**: Only read `docs/context/[module].md` relevant to your task.
+3. **Check Decisions**: Before implementing, verify `DECISIONS.md` to avoid using deprecated logic.
 
----
+## ✅ Every Session End MUST:
 
-**Version:** 1.0
+1. **Update Current State**: Refresh the snapshot in `docs/current-state.md`.
+2. **Log Decisions**: Record any technical choices in `DECISIONS.md` with "Impacted Files".
+3. **Mark Progress**: Update `planner.md` status.
+4. **Project Log**: Add entry to `docs/session-diary.md`.
+5. **Global Sync**: Sync session data to global work-diary.
 EOF
 
-cat > .gitignore << 'EOF'
-node_modules/
-__pycache__/
-*.pyc
-.env
-.env.local
-dist/
-build/
-.vscode/
-.idea/
-*.swp
-*.swo
-.DS_Store
-Thumbs.db
-*.log
-npm-debug.log*
-yarn-error.log
-pnpm-debug.log*
-logs/
-coverage/
-tmp/
-temp/
-*.tmp
-*.egg-info/
-.pytest_cache/
-vendor/
+# 6. Generate Planner & Context Templates
+cat > planner.md << 'EOF'
+# Project Planner
+- [ ] **TASK-001**: Define Tech Stack in `docs/context/` | @user
+- [ ] **TASK-002**: Generate BRS/SRS | @brs-manager
 EOF
 
-if [ ! -f ".env.example" ] && [ -f ".env" ]; then
-cp .env .env.example
-fi
+touch docs/context/backend.md docs/context/frontend.md docs/context/database.md
 
-if [ -f "package.json" ] || [ -f "requirements.txt" ] || [ -f "go.mod" ] || [ -f "Cargo.toml" ]; then
-:
-else
-echo "# Dependencies and package files will be created by user"
-fi
+# 7. Project Naming & Date
+sed -i "s/PROJECT_NAME/$(basename "$PWD")/g" AGENTS.md docs/current-state.md
+sed -i "s/DATE/$(date +%Y-%m-%d)/g" AGENTS.md docs/current-state.md DECISIONS.md
 
-if [ ! -d .git ]; then
-git init
-fi
+# 8. Git Init
+if [ ! -d .git ]; then git init; fi
 
-echo ""
-echo "=========================================="
-echo "  INIT PROJECT COMPLETE!"
-echo "=========================================="
-echo ""
-echo "Files created:"
-echo "  ├── AGENTS.md"
-echo "  ├── docs/"
-echo "  │   ├── current-state.md"
-echo "  │   ├── session-diary.md"
-echo "  │   └── AI-AGENT-PROTOCOL.md"
-echo "  ├── .gitignore"
-if [ -f .env.example ]; then
-echo "  └── .env.example"
-fi
-echo ""
-echo "=========================================="
-echo ""
+echo "✅ MODULAR PROJECT, CURRENT STATE & PROTOCOL INITIALIZED!"
 ```
-
----
-
-## Output
-
-```
-✅ INIT PROJECT COMPLETE!
-
-Files created:
-├── AGENTS.md
-├── docs/
-│   ├── current-state.md
-│   ├── session-diary.md
-│   └── AI-AGENT-PROTOCOL.md
-└── .gitignore
-
-Next steps:
-1. Update AGENTS.md with your tech stack
-2. Add your package files (package.json, requirements.txt, etc.)
-3. Start: "build [feature]"
-```
-
----
-
-## Integration with CodeXen
-
-After init, CodeXen will:
-1. Read `AGENTS.md` for tech stack
-2. Use it for all subsequent work
-3. Update `docs/session-diary.md` at end of each session
