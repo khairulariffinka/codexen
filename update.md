@@ -24,7 +24,7 @@ When this file is loaded, AI must know:
 When executing update, use conditional copy:
 
 ```bash
-# Compare and update opencode.json if different (preserve user customizations)
+# Compare and update opencode.json if different
 if [ -f ~/.config/opencode/opencode.json ]; then
   if ! diff -q core/opencode.json ~/.config/opencode/opencode.json > /dev/null 2>&1; then
     cp core/opencode.json ~/.config/opencode/opencode.json && echo "Updated opencode.json"
@@ -35,6 +35,36 @@ else
   cp core/opencode.json ~/.config/opencode/opencode.json && echo "Copied opencode.json"
 fi
 
+# Update OUR agents only, preserve user's custom agents
+for f in core/agents/*.md; do
+  agent_name=$(basename "$f")
+  if [ -f ~/.config/opencode/agents/"$agent_name" ]; then
+    if ! diff -q "$f" ~/.config/opencode/agents/"$agent_name" > /dev/null 2>&1; then
+      cp "$f" ~/.config/opencode/agents/"$agent_name" && echo "Updated: $agent_name"
+    else
+      echo "Skipping: $agent_name (unchanged)"
+    fi
+  else
+    cp "$f" ~/.config/opencode/agents/ && echo "Added: $agent_name"
+  fi
+done
+
+# Update OUR skills only, preserve user's custom skills
+for f in core/skills/*/*.md; do
+  skill_name=$(basename "$f")
+  skill_dir=$(dirname "$f" | xargs basename)
+  if [ -f ~/.config/opencode/skills/"$skill_dir"/"$skill_name" ]; then
+    if ! diff -q "$f" ~/.config/opencode/skills/"$skill_dir"/"$skill_name" > /dev/null 2>&1; then
+      cp "$f" ~/.config/opencode/skills/"$skill_dir"/"$skill_name" && echo "Updated: $skill_name"
+    else
+      echo "Skipping: $skill_name (unchanged)"
+    fi
+  else
+    mkdir -p ~/.config/opencode/skills/"$skill_dir"
+    cp "$f" ~/.config/opencode/skills/"$skill_dir"/ && echo "Added: $skill_name"
+  fi
+done
+
 # Copy global-memory if directory is empty
 [ -z "$(ls -A ~/.config/opencode/global-memory 2>/dev/null)" ] && cp -r templates/global-memory/* ~/.config/opencode/global-memory/ || echo "Skipping global-memory (already exists)"
 ```
@@ -43,10 +73,11 @@ fi
 
 | Action | Description |
 |--------|-----------|
-| Update agents | Copy 23 agents |
-| Update skills | Copy 17 skills |
+| Update agents (compare first) | Copy 23 agents |
+| Update skills (compare first) | Copy 17 skills |
 | Update opencode.json (if different) | Preserve user customizations |
-| Update memory templates (if not exists) | Skip if exists |
+| Update memory templates (if empty) | Skip if exists |
+| **Preserves user's custom agents/skills** | Unchanged |
 | Update version | Mark as current |
 
 ---
@@ -72,19 +103,42 @@ Current: **0.4.0**
 If update doesn't work, manually run:
 
 ```bash
-cp -r core/agents/* ~/.config/opencode/agents/
-cp -r core/skills/* ~/.config/opencode/skills/
-# Compare and update opencode.json (preserve user customizations)
+# Update OUR agents only, preserve user's custom agents
+for f in core/agents/*.md; do
+  agent_name=$(basename "$f")
+  if [ -f ~/.config/opencode/agents/"$agent_name" ]; then
+    if ! diff -q "$f" ~/.config/opencode/agents/"$agent_name" > /dev/null 2>&1; then
+      cp "$f" ~/.config/opencode/agents/"$agent_name" && echo "Updated: $agent_name"
+    fi
+  else
+    cp "$f" ~/.config/opencode/agents/ && echo "Added: $agent_name"
+  fi
+done
+
+# Update OUR skills only, preserve user's custom skills
+for f in core/skills/*/*.md; do
+  skill_name=$(basename "$f")
+  skill_dir=$(dirname "$f" | xargs basename)
+  mkdir -p ~/.config/opencode/skills/"$skill_dir"
+  if [ -f ~/.config/opencode/skills/"$skill_dir"/"$skill_name" ]; then
+    if ! diff -q "$f" ~/.config/opencode/skills/"$skill_dir"/"$skill_name" > /dev/null 2>&1; then
+      cp "$f" ~/.config/opencode/skills/"$skill_dir"/"$skill_name" && echo "Updated: $skill_name"
+    fi
+  else
+    cp "$f" ~/.config/opencode/skills/"$skill_dir"/ && echo "Added: $skill_name"
+  fi
+done
+
+# Compare and update opencode.json
 if [ -f ~/.config/opencode/opencode.json ]; then
   if ! diff -q core/opencode.json ~/.config/opencode/opencode.json > /dev/null 2>&1; then
     cp core/opencode.json ~/.config/opencode/opencode.json && echo "Updated opencode.json"
-  else
-    echo "Skipping opencode.json (already up-to-date)"
   fi
 else
   cp core/opencode.json ~/.config/opencode/opencode.json && echo "Copied opencode.json"
 fi
-# Only copy global-memory if directory is empty
+
+# Copy global-memory if directory is empty
 [ -z "$(ls -A ~/.config/opencode/global-memory 2>/dev/null)" ] && cp -r templates/global-memory/* ~/.config/opencode/global-memory/ || echo "Skipping global-memory (already exists)"
 ```
 
