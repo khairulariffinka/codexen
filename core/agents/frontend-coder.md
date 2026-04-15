@@ -2,13 +2,12 @@
 name: frontend-coder
 description: Specialized frontend developer - React, Vue, UI components, state management, client-side logic
 mode: subagent
-tools:
-  write: true
-  edit: true
-  read: true
-  glob: true
-  grep: true
-  bash: true
+permission:
+  edit: allow
+  read: allow
+  glob: allow
+  grep: allow
+  bash: allow
 ---
 
 # Frontend Coder Agent

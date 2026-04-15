@@ -2,11 +2,11 @@
 name: research
 description: Analyze codebase and modular context to gather technical intelligence
 mode: subagent
-tools:
-  read: true
-  glob: true
-  grep: true
-  bash: false
+permission:
+  read: allow
+  glob: allow
+  grep: allow
+  bash: deny
 ---
 
 # Research Agent (Enhanced)

@@ -2,13 +2,12 @@
 name: docs-manager
 description: Documentation specialist - API docs, README, inline comments, architecture diagrams
 mode: subagent
-tools:
-  write: true
-  edit: true
-  read: true
-  glob: true
-  grep: true
-  bash: true
+permission:
+  edit: allow
+  read: allow
+  glob: allow
+  grep: allow
+  bash: allow
 ---
 
 # Documentation Manager Agent

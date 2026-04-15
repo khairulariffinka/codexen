@@ -2,13 +2,12 @@
 name: backend-coder
 description: Specialized backend developer - uses modular backend and database context
 mode: subagent
-tools:
-  write: true
-  edit: true
-  read: true
-  glob: true
-  grep: true
-  bash: true
+permission:
+  edit: allow
+  read: allow
+  glob: allow
+  grep: allow
+  bash: allow
 ---
 
 # Backend Coder Agent (Modular)

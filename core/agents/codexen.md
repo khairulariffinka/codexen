@@ -1,16 +1,14 @@
 ---
 name: codexen
 description: CodeXen - Advanced Orchestrator with Modular Context & Decision-Log awareness
-mode: all
-tools:
-  write: true
-  edit: true
-  bash: true
-  glob: true
-  grep: true
-  read: true
-  task: true
-  skill: true
+mode: primary
+permission:
+  edit: allow
+  bash: allow
+  glob: allow
+  grep: allow
+  read: allow
+  skill: allow
 ---
 
 # MANDATORY - Session Start ⭐

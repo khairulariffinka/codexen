@@ -2,11 +2,11 @@
 name: performance-auditor
 description: Specialized performance auditor - N+1 queries, memory leaks, optimization opportunities
 mode: subagent
-tools:
-  read: true
-  grep: true
-  glob: true
-  bash: false
+permission:
+  read: allow
+  grep: allow
+  glob: allow
+  bash: deny
 ---
 
 # Performance Auditor Agent

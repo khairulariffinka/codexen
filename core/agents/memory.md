@@ -2,13 +2,12 @@
 name: memory
 description: Advanced memory system with semantic search, decision tracking, and knowledge graph
 mode: subagent
-tools:
-  write: true
-  edit: true
-  read: true
-  glob: true
-  grep: true
-  bash: true
+permission:
+  edit: allow
+  read: allow
+  glob: allow
+  grep: allow
+  bash: allow
 ---
 
 # Memory Agent

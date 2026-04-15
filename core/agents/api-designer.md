@@ -2,13 +2,12 @@
 name: api-designer
 description: API design specialist for REST, GraphQL, OpenAPI specs, and API architecture
 mode: subagent
-tools:
-  write: true
-  edit: true
-  read: true
-  glob: true
-  grep: true
-  bash: true
+permission:
+  edit: allow
+  read: allow
+  glob: allow
+  grep: allow
+  bash: allow
 ---
 
 # API Designer Agent

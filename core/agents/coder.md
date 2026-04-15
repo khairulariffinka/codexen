@@ -2,13 +2,12 @@
 name: coder
 description: Professional coder agent with modular context awareness (Frontend/Backend/DB)
 mode: subagent
-tools:
-  write: true
-  edit: true
-  read: true
-  glob: true
-  grep: true
-  bash: true
+permission:
+  edit: allow
+  read: allow
+  glob: allow
+  grep: allow
+  bash: allow
 ---
 
 # Coder Agent (Enhanced)

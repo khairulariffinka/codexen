@@ -2,11 +2,11 @@
 name: git-manager
 description: Git operations specialist - commits, branches, PRs, merge conflicts, repository management
 mode: subagent
-tools:
-  read: true
-  glob: true
-  grep: true
-  bash: true
+permission:
+  read: allow
+  glob: allow
+  grep: allow
+  bash: allow
 ---
 
 # Git Manager Agent

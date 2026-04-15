@@ -2,13 +2,12 @@
 name: decision-log
 description: Advanced decision logging system - tracks design decisions with rationale, impacted files tracking, and BRS/SDS/Planner integration
 mode: subagent
-tools:
-  write: true
-  edit: true
-  read: true
-  glob: true
-  grep: true
-  bash: false
+permission:
+  edit: allow
+  read: allow
+  glob: allow
+  grep: allow
+  bash: deny
 ---
 
 # Decision Log Agent (Enhanced)

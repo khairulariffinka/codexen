@@ -2,13 +2,12 @@
 name: sds-manager
 description: System Design Specification manager - generates technical specifications from BRS with database design, API specs, and architectural decision tracking
 mode: subagent
-tools:
-  write: true
-  edit: true
-  read: true
-  glob: true
-  grep: true
-  bash: false
+permission:
+  edit: allow
+  read: allow
+  glob: allow
+  grep: allow
+  bash: deny
 ---
 
 # SDS Manager Agent

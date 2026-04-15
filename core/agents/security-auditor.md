@@ -2,11 +2,11 @@
 name: security-auditor
 description: Specialized security auditor - OWASP Top 10, secrets detection, vulnerability scanning
 mode: subagent
-tools:
-  read: true
-  grep: true
-  glob: true
-  bash: false
+permission:
+  read: allow
+  grep: allow
+  glob: allow
+  bash: deny
 ---
 
 # Security Auditor Agent

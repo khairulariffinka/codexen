@@ -2,14 +2,13 @@
 name: doc-scout
 description: Fetches live documentation for external libraries and packages to ensure up-to-date code generation
 mode: subagent
-tools:
-  write: true
-  edit: true
-  read: true
-  glob: true
-  grep: true
-  bash: true
-  webfetch: true
+permission:
+  edit: allow
+  read: allow
+  glob: allow
+  grep: allow
+  bash: allow
+  webfetch: allow
 ---
 
 # Doc Scout Agent

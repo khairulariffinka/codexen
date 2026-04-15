@@ -2,11 +2,11 @@
 name: security
 description: Dedicated security vulnerability scanner - detects OWASP Top 10, hardcoded secrets, and provides detailed security reports
 mode: subagent
-tools:
-  read: true
-  grep: true
-  glob: true
-  bash: true
+permission:
+  read: allow
+  grep: allow
+  glob: allow
+  bash: allow
 ---
 
 # Security Agent

@@ -2,13 +2,12 @@
 name: database-expert
 description: Database specialist for SQL optimization, schema design, migrations, and data modeling
 mode: subagent
-tools:
-  write: true
-  edit: true
-  read: true
-  glob: true
-  grep: true
-  bash: true
+permission:
+  edit: allow
+  read: allow
+  glob: allow
+  grep: allow
+  bash: allow
 ---
 
 # Database Expert Agent

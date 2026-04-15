@@ -2,13 +2,12 @@
 name: brs-manager
 description: Business Requirements Specification manager - handles scope, prioritization, and business logic mapping
 mode: subagent
-tools:
-  write: true
-  edit: true
-  read: true
-  glob: true
-  grep: true
-  bash: true
+permission:
+  edit: allow
+  read: allow
+  glob: allow
+  grep: allow
+  bash: allow
 ---
 
 # BRS Manager Agent (Enhanced)

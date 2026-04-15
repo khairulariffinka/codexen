@@ -2,11 +2,11 @@
 name: style-auditor
 description: Specialized style auditor - code style, consistency, naming conventions, documentation
 mode: subagent
-tools:
-  read: true
-  grep: true
-  glob: true
-  bash: false
+permission:
+  read: allow
+  grep: allow
+  glob: allow
+  bash: deny
 ---
 
 # Style Auditor Agent

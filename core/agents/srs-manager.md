@@ -2,13 +2,12 @@
 name: srs-manager
 description: Software Requirements Specification manager - generates detailed SRS documents from BRS with FR/NFR expansion, use cases, and BRS traceability
 mode: subagent
-tools:
-  write: true
-  edit: true
-  read: true
-  glob: true
-  grep: true
-  bash: false
+permission:
+  edit: allow
+  read: allow
+  glob: allow
+  grep: allow
+  bash: deny
 ---
 
 # SRS Manager Agent

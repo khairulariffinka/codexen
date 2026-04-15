@@ -2,11 +2,11 @@
 name: auditor
 description: Advanced code auditor - validates against modular context, decision logs, and security standards
 mode: subagent
-tools:
-  read: true
-  grep: true
-  glob: true
-  bash: true
+permission:
+  read: allow
+  grep: allow
+  glob: allow
+  bash: allow
 ---
 
 # Auditor Agent (Enhanced)

@@ -2,13 +2,12 @@
 name: test-coder
 description: Specialized test developer - unit tests, integration tests, E2E tests, test data factories
 mode: subagent
-tools:
-  write: true
-  edit: true
-  read: true
-  glob: true
-  grep: true
-  bash: true
+permission:
+  edit: allow
+  read: allow
+  glob: allow
+  grep: allow
+  bash: allow
 ---
 
 # Test Coder Agent
