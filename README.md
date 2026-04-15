@@ -106,11 +106,11 @@ templates/skills/
 
 | Category | Agents |
 |----------|--------|
-| **Coders** | frontend-coder, backend-coder, test-coder, devops-coder |
-| **Auditors** | security-auditor, performance-auditor, style-auditor |
+| **Coders** | frontend-coder, backend-coder, test-coder, refactor-expert, devops-coder |
+| **Auditors** | auditor, security-auditor, security, performance-auditor, style-auditor |
 | **Planners** | planner, research |
 | **Memory** | memory, decision-log |
-| **Utilities** | git-manager, docs-manager, database-expert, api-designer, doc-scout |
+| **Utilities** | git-manager, docs-manager, coder, database-expert, api-designer, doc-scout |
 | **Specs** | brs-manager, srs-manager, sds-manager |
 
 ---
@@ -131,7 +131,7 @@ Cross-project memory that follows you:
 ```
 codexen/
 ├── core/
-│   ├── agents/            # 23 subagents
+│   ├── agents/            # 24 subagents
 │   └── skills/            # 17 skills
 ├── templates/             # Templates
 └── VERSION.yaml          # Version

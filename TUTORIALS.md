@@ -12,7 +12,7 @@
 >
 > This page is for **detailed guides** when you want to learn more.
 
-Comprehensive guide to using all 23 subagents in CodeXen.
+Comprehensive guide to using all 24 subagents in CodeXen.
 
 ---
 
@@ -24,11 +24,12 @@ Comprehensive guide to using all 23 subagents in CodeXen.
 3. [💾 Relationship Memory](#-relationship-memory) - How CodeXen remembers you
 
 ### Advanced Topics
-4. [🟢 Coder Subagents](#-coder-subagents) - Backend, Frontend, Tests, DevOps
+4. [🟢 Coder Subagents](#-coder-subagents) - Backend, Frontend, Tests, Refactor, DevOps
 5. [🔴 Auditor Subagents](#-auditor-subagents) - Security, Performance, Style
 6. [🔵 Planner](#-planner) - Planning & task breakdown
 7. [🟣 Memory Subagents](#-memory-subagents) - Context & decisions
 8. [🟡 Utility Subagents](#-utility-subagents) - Git, Docs, Research, DB, Data, API
+9. [📋 Spec Managers](#-spec-managers) - BRS, SDS, SRS
 
 ---
 
@@ -611,7 +612,55 @@ What happens:
 
 ---
 
-### 4. devops-coder
+### 4. refactor-expert
+
+#### What It Does
+
+The `refactor-expert` specializes in improving code structure, readability, and maintainability without changing external behavior. It focuses on code smells, SOLID principles, DRY, and complexity reduction.
+
+**Specializations:**
+- **Code Smells:** Long methods, large classes, primitive obsession, duplicated code
+- **Principles:** SOLID, DRY (Don't Repeat Yourself), KISS (Keep It Simple, Stupid)
+- **Complexity:** Cyclomatic complexity, nested conditionals (Arrow code)
+- **Modernization:** Upgrade to latest language features (e.g., PHP 8.x, ES2023)
+
+#### When to Use
+
+- Improving existing codebase
+- Reducing code complexity
+- Applying SOLID principles
+- Modernizing legacy code
+- Fixing code smells
+
+#### How to Use
+
+```
+@refactor-expert, improve the UserService class
+```
+
+```
+@refactor-expert, simplify nested conditionals in parser.ts
+```
+
+#### Example
+
+```
+@refactor-expert, refactor the payment module
+
+What happens:
+1. Analyzes code structure
+2. Identifies code smells and SOLID violations
+3. Applies refactoring patterns:
+   - Extract Method (reduce long functions)
+   - Replace Nested Conditionals (guard clauses)
+   - Simplify Boolean Logic
+4. Updates decision-log with changes
+5. Verifies with tests
+```
+
+---
+
+### 6. devops-coder
 
 #### What It Does
 
@@ -663,7 +712,7 @@ Auditor subagents review code quality, security, performance, and style. They en
 
 ---
 
-### 5. security-auditor
+### 6. security-auditor
 
 #### What It Does
 
@@ -722,7 +771,7 @@ Recommendation: Fix before deployment
 
 ---
 
-### 6. security
+### 7. security
 
 #### What It Does
 
@@ -755,7 +804,7 @@ The `security` agent is the full security scanner with bash access. It performs 
 
 ---
 
-### 7. performance-auditor
+### 8. performance-auditor
 
 #### What It Does
 
@@ -808,7 +857,7 @@ Findings:
 
 ---
 
-### 8. style-auditor
+### 9. style-auditor
 
 #### What It Does
 
@@ -861,7 +910,7 @@ Findings:
 
 ---
 
-### 9. auditor
+### 10. auditor
 
 #### What It Does
 
@@ -911,7 +960,7 @@ Commit now? [y/N]
 
 ## 🔵 Planner
 
-### 10. planner
+### 11. planner
 
 #### What It Does
 
@@ -980,7 +1029,7 @@ Memory subagents handle information retention, decision tracking, and knowledge 
 
 ---
 
-### 11. memory
+### 12. memory
 
 #### What It Does
 
@@ -1068,7 +1117,7 @@ Agent: ✓ Light compression complete
 
 ---
 
-### 12. decision-log
+### 13. decision-log
 
 #### What It Does
 
@@ -1130,7 +1179,7 @@ Utility subagents provide specialized services for research, documentation, and 
 
 ---
 
-### 13. research
+### 14. research
 
 #### What It Does
 
@@ -1191,7 +1240,7 @@ The `research` agent analyzes the codebase to understand existing patterns, tech
 
 ---
 
-### 14. git-manager
+### 15. git-manager
 
 #### What It Does
 
@@ -1518,7 +1567,7 @@ git-manager works with:
 
 ---
 
-### 15. docs-manager
+### 16. docs-manager
 
 #### What It Does
 
@@ -1566,7 +1615,7 @@ What happens:
 
 ---
 
-### 16. coder
+### 17. coder
 
 #### What It Does
 
@@ -1605,7 +1654,7 @@ The `coder` is a universal code writer that works with ANY framework or language
 
 ---
 
-### 17. database-expert
+### 18. database-expert
 
 #### What It Does
 
@@ -1667,7 +1716,7 @@ Database Expert:
 
 ---
 
-### 18. api-designer
+### 19. api-designer
 
 #### What It Does
 
@@ -1723,7 +1772,7 @@ DELETE /posts/{id}     - Delete post
 
 ---
 
-### 19. doc-scout
+### 20. doc-scout
 
 #### What It Does
 
@@ -1791,9 +1840,15 @@ Agent: Generating Firebase v9 code ✓
 
 ---
 
-## 19. BRS-Manager - Business Requirement Specifications
+## 📋 Spec Managers
 
-### What It Does
+Spec managers handle business and technical specification documents for project clarity.
+
+---
+
+### 21. BRS-Manager - Business Requirement Specifications
+
+#### What It Does
 
 Creates comprehensive Business Requirement Specification (BRS) documents from meeting notes, protects scope with clear exclusions, and manages requirement changes.
 
@@ -1879,7 +1934,7 @@ Client reviews impact → Decides
 
 ---
 
-## 20. SDS-Manager - System Design Specifications
+## 22. SDS-Manager - System Design Specifications
 
 ### What It Does
 
@@ -2120,7 +2175,7 @@ New Dev: "Ready to code! 💪"
 
 ---
 
-## 21. SRS-Manager - Software Requirements Specifications
+## 23. SRS-Manager - Software Requirements Specifications
 
 ### What It Does
 

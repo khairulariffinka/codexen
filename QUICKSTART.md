@@ -70,7 +70,7 @@ CodeXen will:
 4. Run security checks
 5. Offer to commit
 
-That's it! No need to manage 23 subagents - CodeXen handles everything.
+That's it! No need to manage 24 subagents - CodeXen handles everything.
 
 ---
 

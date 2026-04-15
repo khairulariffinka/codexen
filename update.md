@@ -73,7 +73,7 @@ done
 
 | Action | Description |
 |--------|-----------|
-| Update agents (compare first) | Copy 23 agents |
+| Update agents (compare first) | Copy 24 agents |
 | Update skills (compare first) | Copy 17 skills |
 | Update opencode.json (if different) | Preserve user customizations |
 | Update memory templates (if empty) | Skip if exists |

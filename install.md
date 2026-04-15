@@ -73,7 +73,7 @@ done
 
 | Action | Location |
 |--------|---------|
-| Updates 23 agents (compare first) | `~/.config/opencode/agents/` |
+| Updates 24 agents (compare first) | `~/.config/opencode/agents/` |
 | Updates 17 skills (compare first) | `~/.config/opencode/skills/` |
 | Copies opencode.json (if different) | `~/.config/opencode/opencode.json` |
 | Creates memory templates (if empty) | `~/.config/opencode/global-memory/` |
