@@ -30,9 +30,11 @@ session-*.log
 # Memory & Context (Project-specific - do NOT commit)
 memory/
 relationship-memory.md
+docs/
 AGENTS.md
-planner.md
 DECISIONS.md
+planner.md
+!/core/agents/planner.md
 
 # Dependencies
 node_modules/
