@@ -89,7 +89,7 @@ core/skills/
 ├── sds/              # System Design
 ├── init-project/     # Project initialization
 ├── setup-profile/    # User profile setup
-└── switch-config/    # Model config switching
+└── switch-config/    # Config switching
 ```
 
 ### Template Skills
@@ -187,51 +187,6 @@ Example:
 
 - English
 - Bahasa Melayu Malaysia
-
----
-
-## Advanced: Switch Config (Optional)
-
-> For **advanced users only** - Optional feature, skip if unsure.
-
-Switch between different OpenCode model configurations to optimize cost vs quality:
-
-| Config | Cost | Model | Best For |
-|--------|------|-------|----------|
-| Free | $0/mo | big-pickle | Learning, testing |
-| Budget | $5-10/mo | kimi-k2.5 | Daily coding |
-| Quality | $30-50/mo | Claude Sonnet/Opus | Professional work |
-| Optimized | Mixed | Smart selection | Power users |
-
-### Config Details
-
-**Free** - All agents use big-pickle (free, unlimited)
-- Best for: Learning, testing CodeXen
-
-**Budget** - Uses OpenCode Go (kimi-k2.5, minimax-m2.5)
-- Subscribe: https://opencode.ai/docs/go/
-- Best for: Daily development work
-
-**Quality** - Uses Claude Sonnet/Opus for best results
-- Subscribe: https://opencode.ai/docs/zen/
-- Best for: Enterprise, critical projects
-
-**Optimized** - Smart selection per task
-- Research/Explore: big-pickle (free)
-- Build/Coder: kimi-k2.5 (budget)
-- Security: Claude Sonnet (premium)
-
-**References:**
-- https://opencode.ai/docs/zen/
-- https://opencode.ai/docs/go/
-
-**How to switch:**
-
-```
-switch-config
-```
-
-Then choose config from option and restart OpenCode.
 
 ---
 
