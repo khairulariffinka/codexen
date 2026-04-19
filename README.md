@@ -200,4 +200,4 @@ For detailed flow diagrams, see [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md).
 
 MIT License
 
-**Version**: 0.4.2
+**Version**: 0.4.4

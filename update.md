@@ -23,11 +23,12 @@ To use, append after command: `"load update.md --dry-run"`
 
 ## Changelog
 
-### v0.4.2 (Current)
+### v0.4.4 (Current)
 - ADD: `--dry-run` option for preview
 - ADD: Automatic backup before update
 - ADD: Changelog display
-- ADD: Conflict resolution (prompt user on custom files)
+- ADD: Conflict resolution for agents/skills
+- ADD: Merge option for opencode.json (keeps user settings + adds new)
 
 ### v0.4.0
 - Initial release with conditional update logic
@@ -132,10 +133,56 @@ done
 
 echo ""
 echo "=== Updating Config ==="
-# opencode.json
+# opencode.json - merge to preserve user settings
 if [ -f ~/.config/opencode/opencode.json ]; then
   if ! diff -q core/opencode.json ~/.config/opencode/opencode.json > /dev/null 2>&1; then
-    [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would update: opencode.json" || cp core/opencode.json ~/.config/opencode/opencode.json && echo "Updated opencode.json"
+    # User has custom config - prompt with merge option
+    if [ "$DRY_RUN" = true ]; then
+      echo "[DRY-RUN] Would update: opencode.json (CONFLICT - user has custom config)"
+    else
+      echo ""
+      echo "⚠️  CONFLICT: opencode.json differs from CodeXen version"
+      echo "    [1] Keep mine - skip, don't change (RECOMMENDED)"
+      echo "    [2] Merge - add CodeXen settings to mine"
+      echo "    [3] Show diff - see before deciding"
+      read -p "Choice [1]: " choice
+      case "$choice" in
+        2)
+          # Merge JSON - CodeXen adds new keys, keeps user values
+          if command -v jq >/dev/null 2>&1; then
+            jq -s '.[0] * .[1]' ~/.config/opencode/opencode.json core/opencode.json > ~/.config/opencode/opencode.json.tmp && \
+            mv ~/.config/opencode/opencode.json.tmp ~/.config/opencode/opencode.json && \
+            echo "Merged opencode.json (your settings kept + new CodeXen settings added)"
+          else
+            # No jq - fallback to keeping user config
+            echo "jq not found - keeping your config (install jq for merge)"
+          fi
+          ;;
+        3)
+          echo "--- Your config ---"
+          cat ~/.config/opencode/opencode.json
+          echo "--- CodeXen config ---"
+          cat core/opencode.json
+          echo ""
+          read -p "Choose [1=keep mine, 2=merge]: " choice2
+          case "$choice2" in
+            2)
+              if command -v jq >/dev/null 2>&1; then
+                jq -s '.[0] * .[1]' ~/.config/opencode/opencode.json core/opencode.json > ~/.config/opencode/opencode.json.tmp && \
+                mv ~/.config/opencode/opencode.json.tmp ~/.config/opencode/opencode.json && \
+                echo "Merged opencode.json"
+              else
+                echo "jq not found - keeping your config"
+              fi
+              ;;
+            *) echo "Keeping your config" ;;
+          esac
+          ;;
+        *)
+          echo "Keeping your config"
+          ;;
+      esac
+    fi
   else
     echo "Skipping opencode.json (unchanged)"
   fi
@@ -179,7 +226,7 @@ In OpenCode:
 
 ## Version
 
-Current: **0.4.2**
+Current: **0.4.4**
 
 ---
 
