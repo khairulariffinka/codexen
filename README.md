@@ -158,10 +158,28 @@ Then type: `init project`
 
 ## Updating
 
-Check for updates:
+### Check for Updates
+
 ```
 "Load update.md"
 ```
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| (default) | Full update with backup |
+| `--dry-run` | Preview changes only |
+
+Example:
+```
+"Load update.md --dry-run"  # Preview what will change
+```
+
+### Changelog
+
+- **v0.4.1**: Added `--dry-run`, auto-backup, changelog display
+- **v0.4.0**: Initial release with conditional update
 
 ---
 
@@ -227,4 +245,4 @@ For detailed flow diagrams, see [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md).
 
 MIT License
 
-**Version**: 0.4.0
+**Version**: 0.4.1

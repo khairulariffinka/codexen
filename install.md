@@ -10,6 +10,27 @@ That's it!
 
 ---
 
+## Options
+
+| Option | Description |
+|--------|-------------|
+| (default) | Install with backup |
+| `--dry-run` | Preview only, no changes |
+
+---
+
+## Changelog
+
+### v0.4.1 (Current)
+- ADD: `--dry-run` option for preview
+- ADD: Automatic backup before install
+- ADD: Changelog display
+
+### v0.4.0
+- Initial release
+
+---
+
 ## Context
 
 When this file is loaded, AI must know:
@@ -24,49 +45,78 @@ When this file is loaded, AI must know:
 When executing install, use conditional copy:
 
 ```bash
-# Compare and update opencode.json if different
-if [ -f ~/.config/opencode/opencode.json ]; then
-  if ! diff -q core/opencode.json ~/.config/opencode/opencode.json > /dev/null 2>&1; then
-    cp core/opencode.json ~/.config/opencode/opencode.json && echo "Updated opencode.json"
-  else
-    echo "Skipping opencode.json (already up-to-date)"
-  fi
-else
-  cp core/opencode.json ~/.config/opencode/opencode.json && echo "Copied opencode.json"
+# Check for dry-run mode
+DRY_RUN=false
+if [[ "$*" == *"--dry-run"* ]]; then
+  DRY_RUN=true
+  echo "🔍 DRY-RUN MODE: No changes will be made"
+  echo ""
 fi
 
-# Update OUR agents only, preserve user's custom agents
+# Create backup before install (unless dry-run)
+if [ "$DRY_RUN" = false ]; then
+  BACKUP_DIR="$HOME/.config/opencode.backup-$(date +%Y-%m-%d-%H%M)"
+  if [ -d ~/.config/opencode ]; then
+    cp -r ~/.config/opencode "$BACKUP_DIR" && echo "✅ Backup created: $BACKUP_DIR"
+  fi
+fi
+
+# Function to update or preview
+update_or_skip() {
+  local source="$1"
+  local dest="$2"
+  local name="$3"
+
+  if [ ! -f "$dest" ]; then
+    [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would add: $name" || cp "$source" "$dest" && echo "Added: $name"
+  elif ! diff -q "$source" "$dest" > /dev/null 2>&1; then
+    [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would update: $name" || cp "$source" "$dest" && echo "Updated: $name"
+  else
+    echo "Skipping: $name (unchanged)"
+  fi
+}
+
+echo ""
+echo "=== Installing Agents ==="
 for f in core/agents/*.md; do
   agent_name=$(basename "$f")
-  if [ -f ~/.config/opencode/agents/"$agent_name" ]; then
-    if ! diff -q "$f" ~/.config/opencode/agents/"$agent_name" > /dev/null 2>&1; then
-      cp "$f" ~/.config/opencode/agents/"$agent_name" && echo "Updated: $agent_name"
-    else
-      echo "Skipping: $agent_name (unchanged)"
-    fi
-  else
-    cp "$f" ~/.config/opencode/agents/ && echo "Added: $agent_name"
-  fi
+  dest=~/.config/opencode/agents/"$agent_name"
+  mkdir -p ~/.config/opencode/agents
+  update_or_skip "$f" "$dest" "$agent_name"
 done
 
-# Update OUR skills only, preserve user's custom skills
+echo ""
+echo "=== Installing Skills ==="
 for f in core/skills/*/*.md; do
   skill_name=$(basename "$f")
-  skill_dir=$(dirname "$f" | xargs basename)
-  if [ -f ~/.config/opencode/skills/"$skill_dir"/"$skill_name" ]; then
-    if ! diff -q "$f" ~/.config/opencode/skills/"$skill_dir"/"$skill_name" > /dev/null 2>&1; then
-      cp "$f" ~/.config/opencode/skills/"$skill_dir"/"$skill_name" && echo "Updated: $skill_name"
-    else
-      echo "Skipping: $skill_name (unchanged)"
-    fi
-  else
-    mkdir -p ~/.config/opencode/skills/"$skill_dir"
-    cp "$f" ~/.config/opencode/skills/"$skill_dir"/ && echo "Added: $skill_name"
-  fi
+  skill_dir=$(basename "$(dirname "$f")")
+  dest=~/.config/opencode/skills/"$skill_dir"/"$skill_name"
+  mkdir -p ~/.config/opencode/skills/"$skill_dir"
+  update_or_skip "$f" "$dest" "$skill_dir"
 done
 
-# Copy global-memory if directory is empty
-[ -z "$(ls -A ~/.config/opencode/global-memory 2>/dev/null)" ] && cp -r templates/global-memory/* ~/.config/opencode/global-memory/ || echo "Skipping global-memory (already exists)"
+echo ""
+echo "=== Installing Config ==="
+# opencode.json
+if [ -f ~/.config/opencode/opencode.json ]; then
+  if ! diff -q core/opencode.json ~/.config/opencode/opencode.json > /dev/null 2>&1; then
+    [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would update: opencode.json" || cp core/opencode.json ~/.config/opencode/opencode.json && echo "Updated opencode.json"
+  else
+    echo "Skipping opencode.json (unchanged)"
+  fi
+else
+  [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would add: opencode.json" || cp core/opencode.json ~/.config/opencode/opencode.json && echo "Copied opencode.json"
+fi
+
+# global-memory
+if [ -z "$(ls -A ~/.config/opencode/global-memory 2>/dev/null)" ]; then
+  [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would init: global-memory" || cp -r templates/global-memory/* ~/.config/opencode/global-memory/ && echo "Initialized global-memory"
+else
+  echo "Skipping global-memory (already exists)"
+fi
+
+echo ""
+[ "$DRY_RUN" = true ] && echo "🔍 DRY-RUN complete. Run without --dry-run to apply." || echo "✅ Install complete!"
 ```
 
 ## What It Does

@@ -55,6 +55,20 @@ You should get a greeting back. If you do, you're ready to go!
 
 ---
 
+### New in v0.4.1
+
+- **`--dry-run` option**: Preview changes before applying
+- **Auto-backup**: Automatic backup before update/install
+- **Changelog display**: See what's new
+
+Usage:
+```
+"Load install.md --dry-run"  # Preview only
+"Load update.md --dry-run"  # Preview changes
+```
+
+---
+
 ## Step 3: Build Something
 
 Just tell CodeXen what you want:
