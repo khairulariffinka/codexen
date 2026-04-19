@@ -23,10 +23,11 @@ To use, append after command: `"load update.md --dry-run"`
 
 ## Changelog
 
-### v0.4.1 (Current)
+### v0.4.2 (Current)
 - ADD: `--dry-run` option for preview
 - ADD: Automatic backup before update
 - ADD: Changelog display
+- ADD: Conflict resolution (prompt user on custom files)
 
 ### v0.4.0
 - Initial release with conditional update logic
@@ -64,7 +65,7 @@ if [ "$DRY_RUN" = false ]; then
   fi
 fi
 
-# Function to update or preview
+# Function to update or preview with conflict resolution
 update_or_skip() {
   local source="$1"
   local dest="$2"
@@ -73,7 +74,38 @@ update_or_skip() {
   if [ ! -f "$dest" ]; then
     [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would add: $name" || cp "$source" "$dest" && echo "Added: $name"
   elif ! diff -q "$source" "$dest" > /dev/null 2>&1; then
-    [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would update: $name" || cp "$source" "$dest" && echo "Updated: $name"
+    # File exists and is different - ask user
+    if [ "$DRY_RUN" = true ]; then
+      echo "[DRY-RUN] Would update: $name (CONFLICT - user has custom version)"
+      echo "         Run without --dry-run to resolve"
+    else
+      echo ""
+      echo "⚠️  CONFLICT: $name differs from CodeXen version"
+      echo "    [1] Keep mine (custom) - skip update"
+      echo "    [2] Use CodeXen version - overwrite"
+      echo "    [3] Show diff - see differences"
+      read -p "Choice [1]: " choice
+      case "$choice" in
+        2)
+          cp "$source" "$dest" && echo "Updated: $name"
+          ;;
+        3)
+          echo "--- Your version ---"
+          head -20 "$dest"
+          echo "--- CodeXen version ---"
+          head -20 "$source"
+          echo ""
+          read -p "Choose [1=keep mine, 2=use codexen]: " choice2
+          case "$choice2" in
+            2) cp "$source" "$dest" && echo "Updated: $name" ;;
+            *) echo "Keeping your version" ;;
+          esac
+          ;;
+        *)
+          echo "Keeping your version"
+          ;;
+      esac
+    fi
   else
     echo "Skipping: $name (unchanged)"
   fi
@@ -147,7 +179,7 @@ In OpenCode:
 
 ## Version
 
-Current: **0.4.1**
+Current: **0.4.2**
 
 ---
 
