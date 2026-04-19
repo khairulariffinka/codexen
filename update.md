@@ -23,12 +23,14 @@ To use, append after command: `"load update.md --dry-run"`
 
 ## Changelog
 
-### v0.4.4 (Current)
+### v0.5.0 (Current)
+- ADD: Detect user's agent by mode: primary
+- ADD: Update directly to user's primary agent file
+- ADD: User can choose custom agent name
 - ADD: `--dry-run` option for preview
 - ADD: Automatic backup before update
-- ADD: Changelog display
 - ADD: Conflict resolution for agents/skills
-- ADD: Merge option for opencode.json (keeps user settings + adds new)
+- ADD: Merge option for opencode.json
 
 ### v0.4.0
 - Initial release with conditional update logic
@@ -114,12 +116,22 @@ update_or_skip() {
 
 echo ""
 echo "=== Updating Agents ==="
-for f in core/agents/*.md; do
-  agent_name=$(basename "$f")
-  dest=~/.config/opencode/agents/"$agent_name"
-  mkdir -p ~/.config/opencode/agents
-  update_or_skip "$f" "$dest" "$agent_name"
-done
+mkdir -p ~/.config/opencode/agents
+
+# Find user's primary agent (mode: primary)
+primary_agent_file=$(ls ~/.config/opencode/agents/*.md 2>/dev/null | xargs -I{} grep -l "^mode: primary" {} 2>/dev/null | head -1)
+
+if [ -n "$primary_agent_file" ]; then
+  # User has primary agent - update that file directly
+  primary_agent_name=$(basename "$primary_agent_file" .md)
+  echo "Found primary agent: $primary_agent_name"
+  echo "Updating from codexen.md..."
+  update_or_skip "core/agents/codexen.md" "$primary_agent_file" "$primary_agent_name"
+else
+  # No primary agent - create default
+  echo "No primary agent found, creating codexen.md"
+  update_or_skip "core/agents/codexen.md" "~/.config/opencode/agents/codexen.md" "codexen"
+fi
 
 echo ""
 echo "=== Updating Skills ==="
@@ -226,7 +238,7 @@ In OpenCode:
 
 ## Version
 
-Current: **0.4.4**
+Current: **0.5.0**
 
 ---
 

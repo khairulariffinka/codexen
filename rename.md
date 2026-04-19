@@ -42,46 +42,39 @@ Invalid examples: My Agent, nova_v2, agent!
 
 If invalid, ask user for a different name.
 
-### Step 2: Check Current Agent
+### Step 2: Find Current Primary Agent
 
 ```
-Check which platforms have codexen installed:
+Find user's primary agent (mode: primary):
 
-OpenCode:  ~/.config/opencode/agents/codexen.md
+primary_agent=$(ls ~/.config/opencode/agents/*.md | xargs grep -l "^mode: primary" | head -1)
+agent_name=$(basename "$primary_agent" .md)
 ```
+
+Example output:
+- If renamed: nova.md (mode: primary) → current name: nova
+- Default: codexen.md (mode: primary) → current name: codexen
 
 ### Step 3: Rename Agent File
 
 ```
-mv ~/.config/opencode/agents/codexen.md ~/.config/opencode/agents/{new-name}.md
+# Rename file
+mv ~/.config/opencode/agents/{current-name}.md ~/.config/opencode/agents/{new-name}.md
 ```
 
 ### Step 4: Update Agent File Content
 
 Edit the renamed agent file:
 
-```yaml
-# Change this line:
-name: codexen
+```bash
+# Update name in content
+sed -i 's/^name: .*/name: {new-name}/' ~/.config/opencode/agents/{new-name}.md
 
-# To:
-name: {new-name}
+# Ensure mode stays as primary
+sed -i 's/^mode: .*/mode: primary/' ~/.config/opencode/agents/{new-name}.md
 ```
 
-Also update any references to "codexen" in the file content to "{new-name}".
-
-### Step 4: Rename Skill Folder
-
-```
-# Skills folder structure - no codexen folder exists
-# Skip this step - skills are referenced directly, not as folder
-```
-
-### Step 5: Update Skill File Content
-
-Skill files are referenced directly from core/skills/. No separate skill folder to rename. Skip this step.
-
-### Step 6: Verify Rename
+### Step 5: Verify Rename
 
 ```
 Check that all files are correctly renamed:
@@ -93,7 +86,7 @@ Check that all files are correctly renamed:
     └── (skills are unchanged) ← No codexen folder
 ```
 
-### Step 7: Complete
+### Step 6: Complete
 
 ```
 ✅ Rename Complete!
@@ -114,21 +107,21 @@ Say: "{new-name}, hello!"
 User: Load rename.md
 
 AI: I'll help you rename your agent.
-    Current name: codexen
+    (Detecting current name from mode: primary...)
+    Current name: nova
 
-User: nova
+User: alex
 
 AI: Validating name... ✓
-    Renaming codexen → nova...
+    Renaming nova → alex...
 
-    OpenCode:
     1. Renaming agent file... ✓
     2. Updating agent content... ✓
 
     ✅ Rename Complete!
-    Your agent is now "nova"
+    Your agent is now "alex"
 
-    Test it: "nova, hello!"
+    Test it: "alex, hello!"
 ```
 
 ## Reverting
@@ -145,10 +138,10 @@ AI: [Reverts to default]
 ## Important Notes
 
 - **ONLY edit files in ~/.config/opencode/** - NEVER edit source files in project folder
-- This only renames the primary agent (codexen)
+- Detects primary agent by searching for `mode: primary` in agent files
 - Core subagents (memory, planner, coder, etc.) are NOT renamed
 - The rename ONLY affects:
-  - ~/.config/opencode/agents/codexen.md → {new-name}.md
+  - ~/.config/opencode/agents/{current-name}.md → {new-name}.md
 - Skills are referenced directly from core/skills/ - no separate folder
 - Original source files in the project folder remain unchanged
-- If you reinstall (load install.md), it will restore default "codexen" name
+- Update (load update.md) will update your custom agent directly

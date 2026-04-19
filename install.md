@@ -21,12 +21,21 @@ That's it!
 
 ## Changelog
 
-### v0.4.4 (Current)
+### v0.5.0 (Current)
+- ADD: First-time setup prompts for agent name
+- ADD: User can choose custom name (default: codexen)
+- ADD: Agent set as mode: primary automatically
+- ADD: `--dry-run` option for preview
+- ADD: Automatic backup before install
+- ADD: Conflict resolution for agents/skills
+- ADD: Merge option for opencode.json
+
+### v0.4.4
 - ADD: `--dry-run` option for preview
 - ADD: Automatic backup before install
 - ADD: Changelog display
 - ADD: Conflict resolution for agents/skills
-- ADD: Merge option for opencode.json (keeps user settings + adds new)
+- ADD: Merge option for opencode.json
 
 ### v0.4.0
 - Initial release
@@ -111,12 +120,42 @@ update_or_skip() {
 
 echo ""
 echo "=== Installing Agents ==="
-for f in core/agents/*.md; do
-  agent_name=$(basename "$f")
-  dest=~/.config/opencode/agents/"$agent_name"
-  mkdir -p ~/.config/opencode/agents
-  update_or_skip "$f" "$dest" "$agent_name"
-done
+mkdir -p ~/.config/opencode/agents
+
+# Check if primary agent exists
+primary_agent_file=$(ls ~/.config/opencode/agents/*.md 2>/dev/null | xargs -I{} grep -l "^mode: primary" {} 2>/dev/null | head -1)
+
+if [ -z "$primary_agent_file" ]; then
+  # First install - prompt for agent name
+  echo ""
+  echo "🎉 First time setup!"
+  echo "What would you like to name your primary agent?"
+  echo "Press Enter for default: codexen"
+  read -p "Agent name: " agent_name
+  [ -z "$agent_name" ] && agent_name="codexen"
+  
+  # Validate name (lowercase, numbers, hyphens only)
+  if [[ ! "$agent_name" =~ ^[a-z0-9-]+$ ]] || [[ "$agent_name" =~ ^- || "$agent_name" =~ -$ ]]; then
+    echo "Invalid name. Using default: codexen"
+    agent_name="codexen"
+  fi
+  
+  # Create agent with user's chosen name
+  echo "Creating agent: $agent_name"
+  cp core/agents/codexen.md ~/.config/opencode/agents/"$agent_name.md"
+  
+  # Set as primary agent
+  sed -i 's/^name: codexen$/name: '"$agent_name"'/' ~/.config/opencode/agents/"$agent_name.md"
+  sed -i 's/^mode: .*/mode: primary/' ~/.config/opencode/agents/"$agent_name.md"
+  
+  echo "✅ Primary agent '$agent_name' created!"
+else
+  echo "Primary agent already exists - skipping first-time setup"
+fi
+
+echo ""
+echo "=== Updating Agents ==="
+# Update agents loop remains for other files
 
 echo ""
 echo "=== Installing Skills ==="
