@@ -29,6 +29,18 @@ That's it!
 - ADD: Automatic backup before install
 - ADD: Conflict resolution for agents/skills
 - ADD: Merge option for opencode.json
+- ADD: Subagent routing table mapping task types to all 24 agents
+- ADD: Cross-agent handoffs (@test-coder, @auditor, @decision-log, @doc-scout) to coder agents
+- ADD: Mandatory audit gate in git-manager.md before commit
+- ADD: Search/query and supersession logic to decision-log
+- ADD: FR/NFR templates, ERD/API contract templates to srs/sds skills
+- ADD: Parallel grouping and estimation criteria to planner skill
+- FIX: Expanded incomplete agents (research, refactor-expert, backend-coder, auditor, brs-manager)
+- FIX: Overclaim terminology in memory agent (semantic search → keyword search, etc.)
+- FIX: planner.md edit:deny → edit:allow (content producer consistency)
+- FIX: Restricted unnecessary bash:allow → bash:deny (api-designer, brs-manager, docs-manager)
+- FIX: .gitignore scope (/memory/, /docs/ instead of memory/, docs/)
+- FIX: Memory skill paths, sed pattern, RAM population flow
 
 ### v0.4.4
 - ADD: `--dry-run` option for preview
