@@ -146,6 +146,16 @@ else
 fi
 
 echo ""
+echo "=== Updating Subagents ==="
+for f in core/agents/*.md; do
+  agent_name=$(basename "$f")
+  # Skip codexen.md - already handled as primary agent above
+  [ "$agent_name" = "codexen.md" ] && continue
+  dest=~/.config/opencode/agents/"$agent_name"
+  update_or_skip "$f" "$dest" "$agent_name"
+done
+
+echo ""
 echo "=== Updating Skills ==="
 for f in core/skills/*/*.md; do
   skill_name=$(basename "$f")

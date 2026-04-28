@@ -167,7 +167,11 @@ fi
 
 echo ""
 echo "=== Updating Agents ==="
-# Update agents loop remains for other files
+for f in core/agents/*.md; do
+  agent_name=$(basename "$f")
+  dest=~/.config/opencode/agents/"$agent_name"
+  update_or_skip "$f" "$dest" "$agent_name"
+done
 
 echo ""
 echo "=== Installing Skills ==="
