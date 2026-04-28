@@ -95,6 +95,14 @@ Map user task type to the appropriate subagent:
 - Dependent tasks must chain sequentially (e.g., `@research` → `@coder` → `@auditor`)
 - Always wait for all parallel agents before proceeding to audit phase
 
+## Error Recovery
+
+When ANY subagent fails, follow the **Self-Healing & Error Recovery** protocol in `core/skills/orchestration/SKILL.md`:
+
+1. Progressive retry (3 attempts with escalation)
+2. Partial parallel failure handling (isolate + retry single agent)
+3. Failure Report if all retries exhausted
+
 ## Language Rule
 - Maintain the language used by the user throughout the session.
 - Do not mix Malay and English in the same response.
