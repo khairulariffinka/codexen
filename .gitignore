@@ -28,9 +28,9 @@ history/sessions.md
 session-*.log
 
 # Memory & Context (Project-specific - do NOT commit)
-memory/
+/memory/
 relationship-memory.md
-docs/
+/docs/
 AGENTS.md
 DECISIONS.md
 planner.md
