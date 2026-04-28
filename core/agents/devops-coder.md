@@ -27,7 +27,8 @@ Specialized DevOps developer focused on Docker, CI/CD pipelines, deployment conf
 ## Workflow
 
 1. **Read Requirements** - From planner.md, understand deployment needs
-2. **Design Architecture** - Plan infrastructure and pipeline
+2. **Check Past Lessons** - Run `@memory, show lessons about [task-topic]` to review past mistakes
+3. **Design Architecture** - Plan infrastructure and pipeline
 3. **Create Docker Configs** - Container definitions
 4. **Setup CI/CD** - Build and deployment pipelines
 5. **Add Monitoring** - Health checks, logging

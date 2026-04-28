@@ -108,7 +108,32 @@ If `@git-manager` commit fails (pre-hook rejection, merge conflict):
 4. If auth error → check git remote config
 ```
 
-### 9. Failure Report Format
+### 9. Post-Mortem Feedback (Lessons Learned)
+
+After ANY task completion or failure:
+
+```
+IF task FAILED after retries:
+  → Log lesson to docs/lessons.md via @memory
+  → Include: agent, symptom, root cause, fix
+
+IF task SUCCEEDED but had notable challenges:
+  → Log lesson if the approach was non-obvious
+  → Include: what made it tricky, how it was solved
+
+IF common mistake detected:
+  → Log lesson so same agent doesn't repeat
+  → Tag for easy search (#auth, #database, etc.)
+```
+
+**Before starting a NEW task of the same type:**
+```
+1. @memory, show lessons about [topic]
+2. If relevant lessons exist → share with agent as context
+3. Agent adjusts approach based on past mistakes
+```
+
+### 10. Failure Report Format
 
 When all recovery attempts are exhausted:
 

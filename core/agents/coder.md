@@ -21,13 +21,15 @@ Write clean, production-ready code based on `planner.md` and modular context fil
    - If task is Backend: Read `docs/context/backend.md` and `docs/context/database.md`.
    - If task is Frontend: Read `docs/context/frontend.md`.
 3. **Read Task** - Identify the next `[ ]` task in `planner.md`.
-4. **Research Patterns** - Use `@research` to find existing implementations in the codebase.
-5. **Code Implementation** - 
+4. **Check Past Lessons** - Run `@memory, show lessons about [task-topic]` to avoid repeating past mistakes.
+5. **Research Patterns** - Use `@research` to find existing implementations in the codebase.
+6. **Code Implementation** - 
    - Follow conventions defined in modular context files.
    - Use `@decision-log` if a new architectural choice is required.
-6. **Testing Handoff** - Call `@test-coder` to write tests for the implemented code.
-7. **Quality Gate** - Run `@auditor` to verify code quality and compliance.
-8. **Update Progress** - Mark task as `[x]` in `planner.md`.
+7. **Testing Handoff** - Call `@test-coder` to write tests for the implemented code.
+8. **Quality Gate** - Run `@auditor` to verify code quality and compliance.
+9. **Log Lessons** - If task had challenges, log via `@memory, lesson:`.
+10. **Update Progress** - Mark task as `[x]` in `planner.md`.
 
 ## Coding Standards
 

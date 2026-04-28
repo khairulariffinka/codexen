@@ -33,6 +33,7 @@ docs/
 ├── session-diary.md       # Session logs with tags
 ├── DECISIONS.md           # Decision log (managed by @decision-log)
 ├── patterns.md            # Documented patterns (optional)
+├── lessons.md             # Lessons learned from past failures
 └── context/               # Modular context (from init-project)
     ├── backend.md
     ├── frontend.md
@@ -45,10 +46,57 @@ Global memory (cross-project):
 ├── user-profile.md        # User preferences
 ├── current-session.md     # RAM for current session
 ├── patterns.md            # Patterns across projects
+├── lessons.md             # Cross-project lessons learned
 └── work-diary/
     ├── diary-YYYY-MM.md   # Monthly session log
     └── archive/           # Archived diaries (>1000 lines)
 ```
+
+## Lessons Learned (Feedback Loop)
+
+When an agent fails or discovers a useful insight, log it to `docs/lessons.md` (project) or `~/.config/opencode/global-memory/lessons.md` (cross-project):
+
+```markdown
+## Lesson: [YYYY-MM-DD] [Short Title]
+
+**Agent:** @agent-name
+**Task:** [What was being attempted]
+**Symptom:** [What went wrong]
+**Root Cause:** [Why it happened]
+**Fix Applied:** [What resolved it]
+**Tags:** #auth #jwt #common-mistake
+**Related Decisions:** DEC-YYYY-NNN
+```
+
+### Feedback Commands
+
+```
+@memory, lesson: [title] — [what went wrong + fix]
+  → Appends to docs/lessons.md
+
+@memory, show lessons about [topic]
+  → Greps lessons.md for matching entries
+
+@memory, lessons before task [task-name]
+  → Shows relevant lessons before starting a new task
+```
+
+### When to Log Lessons
+
+- After any agent failure that required retry/escalation
+- When a common mistake is identified (e.g., "forgot to add index to foreign key")
+- When a debugging approach works particularly well
+- When a subagent produces incorrect output that needs human correction
+
+### Before Starting Any Task
+
+Check `lessons.md` for relevant entries:
+
+```
+@memory, show lessons about [current-task-topic]
+```
+
+If relevant lessons found, share them with the executing agent as context.
 
 ## Keyword Search
 

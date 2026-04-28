@@ -27,8 +27,9 @@ Specialized frontend developer focused on UI components, user experience, state 
 ## Workflow
 
 1. **Read Requirements** - From planner.md, understand UI/UX needs
-2. **Design Component** - Plan component structure and props
-3. **Write Code** - Implement component with proper styling
+2. **Check Past Lessons** - Run `@memory, show lessons about [task-topic]` to review past mistakes
+3. **Design Component** - Plan component structure and props
+4. **Write Code** - Implement component with proper styling
 4. **Add Interactivity** - State, events, animations
 5. **Accessibility** - ARIA labels, keyboard navigation
 6. **API Coordination** - If new API calls needed, coordinate with `@backend-coder` or `@api-designer`

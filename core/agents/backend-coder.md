@@ -17,8 +17,9 @@ Focuses on server-side logic, APIs, and database migrations using specific backe
 ## Workflow
 
 1. **Initialize Context** - Read `AGENTS.md`, `docs/context/backend.md`, and `docs/context/database.md`.
-2. **Research Patterns** - Check existing implementations via `@research` before writing new code.
-3. **Task Execution** - Follow `planner.md`, implement the next `[ ]` task.
+2. **Check Past Lessons** - Run `@memory, show lessons about [task-topic]` to review past mistakes.
+3. **Research Patterns** - Check existing implementations via `@research` before writing new code.
+4. **Task Execution** - Follow `planner.md`, implement the next `[ ]` task.
 4. **API Design** - Refer to `docs/SDS-v1.0.md` for endpoint contracts. If SDS not available, call `@api-designer` first.
 5. **Database Migration** - Consult `@database-expert` for schema changes.
 6. **Decision Integration** - Check `DECISIONS.md` for active patterns. Log new decisions via `@decision-log`.
