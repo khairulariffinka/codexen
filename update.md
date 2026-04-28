@@ -134,23 +134,35 @@ mkdir -p ~/.config/opencode/agents
 primary_agent_file=$(ls ~/.config/opencode/agents/*.md 2>/dev/null | xargs -I{} grep -l "^mode: primary" {} 2>/dev/null | head -1)
 
 if [ -n "$primary_agent_file" ]; then
-  # User has primary agent - update that file directly
+  # User has primary agent - update content but preserve name and mode
   primary_agent_name=$(basename "$primary_agent_file" .md)
   echo "Found primary agent: $primary_agent_name"
-  echo "Updating from codexen.md..."
-  update_or_skip "core/agents/codexen.md" "$primary_agent_file" "$primary_agent_name"
+  if diff -q core/agents/codexen.md "$primary_agent_file" > /dev/null 2>&1; then
+    echo "Skipping: $primary_agent_name (unchanged)"
+  else
+    echo "⚠️  CONFLICT: $primary_agent_name differs from CodeXen version"
+    echo "    [1] Keep mine (custom) - skip update"
+    echo "    [2] Use CodeXen version - overwrite (preserves name & mode)"
+    read -p "Choice [1]: " choice
+    if [ "$choice" = "2" ]; then
+      cp core/agents/codexen.md "$primary_agent_file"
+      sed -i 's/^name: codexen$/name: '"$primary_agent_name"'/' "$primary_agent_file"
+      sed -i 's/^mode: subagent/mode: primary/' "$primary_agent_file"
+      echo "Updated: $primary_agent_name"
+    else
+      echo "Keeping your version"
+    fi
+  fi
 else
   # No primary agent - create default
   echo "No primary agent found, creating codexen.md"
-  update_or_skip "core/agents/codexen.md" "~/.config/opencode/agents/codexen.md" "codexen"
+  update_or_skip "core/agents/codexen.md" "$HOME/.config/opencode/agents/codexen.md" "codexen"
 fi
 
 echo ""
 echo "=== Updating Subagents ==="
 for f in core/agents/*.md; do
   agent_name=$(basename "$f")
-  # Skip codexen.md - already handled as primary agent above
-  [ "$agent_name" = "codexen.md" ] && continue
   dest=~/.config/opencode/agents/"$agent_name"
   update_or_skip "$f" "$dest" "$agent_name"
 done
