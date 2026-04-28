@@ -341,7 +341,6 @@ class UserFactory extends Factory
 ## Rules
 
 
-
 - Test behavior, not implementation
 - One assertion per test (ideally)
 - Use descriptive test names

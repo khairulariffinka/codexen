@@ -7,7 +7,7 @@ permission:
   read: allow
   glob: allow
   grep: allow
-  bash: allow
+  bash: deny
 ---
 
 # API Designer Agent
