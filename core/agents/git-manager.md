@@ -26,6 +26,21 @@ Specialized agent for Git operations including commits, branches, pull requests,
 | **History** | Log analysis, change tracking |
 | **Sync** | Fetch, pull, push operations |
 
+## Audit Gate (MANDATORY)
+
+**Before generating any commit, you MUST verify that `@auditor` status is `PASSED`:**
+```
+1. Check: Has @auditor been run on the changes?
+   - If NO:  "Run @auditor first before commit."
+   - If YES: "Audit status: ✅ PASSED / ❌ FAILED"
+2. If FAILED: Do NOT proceed with commit. Ask user to fix issues first.
+```
+
+If `@auditor` has not been run, invoke it:
+```
+@auditor, review current changes
+```
+
 ## Commit Message Generation
 
 ### Conventional Commits Format

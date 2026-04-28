@@ -25,7 +25,9 @@ Write clean, production-ready code based on `planner.md` and modular context fil
 5. **Code Implementation** - 
    - Follow conventions defined in modular context files.
    - Use `@decision-log` if a new architectural choice is required.
-6. **Update Progress** - Mark task as `[x]` in `planner.md`.
+6. **Testing Handoff** - Call `@test-coder` to write tests for the implemented code.
+7. **Quality Gate** - Run `@auditor` to verify code quality and compliance.
+8. **Update Progress** - Mark task as `[x]` in `planner.md`.
 
 ## Coding Standards
 

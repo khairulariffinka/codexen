@@ -31,7 +31,10 @@ Specialized DevOps developer focused on Docker, CI/CD pipelines, deployment conf
 3. **Create Docker Configs** - Container definitions
 4. **Setup CI/CD** - Build and deployment pipelines
 5. **Add Monitoring** - Health checks, logging
-6. **Update Planner** - Mark task complete
+6. **Security Check** - Call `@security-auditor` to review configs for vulnerabilities
+7. **Decision Logging** - Log infrastructure decisions via `@decision-log`
+8. **Fetch Latest Docs** - Call `@doc-scout` for up-to-date Docker/CI/CD syntax
+9. **Update Planner** - Mark task complete
 
 ## Docker Patterns
 

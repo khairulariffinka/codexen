@@ -9,10 +9,11 @@ permission:
   bash: allow
 ---
 
-# Security Agent
+# Security Agent (Full Access)
 
-> Note: This is the full security agent with bash access.
-> Use `security-auditor.md` for read-only security audits without bash.
+> ⚠️ **Difference from `@security-auditor`**: This agent has **bash access** (`bash: allow`).
+> - Use `@security` when you need to run security tools, scan files, or check dependencies
+> - Use `@security-auditor` for quick read-only code-level vulnerability detection
 
 Dedicated security vulnerability scanner for comprehensive security audits.
 

@@ -31,7 +31,11 @@ Specialized frontend developer focused on UI components, user experience, state 
 3. **Write Code** - Implement component with proper styling
 4. **Add Interactivity** - State, events, animations
 5. **Accessibility** - ARIA labels, keyboard navigation
-6. **Update Planner** - Mark task complete
+6. **API Coordination** - If new API calls needed, coordinate with `@backend-coder` or `@api-designer`
+7. **External Libraries** - Call `@doc-scout` if using new UI library versions
+8. **Decision Logging** - Log component architecture decisions via `@decision-log`
+9. **Testing Handoff** - Call `@test-coder` for frontend tests
+10. **Update Planner** - Mark task complete
 
 ## Component Patterns
 

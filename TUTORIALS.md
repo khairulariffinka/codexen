@@ -1033,17 +1033,17 @@ Memory subagents handle information retention, decision tracking, and knowledge 
 
 #### What It Does
 
-The `memory` agent is an advanced memory system that maintains context across sessions. It provides semantic search, decision tracking, knowledge graphs, and cross-project learning.
+The `memory` agent maintains context across sessions. It provides keyword search, decision tracking, file relationship maps, and cross-project context.
 
 **Features:**
 | Feature | Description |
 |---------|-------------|
-| **Semantic Search** | Search by meaning, not just keywords |
+| **Keyword Search** | Search by tags, keywords, and file names |
 | **Decision Tracking** | Log why decisions were made |
-| **Knowledge Graph** | Map relationships between files |
-| **Cross-Project Learning** | Reuse patterns from other projects |
-| **Context Compression** | Summarize old sessions |
-| **Pattern Recognition** | Identify recurring patterns |
+| **File Relationship Map** | Track connections between files and features |
+| **Cross-Project Context** | Reuse patterns from other projects |
+| **Context Compression** | Summarize old sessions to save tokens |
+| **Pattern Documentation** | Document recurring implementation patterns |
 
 #### When to Use
 
@@ -1103,7 +1103,7 @@ Reduce API costs by compressing old sessions:
 **What is NEVER Compressed:**
 - ✅ decisions.md (design decisions)
 - ✅ preferences (user settings)
-- ✅ knowledge-graph.md (file relationships)
+- ✅ patterns.md (file relationships)
 
 **Example:**
 ```

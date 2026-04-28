@@ -3,7 +3,7 @@ name: planner
 description: Advanced planner with hierarchical planning, risk assessment, and dynamic task management
 mode: subagent
 permission:
-  edit: deny
+  edit: allow
   read: allow
   glob: allow
   grep: allow
@@ -189,7 +189,7 @@ Each task includes:
 
 **Workflow:**
 ```
-BRS Requirements → Pattern Recognition → Task Breakdown → 
+BRS Requirements → Pattern Matching → Task Breakdown → 
 Effort Estimation → Agent Assignment → Dependency Mapping → 
 Parallel Groups → planner.md
 ```

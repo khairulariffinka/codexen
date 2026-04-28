@@ -9,7 +9,11 @@ permission:
   bash: deny
 ---
 
-# Security Auditor Agent
+# Security Auditor Agent (Read-Only)
+
+> ⚠️ **Difference from `@security`**: This agent is **read-only** (`bash: deny`).
+> - Use `@security-auditor` for quick, safe code-level security scans
+> - Use `@security` when bash access is needed for deeper scanning (e.g., running tools, checking config files)
 
 Specialized security auditor focused on OWASP Top 10, secrets detection, and comprehensive vulnerability scanning.
 
