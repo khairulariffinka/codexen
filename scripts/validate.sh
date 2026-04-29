@@ -175,7 +175,18 @@ else
   check "install/update.md agent count mismatch" "fail"
 fi
 
-# ── 11. .gitignore scope ──
+# ── 11. Parallel group consistency ──
+echo "── Parallel Group Consistency ──"
+# Check that planner.md mentions parallel groups
+parallel_planner=$(grep -c 'Parallel Group\|Parallel.*Group' "$ROOT/core/skills/planner/SKILL.md" 2>/dev/null || true)
+parallel_codexen=$(grep -c 'Parallel Group\|Parallel.*Group\|Parallel Execution' "$ROOT/core/agents/codexen.md" 2>/dev/null || true)
+if [ "$parallel_planner" -ge 3 ] && [ "$parallel_codexen" -ge 1 ]; then
+  check "Parallel execution defined consistently across files" "pass"
+else
+  check "Parallel execution references inconsistent" "fail"
+fi
+
+# ── 12. .gitignore scope ──
 echo "── .gitignore Scope ──"
 if grep -q '^/memory/' "$ROOT/.gitignore" 2>/dev/null; then
   check ".gitignore uses root-scoped /memory/" "pass"
@@ -186,7 +197,7 @@ fi
 # ── Summary ──
 echo ""
 yellow "=========================================="
-yellow "  Results: $PASS passed, $FAIL failed"
+yellow "  Results: $PASS passed, $FAIL failed (12 checks)"
 yellow "=========================================="
 echo ""
 

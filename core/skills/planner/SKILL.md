@@ -48,6 +48,54 @@ Breaks down complex requirements into manageable, sequential, or parallel tasks.
 | Frontend + Backend for same feature | Different groups (backend first) |
 | DB schema change needed | Blocked until migration complete |
 | Multiple UI components, same API | Same group (parallel) |
+| Same file modified by two tasks | Must be in different groups (sequential) |
+| Task A outputs data that Task B needs | Different groups (A before B) |
+
+## Parallel Group Validation
+
+Before executing parallel groups, validate the plan:
+
+### 1. Dependency Check
+```
+For each parallel group:
+  - Do any tasks in this group depend on each other?
+  - If YES: Split into sequential groups or mark invalid
+  - If NO: Group is valid for parallel execution
+```
+
+### 2. File Conflict Detection
+```
+For each pair of tasks in the same group:
+  - Do they modify the same file?
+  - If YES: Move one task to a different group (sequential)
+  - If NO: Safe to run in parallel
+```
+
+### 3. Circular Dependency Check
+```
+For all tasks:
+  - Does Task A → Task B → Task C → Task A exist?
+  - If YES: Report circular dependency, ask user to resolve
+  - If NO: Dependency chain is valid
+```
+
+### 4. Resource Check
+```
+For each parallel group:
+  - Does any task require exclusive resource (DB migration, config change)?
+  - If YES: Move to dedicated group
+  - If NO: Safe for parallel
+```
+
+### Validation Output
+```markdown
+## Parallel Groups Validation
+- Group 1: backend-coder (User model) + frontend-coder (Login form) ✅
+- Group 2: backend-coder (Login API) [depends on Group 1] ✅
+- Resource Conflicts: None ✅
+- Circular Dependencies: None ✅
+- **Valid for execution**
+```
 
 ## Re-planning Workflow
 

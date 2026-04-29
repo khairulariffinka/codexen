@@ -91,9 +91,29 @@ Map user task type to the appropriate subagent:
 
 ## Parallel Execution Rules
 
-- Independent tasks can run in parallel subagents (e.g., `@backend-coder` + `@frontend-coder`)
-- Dependent tasks must chain sequentially (e.g., `@research` → `@coder` → `@auditor`)
-- Always wait for all parallel agents before proceeding to audit phase
+### Group Assignment
+- Independent tasks → same parallel group (e.g., `@backend-coder` + `@frontend-coder`)
+- Dependent tasks → sequential chain (e.g., `@research` → `@coder` → `@auditor`)
+- Same-file writers → different groups (sequential to avoid conflicts)
+
+### Pre-Flight Validation (MANDATORY)
+
+Before dispatching parallel groups, run `@planner` validation:
+
+```
+@planner, validate parallel groups
+→ Returns: Dependency OK? File Conflicts? Circular Deps? Resource Conflicts?
+→ If PASSED: Execute groups
+→ If FAILED: Fix issues before execution
+```
+
+### Execution Protocol
+1. Dispatch all tasks in Group 1 simultaneously
+2. Wait for ALL Group 1 tasks to complete (success or failure)
+3. Handle partial failures (isolate failed agent, accept completed work)
+4. Proceed to Group 2 only after Group 1 fully resolves
+5. Repeat until all groups done
+6. After ALL groups complete → proceed to audit phase
 
 ## Error Recovery
 
