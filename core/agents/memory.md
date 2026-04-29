@@ -161,6 +161,68 @@ Document recurring patterns in `docs/patterns.md`:
 **Example Files:** UserController → UserService → UserRepository
 ```
 
+## Token Budgeting
+
+Track and manage context window usage to avoid hitting model limits. Uses line-based estimation (~10 tokens/line average).
+
+### Token Budget Status
+
+```
+@memory, budget
+→ Shows current estimated token usage
+```
+
+```markdown
+## Token Budget: ~[N]K / 128K tokens
+
+| Component | Lines | Est. Tokens | Priority |
+|-----------|-------|-------------|----------|
+| AGENTS.md | 50 | 500 | 🟢 Always keep |
+| planner.md | 120 | 1,200 | 🟢 Always keep |
+| current-state.md | 30 | 300 | 🟢 Always keep |
+| session history (current) | 400 | 4,000 | 🟡 Compress if needed |
+| session diary (past) | 800 | 8,000 | 🔴 Compress when >80% |
+| code being worked on | 200 | 2,000 | 🟢 Always keep |
+| DECISIONS.md | 40 | 400 | 🟢 Always keep |
+| lessons.md | 20 | 200 | 🟢 Always keep |
+| **TOTAL** | **1,660** | **~16,600** | **13% of 128K** |
+```
+
+### Priority Levels
+
+| Priority | Components | Action at 80% Budget |
+|----------|-----------|----------------------|
+| 🟢 **Always Keep** | AGENTS.md, planner.md, DECISIONS.md, current-state.md, code being edited | Never compressed |
+| 🟡 **Session History** | Current session exchanges, recent output | Compress oldest 50% |
+| 🔴 **Low Priority** | Past sessions (>3 sessions back), archived diaries | Full summary |
+
+### Auto-Triggers
+
+| Threshold | Action |
+|-----------|--------|
+| > 80% of context limit | Auto-compress low priority items |
+| > 90% of context limit | Auto light compression on session history |
+| > 95% of context limit | Prompt user: "Context nearly full. Run aggressive compression?" |
+
+### Sliding Window
+
+If session history alone exceeds 60% of budget:
+
+```
+Keep: Last 10 exchanges (most relevant)
+Summarize: Exchanges 11-20 (1 line summary each)
+Drop: Exchanges 21+ (unless tagged #critical)
+```
+
+### Budget Commands
+
+```
+@memory, budget              → Show current token estimate
+@memory, budget auto         → Enable/disable auto budget tracking
+@memory, budget reset        → Clear low-priority history (keep essentials)
+@memory, budget trim 50%     → Reduce session history by 50%
+```
+
 ## Context Compression
 
 ### Auto-Compression (Default)
