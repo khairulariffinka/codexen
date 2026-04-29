@@ -88,15 +88,47 @@ When an agent fails or discovers a useful insight, log it to `docs/lessons.md` (
 - When a debugging approach works particularly well
 - When a subagent produces incorrect output that needs human correction
 
-### Before Starting Any Task
+### Auto-Trigger Analysis (Every 5 Sessions)
 
-Check `lessons.md` for relevant entries:
+After every **5 completed sessions**, auto-run analysis:
 
 ```
-@memory, show lessons about [current-task-topic]
+AUTO-TRIGGER: 5 sessions completed
+→ @memory, analyze lessons    — scan last 10 sessions for recurring issues
+→ @memory, analyze patterns   — update patterns.md with frequency counts
+→ @memory, summarize session  — extract key outcomes to patterns.md
 ```
 
-If relevant lessons found, share them with the executing agent as context.
+This runs automatically via `@memory save` — no user action needed.
+
+### Force-Check Lessons Before Any Task
+
+Before EVERY task, agent MUST run:
+
+```
+⛔ MANDATORY: @memory, show lessons about [task-topic]
+→ If relevant lessons found → read them before proceeding
+→ If no lessons found → proceed normally
+→ If lessons ignored → agent must explain why
+```
+
+This is enforced in `coder.md` workflow as step 2 (mandatory, not optional).
+
+### User Rating Feedback Loop
+
+After each significant output, ask user for quick rating:
+
+```
+📊 Was this useful?
+  [1] ✅ Perfect
+  [2] 👍 Good enough
+  [3] ❌ Wrong - log lesson
+
+→ If [3]: Auto-log to lessons.md + ask "What should have been different?"
+→ If [1] + [2]: Continue without logging
+```
+
+This helps build a quality database over time.
 
 ## Keyword Search
 

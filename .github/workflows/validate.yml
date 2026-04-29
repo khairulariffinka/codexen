@@ -1,0 +1,44 @@
+name: CodeXen Validation
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run validation script
+        run: bash scripts/validate.sh
+
+      - name: Check YAML frontmatter
+        run: |
+          for f in core/agents/*.md; do
+            if ! head -1 "$f" | grep -q '^---$'; then
+              echo "❌ $f missing frontmatter"
+              exit 1
+            fi
+          done
+          echo "✅ All agents have frontmatter"
+
+      - name: Verify agent count
+        run: |
+          COUNT=$(ls core/agents/*.md | wc -l)
+          if [ "$COUNT" -ne 24 ]; then
+            echo "❌ Expected 24 agents, found $COUNT"
+            exit 1
+          fi
+          echo "✅ 24 agents"
+
+      - name: Verify skill count
+        run: |
+          COUNT=$(ls core/skills/*/SKILL.md | wc -l)
+          if [ "$COUNT" -ne 17 ]; then
+            echo "❌ Expected 17 skills, found $COUNT"
+            exit 1
+          fi
+          echo "✅ 17 skills"
