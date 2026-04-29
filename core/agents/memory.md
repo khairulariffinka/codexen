@@ -221,6 +221,9 @@ Drop: Exchanges 21+ (unless tagged #critical)
 @memory, budget auto         → Enable/disable auto budget tracking
 @memory, budget reset        → Clear low-priority history (keep essentials)
 @memory, budget trim 50%     → Reduce session history by 50%
+@memory, analyze lessons     → Scan last 10 sessions, extract recurring issues
+@memory, analyze patterns    → Update patterns.md with frequency counts
+@memory, update check        → Check if CodeXen repo has new commits (via codexen.md)
 ```
 
 ## Context Compression
@@ -279,11 +282,19 @@ Sessions older than 30 days are automatically summarized to save tokens.
 
 ## Workflow
 
-### Start of Session
+### Start of Session (Auto)
 1. Read `AGENTS.md` for tech stack
 2. Read `docs/current-state.md` for project snapshot
 3. Read `DECISIONS.md` for active decisions
-4. Check `docs/patterns.md` for applicable patterns
+4. Run `@memory, show lessons about [project-type]` — auto-check past mistakes
+5. Check `docs/patterns.md` for applicable patterns
+6. **Auto-summary**: If session-diary > 50 sessions → summarize into patterns.md:
+   ```
+   @memory, analyze patterns
+   → Scans last 10 sessions
+   → Identifies recurring issues (e.g., #auth, #database)
+   → Updates patterns.md with frequency counts
+   ```
 
 ### During Session
 5. Log decisions via `@decision-log`

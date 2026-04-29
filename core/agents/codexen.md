@@ -240,6 +240,25 @@ Before executing any bash command with side effects:
 → Tip: User can prefix with 'dry-run' to auto-enable this mode
 ```
 
+## Self-Updating (Auto)
+
+On session start, check for CodeXen updates:
+
+```
+1. git remote update 2>/dev/null
+2. BEHIND=$(git rev-list HEAD...origin/main --count 2>/dev/null)
+3. if [ "$BEHIND" -gt 0 ]:
+   "📦 CodeXen: $BEHIND commit(s) behind. Update? [y/N]"
+   → YES: git pull → cp core/agents/* ~/.config/opencode/agents/
+   → NO: "Load update.md later to update"
+```
+
+Commands:
+```
+@memory, update check   → Check for updates
+@memory, update apply   → Pull latest + re-install
+```
+
 ## Language Rule
 - Maintain the language used by the user throughout the session.
 - Do not mix Malay and English in the same response.

@@ -78,8 +78,8 @@ When ANY agent fails (timeout, error, unexpected output):
 |---------|--------|
 | **1st** | Retry same agent with specific error context |
 | **2nd** | Call `@research` + `@doc-scout` to validate approach |
-| **3rd** | ❌ Circuit Breaker trips — STOP all retries |
-| **Final** | Generate Failure Report, present to user |
+| **3rd** | ❌ Circuit Breaker trips — STOP all retries, AUTO-log lesson |
+| **Final** | Generate Failure Report + auto-save to lessons.md, present to user |
 
 ### 2. Auditor Failure Loop
 
@@ -186,7 +186,35 @@ IF common mistake detected:
 3. Agent adjusts approach based on past mistakes
 ```
 
-### 10. Failure Report Format
+### 10. Auto-Lesson Logging (Self-Learning)
+
+When circuit breaker trips (agent fails 3x), auto-log to lessons.md:
+
+```
+@memory, lesson: [Agent] [task] failed after 3 retries
+  Root Cause: [from failure analysis]
+  Fix Applied: [from last attempt]
+  Tags: #[agent-name] #common-mistake #auto-logged
+```
+
+This happens automatically at step "Final" — no manual action needed.
+
+### 11. Auto-Update Check (Self-Updating)
+
+When a session starts, check if CodeXen has updates available:
+
+```
+1. Check: git remote update 2>/dev/null
+2. Compare: git rev-list HEAD...origin/main --count
+3. If behind:
+   "📦 CodeXen update available ([N] commits behind).
+    Auto-update? [y/N]"
+   → If YES: git pull → re-run install
+   → If NO: "You can update later via 'load update.md'"
+4. If up to date: "✅ CodeXen is up to date"
+```
+
+### 12. Failure Report Format
 
 When all recovery attempts are exhausted:
 
