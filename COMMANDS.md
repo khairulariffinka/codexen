@@ -215,6 +215,8 @@ Invoke specific subagents directly with `@` mention.
 |---------|-------------|---------|
 | `@backend-coder` | Backend development | `@backend-coder, create POST /api/users` |
 | `@frontend-coder` | Frontend development | `@frontend-coder, build login form` |
+| `@coder` | Full-stack / generic coding | `@coder, build login page` |
+| `@refactor-expert` | Code refactoring | `@refactor-expert, clean up UserController` |
 | `@test-coder` | Test writing | `@test-coder, write unit tests for auth` |
 | `@devops-coder` | DevOps tasks | `@devops-coder, setup Docker` |
 
@@ -239,7 +241,15 @@ Invoke specific subagents directly with `@` mention.
 | Command | Description | Example |
 |---------|-------------|---------|
 | `@memory` | Manage memory | `@memory, update AGENTS.md` |
+| `@memory, show lessons about [topic]` | Check past mistakes | `@memory, show lessons about auth` |
+| `@memory, lesson: [title] — [desc]` | Log a lesson | `@memory, lesson: JWT expiry — forgot to check` |
+| `@memory, analyze lessons` | Scan sessions for patterns | `@memory, analyze lessons` |
+| `@memory, analyze patterns` | Update patterns.md | `@memory, analyze patterns` |
+| `@memory, budget` | Check token usage | `@memory, budget` |
+| `@memory, update check` | Check CodeXen updates | `@memory, update check` |
 | `@decision-log` | Log decisions | `@decision-log, record why we chose JWT` |
+| `@decision-log, find [topic]` | Search decisions | `@decision-log, find decisions about auth` |
+| `@decision-log, show active` | List active decisions | `@decision-log, show active` |
 
 ### Utility Subagents
 
@@ -251,6 +261,13 @@ Invoke specific subagents directly with `@` mention.
 | `@database-expert` | Database tasks | `@database-expert, optimize this query` |
 | `@api-designer` | API design | `@api-designer, design REST API for users` |
 
+### Security Subagents
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `@security` | Full security scan (with bash) | `@security, scan for vulnerabilities` |
+| `@security-auditor` | Quick read-only security audit | `@security-auditor, check auth code` |
+
 ### Specification Subagents
 
 | Command | Description | Example |
@@ -258,6 +275,14 @@ Invoke specific subagents directly with `@` mention.
 | `@brs-manager` | Business requirements | `@brs-manager, create BRS` |
 | `@srs-manager` | Software requirements | `@srs-manager, create SRS from BRS` |
 | `@sds-manager` | System design | `@sds-manager, create SDS` |
+
+### Validator Subagents
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `@auditor` | General code audit | `@auditor, review this code` |
+| `@performance-auditor` | Performance check | `@performance-auditor, check for N+1 queries` |
+| `@style-auditor` | Code style review | `@style-auditor, review naming conventions` |
 
 ---
 
@@ -295,10 +320,35 @@ Creates:
 - AGENTS.md
 - docs/current-state.md
 - docs/session-diary.md
-- docs/AI-AGENT-PROTOCOL.md
+- docs/context/ (modular context directory)
 - .gitignore
 - .env.example
-- package.json (if not exists)
+
+---
+
+## Guardrails (Safety)
+
+CodeXen has 13 built-in safety rules. Manage them via:
+
+```
+@memory, guardrails status   → Show active guardrails
+@memory, guardrails list     → List all 13 with descriptions
+```
+
+Key guardrails:
+- Ask before modify existing file
+- Circuit breaker (3 fails = stop)
+- Rate limit (5 dispatches per msg)
+- Scope enforcement
+- Delete file confirmation
+- Command preview
+- Network call guard
+- Large code generation warning
+- Environment detection
+- Dependency guard
+- Execution dry-run
+- Secret scan (git)
+- Message validation (git)
 
 ---
 

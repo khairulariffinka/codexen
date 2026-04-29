@@ -16,6 +16,24 @@ Comprehensive guide to using all 24 subagents in CodeXen.
 
 ---
 
+## v0.5.0 New Features
+
+| Feature | Description | More Info |
+|---------|-------------|-----------|
+| **Self-Learning** | Agents log failures to `lessons.md` and auto-check before tasks | See: [Memory Agent](#12-memory) |
+| **Self-Updating** | Auto-check for CodeXen updates on session start | `@memory, update check` |
+| **Guardrails** | 13 safety rules: ask before modify, circuit breaker, secret scan, etc. | See: [COMMANDS.md Guardrails](./COMMANDS.md#guardrails-safety) |
+| **Token Budgeting** | Track context window usage, auto-compress at 80% | `@memory, budget` |
+| **CI/CD Validation** | `scripts/validate.sh` with 12 checks (repo & installed modes) | `bash scripts/validate.sh` |
+| **Feedback Loop** | User rating after output: [1] Perfect [2] Good [3] Wrong | Logs to `ratings.md` |
+| **Changelog Workflow** | Formal change propagation: BRS → SRS → SDS → Planner | See: [Spec Chain](#advanced-spec-chain) |
+| **Parallel Validation** | Dependency check, file conflict detection before parallel execution | Auto-validated by `@planner` |
+
+Version: **0.5.0** | Branch: `main` (stable), `develop` (latest)
+
+
+---
+
 ## Table of Contents
 
 ### Getting Started (Start Here!)
