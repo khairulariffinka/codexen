@@ -41,6 +41,48 @@ If `@auditor` has not been run, invoke it:
 @auditor, review current changes
 ```
 
+## Pre-Commit Checks (MANDATORY)
+
+Before staging or committing ANY changes, run these checks:
+
+### 1. Large File Warning
+```
+Check: Any file > 1MB?
+→ If YES: "⚠️ File [name] is [N]MB. Sure you want to commit? [y/N]"
+→ If NO: Proceed
+```
+Exception: Binary assets (images, fonts) in designated directories.
+
+### 2. Sensitive Data Scan
+```
+Check: Any staged file contains:
+  - API keys / secrets / tokens
+  - .env or credentials
+  - Database passwords
+  - Private keys (*.pem, *.key)
+
+Scan: git diff --cached | grep -i 'api_key\|secret\|password\|-----BEGIN'
+→ If FOUND: "⚠️ Possible secret in [file]:[line]. Remove before commit? [y/N]"
+→ If user says Y → unstage file, warn user
+→ If user says N → proceed (user takes responsibility)
+```
+
+### 3. Commit Size Limit
+```
+Check: More than 10 files staged?
+→ If YES: "⚠️ [N] files staged. Is this one logical change? [y/N]"
+→ If NO → "Consider splitting into smaller commits"
+→ If YES → Proceed
+```
+
+### 4. Unstaged Changes Warning
+```
+Check: git status shows unstaged modifications?
+→ If YES: "⚠️ You have unstaged changes. Stage them too? [y/N]"
+→ If user says Y → git add -A
+→ If user says N → Proceed with current staging only
+```
+
 ## Commit Message Generation
 
 ### Conventional Commits Format
@@ -71,6 +113,21 @@ feat(auth): implement JWT authentication
 - Implement secure logout
 
 Closes #123
+```
+
+### Commit Message Validation
+
+Before accepting a commit message, validate format:
+
+```
+Check: Does message match "<type>(<scope>): <subject>"?
+  Valid types: feat, fix, docs, style, refactor, test, chore
+  → If NO: "⚠️ Invalid format. Use 'type(scope): subject' [feat/fix/docs/...]"
+  → If YES: Proceed
+
+Check: Subject > 72 characters?
+  → If YES: "⚠️ Subject too long ([N] chars). Keep under 72."
+  → If NO: Proceed
 ```
 
 ## Smart Commit Grouping
@@ -320,9 +377,22 @@ Remote tracking: origin/main
 
 ## Safety Guidelines
 
+### Commit Phase
+- **Large file check** - Warn if any file > 1MB
+- **Secret scan** - Check staged files for API keys, passwords, .env
+- **Size limit** - Warn if > 10 files in one commit
+- **Unstaged warning** - Alert if unstaged changes exist
+- **Message validation** - Reject non-conventional commit messages
+- **Confirm before commit** - Always show diff preview first
+
+### Push Phase
 - **NEVER auto-push** - Always get user permission first
 - **Show preview** - Display what will be pushed before asking
 - **Confirm target** - Verify branch (main vs feature branch)
 - **Warn on main** - Extra caution when pushing to main/master
 - **No force push** - Never force push unless explicitly requested
-- **Confirm destructive operations** - Always ask before merge/delete
+
+### Operations
+- **Confirm destructive** - Always ask before merge/delete/rebase
+- **Confirm rollback** - Ask before revert or reset --hard
+- **Branch protection** - Check: "Is this branch protected?" before push
