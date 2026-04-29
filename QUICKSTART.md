@@ -55,17 +55,14 @@ You should get a greeting back. If you do, you're ready to go!
 
 ---
 
-### New in v0.4.1
+### New in v0.5.0
 
-- **`--dry-run` option**: Preview changes before applying
-- **Auto-backup**: Automatic backup before update/install
-- **Changelog display**: See what's new
-
-Usage:
-```
-"Load install.md --dry-run"  # Preview only
-"Load update.md --dry-run"  # Preview changes
-```
+- **Subagent routing** — task auto-routed to 24 specialized agents
+- **Self-healing** — 8 error recovery scenarios, circuit breaker
+- **Guardrails** — ask before modify, scope check, secret scan
+- **CI/CD validation** — `validate.sh` with 12 checks
+- **Token budgeting** — auto context window management
+- **Feedback loop** — agents learn from past mistakes via lessons.md
 
 ---
 

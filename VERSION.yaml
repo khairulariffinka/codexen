@@ -1,6 +1,6 @@
-version: 0.4.0
+version: 0.5.0
 name: CodeXen
-description: Customizable AI coding agent framework for OpenCode with persistent memory, parallel subagent execution, and BRS/SRS/SDS specification chain
+description: Customizable AI coding agent framework for OpenCode with persistent memory, parallel subagent execution, self-healing orchestration, and BRS/SRS/SDS specification chain
 author: khairulariffinka
 license: MIT
 default_agent: codexen
@@ -11,6 +11,10 @@ topics:
   - memory-system
   - subagent
   - parallel-execution
+  - self-healing
+  - token-budgeting
+  - guardrails
+  - ci-cd
   - customizable
   - agentic-ai
   - brs
@@ -18,6 +22,7 @@ topics:
   - sds
 
 core_agents:
+  - codexen
   - memory
   - planner
   - research
@@ -27,6 +32,7 @@ core_agents:
   - backend-coder
   - frontend-coder
   - test-coder
+  - refactor-expert
   - devops-coder
   - security-auditor
   - performance-auditor
@@ -42,6 +48,7 @@ core_agents:
   - sds-manager
 
 core_skills:
+  - orchestration
   - planner
   - research
   - coder
@@ -52,25 +59,39 @@ core_skills:
   - brs
   - srs
   - sds
+  - modes
+  - output
+  - greeting
 
 template_skills:
   - setup-profile
   - init-project
+  - switch-config
 
 features:
-  - relationship-memory
+  - lessons-learned
+  - token-budgeting
+  - feedback-loop
+  - parallel-validation
+  - ci-cd-validation
+  - guardrails
 
 paths:
   opencode_config: ~/.config/opencode
   opencode_agents: ~/.config/opencode/agents
   opencode_skills: ~/.config/opencode/skills
+  opencode_scripts: ~/.config/opencode/scripts
 
 install:
   copy_core_agents: true
   copy_core_skills: true
   copy_primary_agent: true
+  copy_scripts: true
 
 update:
   preserve_user_agents: true
   preserve_user_skills: true
   update_core: true
+  auto_backup: true
+  conflict_resolution: true
+  merge_opencode_json: true

@@ -41,6 +41,15 @@ That's it!
 - FIX: Restricted unnecessary bash:allow → bash:deny (api-designer, brs-manager, docs-manager)
 - FIX: .gitignore scope (/memory/, /docs/ instead of memory/, docs/)
 - FIX: Memory skill paths, sed pattern, RAM population flow
+- ADD: Self-healing orchestration (8 error recovery scenarios)
+- ADD: Feedback loop with lessons learned system (lessons.md)
+- ADD: CI/CD validation script (scripts/validate.sh, 12 checks)
+- ADD: Formal changelog workflow for BRS/SRS/SDS spec chain
+- ADD: Parallel execution validation (dependency, file conflict, circular dep)
+- ADD: Token budgeting system with auto-triggers and sliding window
+- ADD: Guardrails (ask before modify, circuit breaker, rate limit, scope)
+- ADD: Git guardrails (secret scan, large file warning, message validation)
+- ADD: `--installed` flag for validate.sh
 
 ### v0.4.4
 - ADD: `--dry-run` option for preview
