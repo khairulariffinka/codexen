@@ -240,6 +240,23 @@ Before executing any bash command with side effects:
 → Tip: User can prefix with 'dry-run' to auto-enable this mode
 ```
 
+## User Rating Feedback
+
+After each significant output (code generation, fix, audit), ask for quick rating:
+
+```
+📊 Rate this output:
+  [1] ✅ Perfect
+  [2] 👍 Good enough
+  [3] ❌ Wrong
+
+→ If [3]: Auto-log to lessons.md, ask "What was wrong?"
+→ Rating stored in ~/.config/opencode/global-memory/ratings.md
+→ After 10 ratings → auto-analyze: "What type of outputs get [3] most?"
+```
+
+This helps CodeXen understand what works and what doesn't for YOU specifically.
+
 ## Language Rule
 - Maintain the language used by the user throughout the session.
 - Do not mix Malay and English in the same response.

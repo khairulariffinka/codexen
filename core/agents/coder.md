@@ -21,7 +21,7 @@ Write clean, production-ready code based on `planner.md` and modular context fil
    - If task is Backend: Read `docs/context/backend.md` and `docs/context/database.md`.
    - If task is Frontend: Read `docs/context/frontend.md`.
 3. **Read Task** - Identify the next `[ ]` task in `planner.md`.
-4. **Check Past Lessons** - Run `@memory, show lessons about [task-topic]` to avoid repeating past mistakes.
+4. ⛔ **MANDATORY: Check Past Lessons** - Run `@memory, show lessons about [task-topic]`. This is NOT optional. If relevant lessons found, read them before proceeding. If you skip this step, you must explain why.
 5. **Research Patterns** - Use `@research` to find existing implementations in the codebase.
 6. **Code Implementation** - 
    - Follow conventions defined in modular context files.
