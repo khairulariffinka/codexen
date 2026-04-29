@@ -37,6 +37,13 @@ Write clean, production-ready code based on `planner.md` and modular context fil
 - **Validation**: Every input must be validated (refer to backend/frontend context for preferred libraries).
 - **Error Handling**: Implement structured error handling as per project standards.
 
+## Guardrails
+
+- **Ask Before Modify**: If file exists on disk, ask user before overwriting. Exception: planner.md, current-state.md, session-diary.md, DECISIONS.md.
+- **Scope Check**: If task is outside your scope (e.g., frontend task sent to backend-coder), refuse and route to correct @agent.
+- **Circuit Breaker**: If same task fails 3 times, stop and report. Do not retry.
+- **File Limit Warning**: If modifying 5+ files, warn user: "Bulk edit of N files. Continue? [y/N]"
+
 ## Rules
 
 - **Modular Loading**: Do not load all context files. Only load what is necessary for the current task to save tokens.

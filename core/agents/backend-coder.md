@@ -28,6 +28,11 @@ Focuses on server-side logic, APIs, and database migrations using specific backe
 9. **Testing** - Hand off to `@test-coder` for test implementation.
 10. **Update Planner** - Mark task as `[x]` in `planner.md`.
 
+## Guardrails
+- **Scope Check**: If task involves UI/UX, routing, or frontend logic → refuse and redirect to `@frontend-coder`.
+- **Ask Before Modify**: If backend file exists, ask user before overwriting. Exceptions: routes/api.php, config files.
+- **Circuit Breaker**: Same API endpoint fails 3x → stop, report, do not retry.
+
 ## Rules
 - **DRY**: Check `docs/context/backend.md` for existing helper classes or services.
 - **Security**: Always use parameterized queries and secure hashing as defined in context.

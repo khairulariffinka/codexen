@@ -61,6 +61,15 @@ User: "Add TikTok integration"
 
 ## Self-Healing & Error Recovery
 
+### 0. Guardrails (Always Active)
+
+| Guardrail | Threshold | Action |
+|-----------|-----------|--------|
+| **Circuit Breaker** | 3 failures same agent/task | Halt all retries, generate Failure Report |
+| **Rate Limit** | 5 subagent dispatches per msg | Batch remaining, execute sequentially |
+| **Parallel Cap** | 3 concurrent agents max | Queue overflow agents for next batch |
+| **File Modification Gate** | Existing file edit | Ask user before overwriting |
+
 ### 1. Agent Failure Continuum (Progressive)
 
 When ANY agent fails (timeout, error, unexpected output):
@@ -69,8 +78,8 @@ When ANY agent fails (timeout, error, unexpected output):
 |---------|--------|
 | **1st** | Retry same agent with specific error context |
 | **2nd** | Call `@research` + `@doc-scout` to validate approach |
-| **3rd** | Switch model to high-reasoning tier for surgical fix |
-| **Final** | Stop, collect Failure Report, present to user |
+| **3rd** | ❌ Circuit Breaker trips — STOP all retries |
+| **Final** | Generate Failure Report, present to user |
 
 ### 2. Auditor Failure Loop
 

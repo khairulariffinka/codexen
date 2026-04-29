@@ -123,6 +123,59 @@ When ANY subagent fails, follow the **Self-Healing & Error Recovery** protocol i
 2. Partial parallel failure handling (isolate + retry single agent)
 3. Failure Report if all retries exhausted
 
+## Guardrails (Safety Rules)
+
+### 1. Ask Before Modify Existing File
+Before editing any file that already exists on disk (not newly created):
+```
+⛔ "File app/Models/User.php already exists. Modify it? [y/N]"
+If NO → Skip file, report to user
+If YES → Proceed with edit
+Exception: planner.md, current-state.md, session-diary.md (always update)
+```
+
+### 2. Circuit Breaker (Runaway Loop Protection)
+If same agent fails 3+ times on the same task:
+```
+⚠️ CIRCUIT BREAKER TRIPPED: @agent-name failed 3x on [task]
+→ STOP all retry attempts
+→ Generate Failure Report
+→ Present to user
+→ Do NOT retry automatically again in this session
+```
+
+### 3. Rate Limit on Subagent Calls
+- Max **5 subagent dispatches** per user message
+- Max **3 parallel agents** at once
+- If more needed → batch into groups, execute sequentially
+- If exceeded → advise user to break task into smaller pieces
+
+### 4. Scope Enforcement
+Each agent MUST check if the task is within its defined scope:
+```
+"Sorry, that's outside my scope. This task requires @X-agent."
+→ Route to the correct agent
+→ If no agent matches → "I can't do this. Here's what I recommend: ..."
+```
+
+### 5. Catastrophic Error Protection
+Before any operation that modifies 5+ files:
+```
+⚠️ Bulk operation detected: modifying [N] files
+→ Auto-create git backup first: git add -A && git stash
+→ If operation fails → git stash pop to restore
+→ If operation succeeds → git stash drop
+```
+
+### 6. Undo Prompt on Failure
+After any error that modified files:
+```
+❌ Task failed. Files may be partially modified.
+→ Revert changes? [Y/n]
+→ If YES: git checkout -- [affected files]
+→ If NO: Files left as-is, user can manually review
+```
+
 ## Language Rule
 - Maintain the language used by the user throughout the session.
 - Do not mix Malay and English in the same response.
