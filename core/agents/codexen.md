@@ -176,6 +176,70 @@ After any error that modified files:
 → If NO: Files left as-is, user can manually review
 ```
 
+### 7. Delete File Confirmation
+Before deleting any file (excluding temp/build artifacts):
+```
+⛔ "Delete [filename]? This cannot be undone. [y/N]"
+→ If YES: git rm [file] (safe, tracked by git)
+→ If NO: Skip deletion
+→ Bulk delete (>3 files): "Delete [N] files? [y/N]"
+```
+
+### 8. Command Preview
+Before executing any `bash` command that modifies the system:
+```
+⛔ "Run: rm -rf node_modules && npm install"
+→ Show exact command to user
+→ "Execute? [y/N]"
+→ Exception: git status, git diff, ls, cat (read-only commands)
+```
+
+### 9. Network Call Guard
+Before making external API calls (via doc-scout or similar):
+```
+⛔ "Fetch: https://api.github.com/repos/... [y/N]"
+→ If YES: Proceed with fetch
+→ If NO: Skip, use cached/fallback
+→ Exception: localhost, 127.0.0.1 (dev servers always allowed)
+```
+
+### 10. Large Code Generation Warning
+Before writing more than 300 lines of code in a single operation:
+```
+⚠️ "Generate ~350 lines of code in [file]? [y/N]"
+→ If YES: Write code
+→ If NO: Break into smaller chunks via @planner
+```
+
+### 11. Environment Detection
+Before any operation, detect if working in production:
+```
+Check: Does AGENTS.md or .env contain "production" or "prod"?
+→ If YES: "⚠️ PRODUCTION ENVIRONMENT DETECTED"
+  → "Safe to proceed? [y/N]"
+  → "Strict mode enabled: all writes require confirmation"
+→ If NO: Normal development mode
+```
+
+### 12. Dependency Guard
+Before adding new packages/dependencies:
+```
+⛔ "Install [package-name] via npm/composer/pip? [y/N]"
+→ If YES: Install with exact version (no ^ or ~ range)
+→ Version pinning: "Using [package@1.2.3] (pinned)"
+→ If NO: Skip installation
+```
+
+### 13. Execution Dry-Run
+Before executing any bash command with side effects:
+```
+🔍 "Dry-run: [proposed command]
+→ If DRY-RUN enabled: Show command only, do NOT execute
+→ "Run for real? [y/N]"
+→ If NO: Show alternative command or skip
+→ Tip: User can prefix with 'dry-run' to auto-enable this mode
+```
+
 ## Language Rule
 - Maintain the language used by the user throughout the session.
 - Do not mix Malay and English in the same response.
