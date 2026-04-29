@@ -107,6 +107,37 @@ sequenceDiagram
 - [ ] Scalability considerations
 - [ ] Deployment architecture
 
+## Changelog & Versioning
+
+Every SDS document must include a changelog section:
+
+```markdown
+## Changelog
+
+| Version | Date | Changes | CR Reference |
+|---------|------|---------|--------------|
+| 1.0 | [Date] | Initial SDS from SRS v1.0 | — |
+| 1.1 | [Date] | Added payment API contract, payment table | CR-001 |
+| 1.2 | [Date] | Modified login endpoint: added MFA field | CR-002 |
+```
+
+### Change Request Handling
+
+When SRS changes, SDS must be updated:
+
+```
+1. Read updated SRS (detect new version or CR-XXX)
+2. Identify affected components:
+   - Database: new tables/columns?
+   - API: new/modified endpoints?
+   - Architecture: new services?
+3. Update ERD, API contracts, deployment diagram
+4. Bump SDS version
+5. Log change in changelog
+6. Call @planner to update task estimates
+7. Notify @backend-coder and @frontend-coder of API changes
+```
+
 ## Guidelines
 
 - **Scalability**: Design for modular growth (Service Pattern).

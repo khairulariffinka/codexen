@@ -15,6 +15,50 @@ The central logic for coordinating agents, managing task flows, and ensuring sys
 4. **Validation**: Invoke `@auditor` for code review and compliance check.
 5. **Commit**: Invoke `@git-manager` ONLY if Auditor status is `✅ PASSED`.
 
+## Spec Change Propagation
+
+When a BRS/SRS/SDS document changes, propagate updates through the chain:
+
+```
+BRS updated (new version or CR-XXX)
+  ↓
+@brs-manager: bump version, update changelog
+  ↓
+@srs-manager: sync SRS, identify affected FRs, bump version
+  ↓
+@sds-manager: sync SDS, update ERD/API/architecture, bump version
+  ↓
+@planner: recalculate estimates, adjust tasks, update dependencies
+  ↓
+@memory: log spec change in session diary
+  ↓
+@decision-log: log CR decision if applicable
+```
+
+### Change Request Flow
+
+```
+User: "Add TikTok integration"
+
+1. @brs-manager → Create CR-001-tiktok.md
+   - Impact analysis (timeline, cost, risk)
+   - Updated BRS → v1.1
+   
+2. @srs-manager → Update SRS
+   - Add FR for TikTok integration
+   - Updated SRS → v1.1
+   
+3. @sds-manager → Update SDS
+   - Add TikTok API contract
+   - Updated SDS → v1.1
+   
+4. @planner → Replan
+   - Add tasks for TikTok feature
+   - Adjust estimates and timeline
+   
+5. Execute new tasks → code, test, audit, commit
+```
+
 ## Self-Healing & Error Recovery
 
 ### 1. Agent Failure Continuum (Progressive)

@@ -77,6 +77,41 @@ Maintain a table linking all stages:
 - [If error / edge case]: [Alternative step]
 ```
 
+## Changelog & Versioning
+
+Every SRS document must include a changelog section:
+
+```markdown
+## Changelog
+
+| Version | Date | Changes | CR Reference |
+|---------|------|---------|--------------|
+| 1.0 | [Date] | Initial SRS from BRS v1.0 | — |
+| 1.1 | [Date] | Added FR-03: Payment integration | CR-001 |
+| 1.2 | [Date] | Modified FR-01.2: Changed lockout to 3 attempts | CR-002 |
+```
+
+### Change Request Handling
+
+When BRS changes, SRS must be updated:
+
+```
+1. Read updated BRS (detect new version or CR-XXX)
+2. Identify affected FRs (which FRs reference changed REQs?)
+3. Update/add/remove affected FRs
+4. Bump SRS version
+5. Log change in changelog
+6. Call @sds-manager to sync SDS
+7. Call @planner to update task plan
+```
+
+### Version Rules
+
+- SRS version matches BRS major.minor
+- Each CR bumps minor version (e.g., v1.0 → v1.1)
+- Major restructure bumps major (e.g., v1.0 → v2.0)
+- Changelog entries link to CR-XXX documents
+
 ## Guidelines
 
 - **Precision**: No ambiguous words like "fast" or "user-friendly". Use "under 2 seconds" or "WCAG compliant".
