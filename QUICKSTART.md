@@ -59,10 +59,15 @@ You should get a greeting back. If you do, you're ready to go!
 
 - **Subagent routing** — task auto-routed to 24 specialized agents
 - **Self-healing** — 8 error recovery scenarios, circuit breaker
-- **Guardrails** — ask before modify, scope check, secret scan
-- **CI/CD validation** — `validate.sh` with 12 checks
+- **Guardrails** — ask before modify, scope check, secret scan, 13 total
+- **CI/CD validation** — `validate.sh` with 12 checks, GitHub Actions
 - **Token budgeting** — auto context window management
 - **Feedback loop** — agents learn from past mistakes via lessons.md
+- **Production checks** — SemVer policy, test suite, self-healing tests
+- **Self-updating** — auto-check for updates on session start
+
+See `VERSIONING.md` for versioning policy.
+See `tests/test-self-healing.sh` for test scenarios.
 
 ---
 
