@@ -3,13 +3,30 @@
 # Run: bash scripts/validate.sh
 # Checks: frontmatter, agent refs, permissions, overclaim terms, file integrity
 
-set -e
-
 PASS=0
 FAIL=0
-ROOT=$(dirname "$(dirname "$(realpath "$0")")")
-AGENTS_DIR="$ROOT/core/agents"
-SKILLS_DIR="$ROOT/core/skills"
+
+# Usage: bash validate.sh [--installed]
+#   Default: validate codexen repo files (script's location)
+#   --installed: validate ~/.config/opencode/ installed files
+
+if [ "$1" = "--installed" ]; then
+  ROOT="$HOME/.config/opencode"
+  AGENTS_DIR="$ROOT/agents"
+  SKILLS_DIR="$ROOT/skills"
+  echo "🔍 Validating installed config: $ROOT"
+elif [ "$1" = "--help" ]; then
+  echo "Usage: bash validate.sh [--installed]"
+  echo "  (no flag)  Validate codexen repo files"
+  echo "  --installed Validate ~/.config/opencode/ installed files"
+  echo "  --help     Show this help"
+  exit 0
+else
+  ROOT=$(dirname "$(dirname "$(realpath "$0")")")
+  AGENTS_DIR="$ROOT/core/agents"
+  SKILLS_DIR="$ROOT/core/skills"
+  echo "🔍 Validating repo: $ROOT"
+fi
 
 red()   { printf "\e[31m%s\e[0m\n" "$1"; }
 green() { printf "\e[32m%s\e[0m\n" "$1"; }
@@ -108,7 +125,9 @@ check "Permission sets are consistent" "pass"
 
 # ── 6. No swap/temp files ──
 echo "── Temp / Swap Files ──"
-swaps=$(find "$ROOT/core" -name '*.swp' -o -name '*.swo' -o -name '*~' -o -name '*.kate-swp' 2>/dev/null)
+swap_dir="$ROOT"
+[ "$1" = "--installed" ] && swap_dir="$ROOT/agents"  # no core/ dir in installed
+swaps=$(find "$swap_dir" -name '*.swp' -o -name '*.swo' -o -name '*~' -o -name '*.kate-swp' 2>/dev/null || true)
 if [ -n "$swaps" ]; then
   check "Swap files found: $(echo "$swaps" | tr '\n' ' ')" "fail"
 else
@@ -125,19 +144,22 @@ for f in "$AGENTS_DIR"/*.md; do
 done
 
 bad_refs=0
-for f in "$AGENTS_DIR"/*.md "$SKILLS_DIR"/*/SKILL.md; do
+if [ "$1" = "--installed" ]; then
+  ref_files="$AGENTS_DIR"/*.md
+else
+  ref_files="$AGENTS_DIR"/*.md "$SKILLS_DIR"/*/SKILL.md
+fi
+shopt -s nullglob
+for f in $ref_files; do
   [ ! -f "$f" ] && continue
-  # Find @agent mentions, excluding @param @returns @throws @click etc.
   refs=$(grep -on '@[a-z][a-z-]*' "$f" 2>/dev/null | grep -v '@param\|@returns\|@throws\|@click\|@mouse\|@key\|@media\|@import\|@apply\|@tailwind\|@layer\|@screen\|@font\|@starting' || true)
   while IFS=: read -r line ref; do
     [ -z "$ref" ] && continue
     agent_name="${ref#@}"
-    # Skip non-agent refs (code examples, npm packages)
     case "$agent_name" in
       codexen|coder|backend-coder|frontend-coder|test-coder|refactor-expert|devops-coder|auditor|security|security-auditor|performance-auditor|style-auditor|planner|research|memory|decision-log|git-manager|docs-manager|database-expert|api-designer|doc-scout|brs-manager|srs-manager|sds-manager) ;;
-      *) continue ;; # Not an agent reference
+      *) continue ;;
     esac
-    # Check if agent file exists
     if ! echo "$valid_agents" | grep -qw "$agent_name"; then
       bad_refs=$((bad_refs + 1))
     fi
@@ -147,7 +169,11 @@ check "All @agent refs resolve to existing files (broken: $bad_refs)" "$([ "$bad
 
 # ── 8. Overclaim terms ──
 echo "── Overclaim Terms ──"
-overclaims=$(grep -rn 'semantic search\|knowledge graph\|pattern recognition' "$ROOT/core" --include='*.md' 2>/dev/null || true)
+if [ "$1" = "--installed" ]; then
+  overclaims=$(grep -rn 'semantic search\|knowledge graph\|pattern recognition' "$ROOT/agents" "$ROOT/skills" --include='*.md' 2>/dev/null || true)
+else
+  overclaims=$(grep -rn 'semantic search\|knowledge graph\|pattern recognition' "$ROOT/core" --include='*.md' 2>/dev/null || true)
+fi
 if [ -z "$overclaims" ]; then
   check "No overclaim terms detected" "pass"
 else
@@ -156,48 +182,56 @@ fi
 
 # ── 9. No TODO/FIXME in production files ──
 echo "── TODO / FIXME Check ──"
-# Exclude false positives: rules mentioning TODO/FIXME, code blocks
-todos=$(grep -rn 'TODO\|FIXME' "$ROOT/core" --include='*.md' 2>/dev/null \
-  | grep -v 'code examples\|```\|No.*TODO.*left\|No.*FIXME.*comment' || true)
+if [ "$1" = "--installed" ]; then
+  todos=$(grep -rn 'TODO\|FIXME' "$ROOT/agents" "$ROOT/skills" --include='*.md' 2>/dev/null | grep -v 'code examples\|```\|No.*TODO.*left\|No.*FIXME.*comment' || true)
+else
+  todos=$(grep -rn 'TODO\|FIXME' "$ROOT/core" --include='*.md' 2>/dev/null | grep -v 'code examples\|```\|No.*TODO.*left\|No.*FIXME.*comment' || true)
+fi
 if [ -z "$todos" ]; then
   check "No TODO/FIXME in production files" "pass"
 else
   check "TODO/FIXME found (review needed)" "fail"
 fi
 
-# ── 10. Install/Update agent count ──
-echo "── Install/Update File Counts ──"
-install_match=$(grep -c '24 agents\|24 subagents' "$ROOT/install.md" 2>/dev/null || true)
-update_match=$(grep -c '24 agents\|24 subagents' "$ROOT/update.md" 2>/dev/null || true)
-if [ "$install_match" -gt 0 ] && [ "$update_match" -gt 0 ]; then
-  check "install/update.md reference correct agent count" "pass"
-else
-  check "install/update.md agent count mismatch" "fail"
+# ── 10. Install/Update agent count (repo only) ──
+if [ "$1" != "--installed" ]; then
+  echo "── Install/Update File Counts ──"
+  install_match=$(grep -c '24 agents\|24 subagents' "$ROOT/install.md" 2>/dev/null || true)
+  update_match=$(grep -c '24 agents\|24 subagents' "$ROOT/update.md" 2>/dev/null || true)
+  if [ "$install_match" -gt 0 ] && [ "$update_match" -gt 0 ]; then
+    check "install/update.md reference correct agent count" "pass"
+  else
+    check "install/update.md agent count mismatch" "fail"
+  fi
 fi
 
-# ── 11. Parallel group consistency ──
-echo "── Parallel Group Consistency ──"
-# Check that planner.md mentions parallel groups
-parallel_planner=$(grep -c 'Parallel Group\|Parallel.*Group' "$ROOT/core/skills/planner/SKILL.md" 2>/dev/null || true)
-parallel_codexen=$(grep -c 'Parallel Group\|Parallel.*Group\|Parallel Execution' "$ROOT/core/agents/codexen.md" 2>/dev/null || true)
-if [ "$parallel_planner" -ge 3 ] && [ "$parallel_codexen" -ge 1 ]; then
-  check "Parallel execution defined consistently across files" "pass"
-else
-  check "Parallel execution references inconsistent" "fail"
+# ── 11. Parallel group consistency (repo only) ──
+if [ "$1" != "--installed" ]; then
+  echo "── Parallel Group Consistency ──"
+  parallel_planner=$(grep -c 'Parallel Group\|Parallel.*Group' "$ROOT/core/skills/planner/SKILL.md" 2>/dev/null || true)
+  parallel_codexen=$(grep -c 'Parallel Group\|Parallel.*Group\|Parallel Execution' "$ROOT/core/agents/codexen.md" 2>/dev/null || true)
+  if [ "$parallel_planner" -ge 3 ] && [ "$parallel_codexen" -ge 1 ]; then
+    check "Parallel execution defined consistently across files" "pass"
+  else
+    check "Parallel execution references inconsistent" "fail"
+  fi
 fi
 
-# ── 12. .gitignore scope ──
-echo "── .gitignore Scope ──"
-if grep -q '^/memory/' "$ROOT/.gitignore" 2>/dev/null; then
-  check ".gitignore uses root-scoped /memory/" "pass"
-else
-  check ".gitignore memory/ not root-scoped" "fail"
+# ── 12. .gitignore scope (repo only) ──
+if [ "$1" != "--installed" ]; then
+  echo "── .gitignore Scope ──"
+  if grep -q '^/memory/' "$ROOT/.gitignore" 2>/dev/null; then
+    check ".gitignore uses root-scoped /memory/" "pass"
+  else
+    check ".gitignore memory/ not root-scoped" "fail"
+  fi
 fi
 
 # ── Summary ──
 echo ""
 yellow "=========================================="
-yellow "  Results: $PASS passed, $FAIL failed (12 checks)"
+TOTAL=$((PASS + FAIL))
+yellow "  Results: $PASS passed, $FAIL failed (${TOTAL} checks)"
 yellow "=========================================="
 echo ""
 

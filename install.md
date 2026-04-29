@@ -249,6 +249,12 @@ else
   echo "Skipping global-memory (already exists)"
 fi
 
+# validation script
+echo ""
+echo "=== Installing Validation Script ==="
+mkdir -p ~/.config/opencode/scripts
+update_or_skip "scripts/validate.sh" "$HOME/.config/opencode/scripts/validate.sh" "validate.sh"
+
 echo ""
 [ "$DRY_RUN" = true ] && echo "🔍 DRY-RUN complete. Run without --dry-run to apply." || echo "✅ Install complete!"
 ```
@@ -261,6 +267,7 @@ echo ""
 | Updates 17 skills (compare first) | `~/.config/opencode/skills/` |
 | Copies opencode.json (if different) | `~/.config/opencode/opencode.json` |
 | Creates memory templates (if empty) | `~/.config/opencode/global-memory/` |
+| Copies validation script | `~/.config/opencode/scripts/validate.sh` |
 | **Preserves user's custom agents/skills** | Unchanged |
 
 ---
