@@ -1,0 +1,60 @@
+# Changelog
+
+All notable changes to CodeXen are documented here.
+
+Format based on [Keep a Changelog](https://keepachangelog.com/), versioning follows [SemVer](VERSIONING.md).
+
+---
+
+## [0.5.0] - 2026-04-29
+
+### Added
+- **24 subagents** with routing table in `codexen.md`
+- **Self-healing orchestration**: 8 error recovery scenarios (timeout, partial parallel, routing failure, etc.)
+- **Self-learning**: auto-log lessons on circuit breaker, mandatory lessons check before tasks
+- **Self-updating**: auto-check for new commits on session start (`@memory, update check`)
+- **13 guardrails**: ask before modify, circuit breaker, rate limit, scope enforcement, catastrophic undo, delete confirm, command preview, network guard, large code warn, env detection, dependency guard, dry-run, secret scan, message validation
+- **Token budgeting**: auto-trigger compression at 80%, `@memory, budget`
+- **Feedback loop**: user rating after output ([1]/[2]/[3]), auto-log to `lessons.md`
+- **Parallel validation**: dependency check, file conflict detection, circular dep check
+- **CI/CD validation**: `scripts/validate.sh` (12 checks, --installed flag)
+- **Formal changelog workflow**: BRS → SRS → SDS → Planner change propagation
+- **Open source files**: CONTRIBUTING.md, SECURITY.md, CODE_OF_CONDUCT.md
+- **GitHub templates**: issue templates, PR template
+- **Agent generator**: `scripts/generate-agent.sh [name]`
+- **Production test suite**: `tests/test-self-healing.sh` (18 scenarios)
+- **Health check**: `@memory, health`
+
+### Fixed
+- Architecture.md: outdated directory structure (agent/ → core/)
+- Memory agent: removed overclaim terminology
+- Planner.md: edit:deny → edit:allow
+- Permission consistency: bash:deny for doc-writers
+- .gitignore scope: /memory/ and /docs/ (root-only)
+- Install/update scripts: missing agent loop, primary agent name/mode preservation
+
+### Changed
+- Version: 0.4.0 → 0.5.0
+- Expanded: research.md, refactor-expert.md, backend-coder.md, auditor.md, brs-manager.md
+- Added cross-agent handoffs (@test-coder, @auditor, @decision-log) to all coders
+- Added audit gate (mandatory @auditor PASSED before commit)
+
+---
+
+## [0.4.1] - 2026-04-13
+
+### Added
+- `--dry-run` option for install/update
+- Auto-backup before install/update
+- Changelog display in install/update
+
+---
+
+## [0.4.0] - 2026-04-13
+
+### Added
+- Initial release
+- Core agent system
+- BRS/SRS/SDS specification chain
+- Memory system with compression
+- Install/update scripts

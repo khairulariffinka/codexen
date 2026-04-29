@@ -50,6 +50,12 @@ That's it!
 - ADD: Guardrails (ask before modify, circuit breaker, rate limit, scope)
 - ADD: Git guardrails (secret scan, large file warning, message validation)
 - ADD: `--installed` flag for validate.sh
+- ADD: Open source files (CONTRIBUTING.md, SECURITY.md, CODE_OF_CONDUCT.md)
+- ADD: GitHub issue/PR templates
+- ADD: Agent generator script (scripts/generate-agent.sh)
+- ADD: Production test suite (tests/test-self-healing.sh, 18 scenarios)
+- ADD: GitHub Actions CI pipeline (.github/workflows/validate.yml)
+- ADD: SemVer policy (VERSIONING.md)
 
 ### v0.4.4
 - ADD: `--dry-run` option for preview

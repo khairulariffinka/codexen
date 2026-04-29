@@ -1,5 +1,9 @@
 # CodeXen
 
+![Version](https://img.shields.io/badge/version-0.5.0-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Validation](https://img.shields.io/badge/validation-12/12-passing-brightgreen)
+
 **AI Coding Assistant for OpenCode**
 
 Give it a task, it handles the rest.
