@@ -1,12 +1,12 @@
 ---
-name: refactor-expert
 description: Specialized refactoring expert - code smells, SOLID principles, DRY, complexity reduction
 mode: subagent
 permission:
-  edit: allow
   read: allow
+  edit: allow
   glob: allow
   grep: allow
+  list: allow
   bash: allow
 ---
 

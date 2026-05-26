@@ -1,11 +1,12 @@
 ---
-name: security
 description: Dedicated security vulnerability scanner - detects OWASP Top 10, hardcoded secrets, and provides detailed security reports
 mode: subagent
 permission:
   read: allow
-  grep: allow
+  edit: deny
   glob: allow
+  grep: allow
+  list: allow
   bash: allow
 ---
 

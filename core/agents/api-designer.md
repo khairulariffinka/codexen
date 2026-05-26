@@ -1,12 +1,12 @@
 ---
-name: api-designer
 description: API design specialist for REST, GraphQL, OpenAPI specs, and API architecture
 mode: subagent
 permission:
-  edit: allow
   read: allow
+  edit: allow
   glob: allow
   grep: allow
+  list: allow
   bash: deny
 ---
 

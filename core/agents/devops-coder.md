@@ -1,12 +1,12 @@
 ---
-name: devops-coder
 description: Specialized DevOps developer - Docker, CI/CD, deployment configs, infrastructure as code
 mode: subagent
 permission:
-  edit: allow
   read: allow
+  edit: allow
   glob: allow
   grep: allow
+  list: allow
   bash: allow
 ---
 

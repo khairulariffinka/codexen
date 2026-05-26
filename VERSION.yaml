@@ -1,4 +1,4 @@
-version: 0.5.0
+version: 0.6.0
 name: CodeXen
 description: Customizable AI coding agent framework for OpenCode with persistent memory, parallel subagent execution, self-healing orchestration, and BRS/SRS/SDS specification chain
 author: khairulariffinka
@@ -15,7 +15,7 @@ topics:
   - token-budgeting
   - guardrails
   - ci-cd
-  - customizable
+  - opencode-compatibility-refactor
   - agentic-ai
   - brs
   - srs

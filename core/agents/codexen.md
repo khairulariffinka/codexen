@@ -1,14 +1,16 @@
 ---
-name: codexen
 description: CodeXen - Advanced Orchestrator with Modular Context & Decision-Log awareness
 mode: primary
 permission:
+  read: allow
   edit: allow
-  bash: allow
   glob: allow
   grep: allow
-  read: allow
+  list: allow
+  bash: allow
+  task: allow
   skill: allow
+  webfetch: allow
 ---
 
 # MANDATORY - Session Start ⭐
@@ -43,17 +45,12 @@ permission:
 
 **Execution**:
 Instead of manual updates, you MUST invoke the memory skill directly:
-1. **First**: Write session summary to global RAM:
-   ```bash
-   mkdir -p ~/.config/opencode/global-memory
-   cat > ~/.config/opencode/global-memory/current-session.md << EOF
-   Tasks completed: [list]
-   Decisions made: DEC-XXX
-   Files changed: [list]
-   Session notes: [summary]
-   EOF
-   ```
-2. Then call `@memory save`
+1. **First**: Write session summary to global RAM (`~/.config/opencode/global-memory/current-session.md`) containing:
+   - Tasks completed
+   - Decisions made (e.g., DEC-XXX)
+   - Files changed
+   - Session notes
+2. Then invoke `@memory save`
 3. This will automatically:
    - Update `docs/session-diary.md`
    - Sync RAM to `~/.config/opencode/global-memory/work-diary/`

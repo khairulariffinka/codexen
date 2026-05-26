@@ -1,12 +1,12 @@
 ---
-name: backend-coder
 description: Specialized backend developer - uses modular backend and database context
 mode: subagent
 permission:
-  edit: allow
   read: allow
+  edit: allow
   glob: allow
   grep: allow
+  list: allow
   bash: allow
 ---
 

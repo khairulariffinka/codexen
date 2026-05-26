@@ -1,11 +1,12 @@
 ---
-name: auditor
 description: Advanced code auditor - validates against modular context, decision logs, and security standards
 mode: subagent
 permission:
   read: allow
-  grep: allow
+  edit: deny
   glob: allow
+  grep: allow
+  list: allow
   bash: allow
 ---
 

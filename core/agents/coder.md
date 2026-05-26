@@ -1,12 +1,12 @@
 ---
-name: coder
 description: Professional coder agent with modular context awareness (Frontend/Backend/DB)
 mode: subagent
 permission:
-  edit: allow
   read: allow
+  edit: allow
   glob: allow
   grep: allow
+  list: allow
   bash: allow
 ---
 

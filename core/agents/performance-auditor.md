@@ -1,11 +1,12 @@
 ---
-name: performance-auditor
 description: Specialized performance auditor - N+1 queries, memory leaks, optimization opportunities
 mode: subagent
 permission:
   read: allow
-  grep: allow
+  edit: deny
   glob: allow
+  grep: allow
+  list: allow
   bash: deny
 ---
 

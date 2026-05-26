@@ -1,12 +1,12 @@
 ---
-name: memory
 description: Persistent project memory with keyword search, decision tracking, and file relationship mapping
 mode: subagent
 permission:
-  edit: allow
   read: allow
+  edit: allow
   glob: allow
   grep: allow
+  list: allow
   bash: allow
 ---
 
