@@ -1,6 +1,11 @@
 ---
 name: decision-log
 description: Decision logging system - tracks design decisions with rationale and tracks impacted files
+license: MIT
+compatibility: opencode
+metadata:
+  audience: agents
+  workflow: decisions
 ---
 
 # Decision Log Skill

@@ -1,6 +1,11 @@
 ---
 name: auditor
 description: Review code quality, security, and best practices - works with any framework/language
+license: MIT
+compatibility: opencode
+metadata:
+  audience: agents
+  workflow: audit
 ---
 
 # Auditor Skill

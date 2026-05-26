@@ -1,6 +1,11 @@
 ---
 name: setup-profile
 description: Interactive setup wizard to configure user profile for global memory
+license: MIT
+compatibility: opencode
+metadata:
+  audience: agents
+  workflow: onboarding
 ---
 
 ## When to Use

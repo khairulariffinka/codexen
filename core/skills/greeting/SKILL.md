@@ -1,6 +1,11 @@
 ---
 name: greeting
-description: Time-based greetings for CodeXen.
+description: Time-based greetings for CodeXen
+license: MIT
+compatibility: opencode
+metadata:
+  audience: agents
+  workflow: onboarding
 ---
 
 # Greeting System
@@ -9,98 +14,13 @@ description: Time-based greetings for CodeXen.
 
 - Every new OpenCode session (when user opens OpenCode fresh)
 - Every time user switches to this agent's tab
-- NOT every time @agentname is invoked in chat
+- NOT every time the agent is invoked in chat
 
 ## Language Handling
 
-Detect user's language from input and reply in the same language:
+Detect the user's language from their input and reply in the same language:
 - If user writes in English, reply in English
-- If user writes in other language, reply in that language
-
-## Session Time Tracking
-
-### Auto-Start Session (First Prompt)
-
-**When CodeXen is invoked for the first time in OpenCode:**
-
-1. **Check if session tracking is active:**
-   ```bash
-   if [ -f ".session-track/current-session-start" ]; then
-       # Session already started - continue tracking
-   else
-       # NEW SESSION - Start tracking automatically
-       session start
-   fi
-   ```
-
-2. **Session will auto-start** using the global `session` command
-   - Records start time automatically
-   - Creates tracking file in `.session-track/`
-   - Ready to calculate duration on exit
-
-### Benefits of Auto-Start
-
-- No manual start needed - Session starts on first interaction
-- Accurate time tracking - Captures exact start time
-- Zero effort - Works transparently in background
-- Universal - Works across all projects
-
-### End Time - Farewell Detection
-
-**When farewell word detected** (bye, goodbye, done, etc.):
-
-1. **Auto-save session** using the session tracker:
-   ```bash
-   session save "Session completed - [summary of work done]"
-   ```
-
-2. **What happens automatically:**
-   - End time is recorded
-   - Duration is calculated (e.g., "17m 30s")
-   - Session saved to project history
-   - Session archived to global work diary
-   - Tracking file cleaned up
-
-3. **No manual calculation needed!**
-
-### Session Commands (Manual Override)
-
-If you need manual control:
-
-| Command | Description |
-|---------|-------------|
-| `session start` | Manually start tracking (if auto-start failed) |
-| `session status` | Check current session duration |
-| `session save "msg"` | Save with custom message |
-
-### Session File Locations
-
-**Project Level:**
-- Tracking: `.session-track/current-session-start`
-- Session Log: `docs/session-diary.md`
-
-**Global Level:**
-- Work Diary: `~/.config/opencode/global-memory/work-diary/diary-YYYY-MM.md`
-
-### Session Save Format
-
-**Project Session File includes:**
-- Start Time
-- End Time
-- Duration (calculated automatically)
-- Config Applied
-- Custom Message
-
-**Example:**
-```markdown
-# Session: my-project
-
-**Date:** 2026-03-17 14:30:15
-**Project:** my-project
-**Time Spent:** Started: 14:15:00 | Duration: 15m 15s
-```
-
----
+- If user writes in another language, reply in that language
 
 ## Time-Based Greetings
 
@@ -109,7 +29,7 @@ If you need manual control:
 ```
 Good morning!
 
-I'm [agent-name]
+I'm {agent-name}
 
 I can help you:
 - Build new features
@@ -126,7 +46,7 @@ What would you like to do?
 ```
 Good afternoon!
 
-I'm [agent-name]
+I'm {agent-name}
 
 Ready to help with:
 - Development tasks
@@ -142,7 +62,7 @@ What's on your mind?
 ```
 Good evening!
 
-[agent-name] here
+{agent-name} here
 
 Available services:
 - Write code
@@ -158,7 +78,7 @@ What can I do for you?
 ```
 Good night!
 
-I'm [agent-name] - still working!
+I'm {agent-name} - still working!
 
 Night hours don't stop me:
 - Quick fixes
@@ -171,108 +91,66 @@ Need assistance?
 ## Dynamic Agent Name
 
 The greeting uses the **current agent's configured name** from:
-1. Agent definition file (name field)
-2. User's custom configuration
+1. The agent definition file (name field)
+2. The user's custom configuration
 
-## Farewell (When User Says "Bye")
+---
 
-### What to Do
+## Session Tracking
 
-When user says any of these words/phrases, trigger farewell:
-- English: "bye", "goodbye", "see you", "stop", "exit", "that's all", "done", "finish", "quit"
-- Other languages: "selesai", "habis", "jumpa lagi", "terima kasih"
+### Starting a Session
 
-### Auto-Save Session
+When CodeXen is invoked for the first time in a session:
 
-**Step 1: Save Session Automatically**
-```bash
-session save "Completed: [brief summary of work done]"
-```
+1. Read `docs/current-state.md` to understand the project status.
+2. Read `planner.md` to identify active tasks.
+3. Check `~/.config/opencode/global-memory/current-session.md` for any existing session context.
+4. Greet the user with time-based greeting and project status.
+5. Inform the user of current status:
+   - English: "Boss, we are currently in [Phase] according to current-state.md. The next task is [Task]."
+   - Malay: "Bos, sekarang kita di [Phase] mengikut current-state.md. Task seterusnya adalah [Task]."
 
-This will:
-- Record end time automatically
-- Calculate duration (e.g., "15m 30s")
-- Save to project history
-- Archive to global work diary
-- Clean up tracking files
+### Farewell Detection
 
-**Step 2: Show Summary to User**
+When the user says any of these words, trigger the farewell and session save:
+- English: "bye", "goodbye", "see you", "stop", "exit", "that's all", "done", "finish", "quit", "selesai"
+- Malay: "selesai", "habis", "jumpa lagi", "terima kasih"
+
+### Ending a Session (Auto-Save)
+
+When a farewell is detected:
+
+1. **Save session to global memory:**
+   - Write session summary to `~/.config/opencode/global-memory/current-session.md` containing:
+     - Tasks completed
+     - Decisions made
+     - Files changed
+     - Session notes
+
+2. **Save to global work diary:**
+   - Append entry to `~/.config/opencode/global-memory/work-diary/diary-YYYY-MM.md` with:
+     - Date and time
+     - Project name
+     - Duration (calculated from session start time stored earlier)
+     - Summary of work accomplished
+
+3. **Save to project diary:**
+   - Append entry to `docs/session-diary.md` with date, project name, and status.
+
+4. **Show session summary:**
+
 ```
 Session Saved!
 
-Duration: 15m 30s
+Duration: [X minutes]
 Saved to:
-  - Project history
+  - Project history (docs/session-diary.md)
   - Global work diary
 
-Summary: [brief description]
+Summary: [brief description of work done]
 ```
 
-**Step 3: Say Goodbye**
-- Friendly farewell message
-- Remind user how to restart
-
-### Manual Session Save (Fallback)
-
-If auto-save fails, use manual method:
-
-1. **Save Session to Global Memory**
-   - Read `~/.config/opencode/global-memory/work-diary/diary-YYYY-MM.md` first
-   - Fill in the session summary with these sections:
-
-   **Template to Fill:**
-   ```markdown
-   ## Session Summary
-
-   **What was accomplished:**
-   - [ ] Task 1 completed
-   - [ ] Task 2 completed
-   - [ ] Task 3 completed
-
-   **Challenges faced:**
-   - [Challenge 1]: [Brief description of the problem]
-   - [Challenge 2]: [Brief description of the problem]
-
-   **Solutions found:**
-   - [Solution 1]: [How you solved challenge 1]
-   - [Solution 2]: [How you solved challenge 2]
-
-   **Key decisions:**
-   - [Decision 1]: [What was decided and why]
-
-   **Notes:**
-   - [Any additional notes or learnings]
-   ```
-
-   - Write updated content to the file
-
-2. **Archive to Work Diary** (if significant)
-   - Add entry to `~/.config/opencode/global-memory/work-diary/diary-YYYY-MM.md`
-   - Format:
-   ```markdown
-   ## 2026-03-17 15:30 - Project Name
-
-   **Duration:** 45 minutes  
-   **Accomplished:**
-   - Built login page
-   - Fixed navigation bug
-
-   **Challenges:** Database timeout  
-   **Solution:** Added connection pooling
-   ```
-
-### Important Rules
-
-- **ALWAYS try auto-save first** - Run `session save` command
-- **ALWAYS read file before writing** - Use Read tool first
-- **Fill all 3 main sections** - Accomplished, Challenges, Solutions
-- **Be specific** - "Fixed login bug" - "Fixed JWT token validation error on line 45"
-- **Include key decisions** - Note why you chose solution A over B
-- **Keep it concise** - 3-5 bullet points per section is ideal
-- If file does not exist - Create from template
-- Use [x] for completed tasks, [ ] for incomplete
-
-### Farewell Message
+5. **Show farewell message:**
 
 ```
 Goodbye!
@@ -292,18 +170,62 @@ To start again (after closing):
 See you next time!
 ```
 
-### Session Save Format
+---
 
+## Session Save Format
+
+### Project Session Diary Entry
+
+```markdown
+## Session: YYYY-MM-DD HH:MM
+- Project: {project-name}
+- Status: Auto-saved via memory skill
 ```
-## Session Summary (Fill at end)
+
+### Global Work Diary Entry
+
+```markdown
+### YYYY-MM-DD - Session Update
+**Time:** HH:MM
+**Project:** {project-name}
+
+{full session summary from current-session.md}
+
+---
+```
+
+### Session Summary Template (for current-session.md)
+
+```markdown
+## Session Summary
 
 **What was accomplished:**
-- [Task 1]
-- [Task 2]
+- [x] Task 1 completed
+- [x] Task 2 completed
+- [ ] Task 3 (partial)
 
 **Challenges faced:**
-- [Challenge 1]
+- Challenge 1: Brief description
 
 **Solutions found:**
-- [Solution 1]
+- Solution 1: How it was resolved
+
+**Key decisions:**
+- Decision 1: What was decided and why
+
+**Notes:**
+- Any additional notes or learnings
 ```
+
+---
+
+## Important Rules
+
+- Always try auto-save first (write to current-session.md, then invoke `@memory save`)
+- Always read files before writing
+- Fill all sections of the session summary
+- Be specific: "Fixed JWT token validation error on line 45" not "Fixed auth bug"
+- Include key decisions with rationale
+- Keep it concise: 3-5 bullet points per section is ideal
+- If a file does not exist, create it from the template
+- Use `[x]` for completed tasks, `[ ]` for incomplete

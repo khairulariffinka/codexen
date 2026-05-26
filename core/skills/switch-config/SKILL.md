@@ -1,6 +1,11 @@
 ---
 name: switch-config
 description: Switch between different OpenCode model configurations (Free, Budget, Quality, Optimized). Creates or replaces ~/.config/opencode/opencode.json.
+license: MIT
+compatibility: opencode
+metadata:
+  audience: agents
+  workflow: configuration
 ---
 
 # Switch Config Skill

@@ -1,6 +1,11 @@
 ---
 name: output
-description: Standardized output formats for CodeXen.
+description: Standardized output formats for CodeXen
+license: MIT
+compatibility: opencode
+metadata:
+  audience: agents
+  workflow: formatting
 ---
 
 # Output Format

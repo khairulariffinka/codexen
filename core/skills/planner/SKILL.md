@@ -1,6 +1,11 @@
 ---
 name: planner
 description: Advanced task planning with estimation, dependency tracking, and decision alignment
+license: MIT
+compatibility: opencode
+metadata:
+  audience: agents
+  workflow: planning
 ---
 
 # Planner Skill
