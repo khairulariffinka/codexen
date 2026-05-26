@@ -65,13 +65,9 @@ echo "── YAML Frontmatter ──"
 for f in "$AGENTS_DIR"/*.md; do
   name=$(basename "$f")
   if head -1 "$f" | grep -q '^---$'; then
-    : # has frontmatter
+    : # has frontmatter opening
   else
     check "$name: missing --- frontmatter" "fail"
-    continue
-  fi
-  if ! grep -q '^name: ' "$f"; then
-    check "$name: missing name:" "fail"
     continue
   fi
   if ! grep -q '^description: ' "$f"; then
@@ -82,7 +78,7 @@ for f in "$AGENTS_DIR"/*.md; do
     check "$name: missing mode:" "fail"
     continue
   fi
-  if ! grep -q '^permission:' "$f"; then
+  if ! grep -q '^permission:' "$f" && ! grep -q '^permission' "$f"; then
     check "$name: missing permission:" "fail"
     continue
   fi
@@ -91,15 +87,61 @@ check "All agents have valid YAML frontmatter" "pass"
 
 # ── 4. Skill frontmatter ──
 echo "── Skill Frontmatter ──"
+skill_fm_pass=0
+skill_fm_fail=0
 for f in "$SKILLS_DIR"/*/SKILL.md; do
   name=$(basename "$(dirname "$f")")
   if head -1 "$f" 2>/dev/null | grep -q '^---$'; then
-    : # has frontmatter
+    : # has frontmatter opening
   else
-    check "$name/SKILL.md: missing --- frontmatter" "fail"
+    check "$name/SKILL.md: missing opening ---" "fail"
+    skill_fm_fail=$((skill_fm_fail + 1))
+    continue
   fi
+  # Check that name field matches directory name and follows OpenCode naming convention
+  skname=$(grep '^name:' "$f" 2>/dev/null | head -1 | sed 's/^name:[[:space:]]*//')
+  if [ -z "$skname" ]; then
+    check "$name/SKILL.md: missing name field" "fail"
+    skill_fm_fail=$((skill_fm_fail + 1))
+    continue
+  fi
+  if [ "$skname" != "$name" ]; then
+    check "$name/SKILL.md: name='$skname' does not match directory '$name'" "fail"
+    skill_fm_fail=$((skill_fm_fail + 1))
+    continue
+  fi
+  if ! echo "$skname" | grep -qE '^[a-z0-9]+(-[a-z0-9]+)*$'; then
+    check "$name/SKILL.md: name '$skname' does not match OpenCode naming convention" "fail"
+    skill_fm_fail=$((skill_fm_fail + 1))
+    continue
+  fi
+  # Check description field exists and is under 1024 chars
+  skdesc=$(grep '^description:' "$f" 2>/dev/null | head -1 | sed 's/^description:[[:space:]]*//')
+  if [ -z "$skdesc" ]; then
+    check "$name/SKILL.md: missing description field" "fail"
+    skill_fm_fail=$((skill_fm_fail + 1))
+    continue
+  fi
+  skdesc_len=${#skdesc}
+  if [ "$skdesc_len" -gt 1024 ]; then
+    check "$name/SKILL.md: description too long ($skdesc_len chars, max 1024)" "fail"
+    skill_fm_fail=$((skill_fm_fail + 1))
+    continue
+  fi
+  # Check closing --- exists (second occurrence of ---)
+  closing_line=$(awk '/^---$/{n++; if(n==2) print NR}' "$f" 2>/dev/null)
+  if [ -z "$closing_line" ]; then
+    check "$name/SKILL.md: missing closing --- for frontmatter" "fail"
+    skill_fm_fail=$((skill_fm_fail + 1))
+    continue
+  fi
+  skill_fm_pass=$((skill_fm_pass + 1))
 done
-check "All skills have valid YAML frontmatter" "pass"
+if [ "$skill_fm_fail" -eq 0 ]; then
+  check "All skills have valid YAML frontmatter (name, description, format)" "pass"
+else
+  check "Some skills have invalid frontmatter" "fail"
+fi
 
 # ── 5. Permission consistency ──
 echo "── Permission Consistency ──"

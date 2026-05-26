@@ -1,6 +1,11 @@
 ---
 name: orchestration
 description: Main orchestration logic with self-healing, parallel execution, and pre-commit validation
+license: MIT
+compatibility: opencode
+metadata:
+  audience: agents
+  workflow: orchestration
 ---
 
 # Orchestration Skill

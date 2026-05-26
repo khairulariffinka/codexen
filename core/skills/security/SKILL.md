@@ -1,6 +1,11 @@
 ---
 name: security
 description: Dedicated security vulnerability scanner - detects OWASP Top 10, secrets, and provides detailed security reports
+license: MIT
+compatibility: opencode
+metadata:
+  audience: agents
+  workflow: security-scan
 ---
 
 # Security Agent

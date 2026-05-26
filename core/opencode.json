@@ -3,7 +3,110 @@
   "agent": {
     "codexen": {
       "description": "Customizable AI coding agent framework for OpenCode with persistent memory, parallel subagent execution, and intelligent task routing",
-      "mode": "primary"
+      "mode": "primary",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "read": "allow",
+        "list": "allow",
+        "task": {
+          "*": "allow"
+        },
+        "skill": "allow",
+        "webfetch": "allow"
+      }
+    },
+    "research": {
+      "mode": "subagent",
+      "hidden": true
+    },
+    "planner": {
+      "mode": "subagent",
+      "hidden": true
+    },
+    "coder": {
+      "mode": "subagent",
+      "hidden": true
+    },
+    "auditor": {
+      "mode": "subagent",
+      "hidden": true
+    },
+    "security": {
+      "mode": "subagent",
+      "hidden": true
+    },
+    "backend-coder": {
+      "mode": "subagent"
+    },
+    "frontend-coder": {
+      "mode": "subagent"
+    },
+    "test-coder": {
+      "mode": "subagent",
+      "hidden": true
+    },
+    "refactor-expert": {
+      "mode": "subagent",
+      "hidden": true
+    },
+    "devops-coder": {
+      "mode": "subagent",
+      "hidden": true
+    },
+    "database-expert": {
+      "mode": "subagent",
+      "hidden": true
+    },
+    "api-designer": {
+      "mode": "subagent",
+      "hidden": true
+    },
+    "git-manager": {
+      "mode": "subagent",
+      "hidden": true
+    },
+    "docs-manager": {
+      "mode": "subagent",
+      "hidden": true
+    },
+    "doc-scout": {
+      "mode": "subagent",
+      "hidden": true
+    },
+    "memory": {
+      "mode": "subagent",
+      "hidden": true
+    },
+    "decision-log": {
+      "mode": "subagent",
+      "hidden": true
+    },
+    "security-auditor": {
+      "mode": "subagent",
+      "hidden": true
+    },
+    "performance-auditor": {
+      "mode": "subagent",
+      "hidden": true
+    },
+    "style-auditor": {
+      "mode": "subagent",
+      "hidden": true
+    },
+    "brs-manager": {
+      "mode": "subagent",
+      "hidden": true
+    },
+    "srs-manager": {
+      "mode": "subagent",
+      "hidden": true
+    },
+    "sds-manager": {
+      "mode": "subagent",
+      "hidden": true
     }
   }
 }

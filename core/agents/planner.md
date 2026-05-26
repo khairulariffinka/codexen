@@ -1,12 +1,12 @@
 ---
-name: planner
 description: Advanced planner with hierarchical planning, risk assessment, and dynamic task management
 mode: subagent
 permission:
-  edit: allow
   read: allow
+  edit: allow
   glob: allow
   grep: allow
+  list: allow
   bash: deny
 ---
 

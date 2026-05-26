@@ -1,6 +1,11 @@
 ---
 name: modes
-description: CodeXen supports multiple operating modes for different workflows.
+description: CodeXen supports multiple operating modes for different workflows
+license: MIT
+compatibility: opencode
+metadata:
+  audience: agents
+  workflow: orchestration
 ---
 
 # Operating Modes

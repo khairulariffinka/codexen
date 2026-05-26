@@ -1,6 +1,11 @@
 ---
 name: coder
 description: Write clean code based on planner.md task breakdown - works with any framework/language
+license: MIT
+compatibility: opencode
+metadata:
+  audience: agents
+  workflow: coding
 ---
 
 # Coder Skill

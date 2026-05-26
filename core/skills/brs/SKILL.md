@@ -1,6 +1,11 @@
 ---
 name: brs
 description: Business Requirement Specification standards, templates, and guidelines for comprehensive project documentation with multilingual support
+license: MIT
+compatibility: opencode
+metadata:
+  audience: agents
+  workflow: specification
 ---
 
 # BRS Skill

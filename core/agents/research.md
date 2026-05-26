@@ -1,11 +1,12 @@
 ---
-name: research
 description: Analyze codebase and modular context to gather technical intelligence
 mode: subagent
 permission:
   read: allow
+  edit: deny
   glob: allow
   grep: allow
+  list: allow
   bash: deny
 ---
 

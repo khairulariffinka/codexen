@@ -1,11 +1,12 @@
 ---
-name: git-manager
 description: Git operations specialist - commits, branches, PRs, merge conflicts, repository management
 mode: subagent
 permission:
   read: allow
+  edit: allow
   glob: allow
   grep: allow
+  list: allow
   bash: allow
 ---
 

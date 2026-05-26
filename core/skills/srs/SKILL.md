@@ -1,6 +1,11 @@
 ---
 name: srs
 description: Software Requirements Specification skill - maps business needs to technical functional requirements
+license: MIT
+compatibility: opencode
+metadata:
+  audience: agents
+  workflow: specification
 ---
 
 # SRS Skill

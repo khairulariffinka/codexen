@@ -1,11 +1,12 @@
 ---
-name: security
 description: Dedicated security vulnerability scanner - detects OWASP Top 10, OWASP API Security Top 10, hardcoded secrets, malware patterns, backdoors, AI prompt injection, and provides enterprise-grade security audit reports with exploit PoCs and fix code
 mode: subagent
 permission:
   read: allow
-  grep: allow
+  edit: deny
   glob: allow
+  grep: allow
+  list: allow
   bash: allow
 ---
 

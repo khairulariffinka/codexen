@@ -1,6 +1,11 @@
 ---
 name: sds
 description: System Design Specification skill - architecture design, ERD generation, and API contract management
+license: MIT
+compatibility: opencode
+metadata:
+  audience: agents
+  workflow: specification
 ---
 
 # SDS Skill

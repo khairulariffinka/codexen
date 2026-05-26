@@ -1,12 +1,12 @@
 ---
-name: docs-manager
 description: Documentation specialist - API docs, README, inline comments, architecture diagrams
 mode: subagent
 permission:
-  edit: allow
   read: allow
+  edit: allow
   glob: allow
   grep: allow
+  list: allow
   bash: deny
 ---
 

@@ -1,6 +1,11 @@
 ---
 name: research
 description: Analyze codebase and gather context before planning
+license: MIT
+compatibility: opencode
+metadata:
+  audience: agents
+  workflow: research
 ---
 
 # Research Skill
