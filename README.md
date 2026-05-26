@@ -1,5 +1,9 @@
 # CodeXen
 
+![Version](https://img.shields.io/badge/version-0.6.0-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Validation](https://img.shields.io/badge/validation-12/12-passing-brightgreen)
+
 **AI Coding Assistant for OpenCode**
 
 Give it a task, it handles the rest.
@@ -24,7 +28,7 @@ cd codexen
 ### 2. Install
 
 ```
-"Load install.md"
+"load install.md"
 ```
 
 ### 3. Activate
@@ -73,7 +77,7 @@ build a user authentication system
 
 ## Skills
 
-CodeXen uses a **skills** system:
+CodeXen uses a **skills** system loaded by OpenCode's native `skill` tool:
 
 ```
 core/skills/
@@ -87,17 +91,13 @@ core/skills/
 ├── brs/              # Business Requirements
 ├── srs/              # Software Requirements
 ├── sds/              # System Design
+├── orchestration/    # Orchestration logic
+├── modes/            # Operating modes
+├── output/           # Output formatting
+├── greeting/         # Time-based greetings
 ├── init-project/     # Project initialization
 ├── setup-profile/    # User profile setup
 └── switch-config/    # Config switching
-```
-
-### Template Skills
-
-```
-templates/skills/
-├── setup-profile/    # User profile setup
-└── init-project/      # New project setup
 ```
 
 ---
@@ -106,6 +106,7 @@ templates/skills/
 
 | Category | Agents |
 |----------|--------|
+| **Primary** | codexen (orchestrator) |
 | **Coders** | frontend-coder, backend-coder, test-coder, refactor-expert, devops-coder |
 | **Auditors** | auditor, security-auditor, security, performance-auditor, style-auditor |
 | **Planners** | planner, research |
@@ -124,6 +125,14 @@ Cross-project memory that follows you:
 - Session tracking
 - Work diary
 
+### OpenCode Compatibility
+
+CodeXen v0.6.0 is fully compatible with OpenCode's native systems:
+- **Agent system**: All 24 agents defined as Markdown with proper frontmatter
+- **Skill system**: All 17 skills with `SKILL.md` format and valid frontmatter
+- **Permission system**: Read-only auditors have `edit: deny, bash: deny`
+- **Subagent routing**: Defined in `opencode.json` with `mode` and `hidden` flags
+
 ---
 
 ## Project Structure
@@ -131,10 +140,12 @@ Cross-project memory that follows you:
 ```
 codexen/
 ├── core/
-│   ├── agents/            # 24 subagents
-│   └── skills/            # 17 skills
-├── templates/             # Templates
-└── VERSION.yaml          # Version
+│   ├── agents/            # 24 agents (Markdown format)
+│   ├── skills/            # 17 skills (SKILL.md format)
+│   └── opencode.json      # Agent configuration
+├── templates/             # Global memory templates
+├── scripts/               # Validation scripts
+└── VERSION.yaml            # Version tracking
 ```
 
 ---
@@ -142,7 +153,7 @@ codexen/
 ## Installation
 
 1. Clone or download this repository
-2. Run: `Load install.md`
+2. Run: `load install.md`
 3. Restart OpenCode
 
 ## New Project
@@ -161,7 +172,7 @@ Then type: `init project`
 ### Check for Updates
 
 ```
-"Load update.md"
+"load update.md"
 ```
 
 ### Options
@@ -171,15 +182,12 @@ Then type: `init project`
 | (default) | Full update with backup |
 | `--dry-run` | Preview changes only |
 
-Example:
-```
-"Load update.md --dry-run"  # Preview what will change
-```
-
 ### Changelog
 
-- **v0.4.1**: Added `--dry-run`, auto-backup, changelog display
-- **v0.4.0**: Initial release with conditional update
+- **v0.6.0**: OpenCode compatibility refactor (skill/agent standardization, opencode.json, validate.sh)
+- **v0.5.0**: Guardrails, self-healing orchestration, BRS/SRS/SDS chain, lessons learned
+- **v0.4.4**: Dry-run, auto-backup, conflict resolution
+- **v0.4.0**: Initial release
 
 ---
 
@@ -200,4 +208,4 @@ For detailed flow diagrams, see [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md).
 
 MIT License
 
-**Version**: 0.5.0
+**Version**: 0.6.0

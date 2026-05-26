@@ -21,7 +21,21 @@ That's it!
 
 ## Changelog
 
-### v0.5.0 (Current)
+### v0.6.0 (Current)
+- REFACTOR: All 17 SKILL.md files standardized with OpenCode-compatible frontmatter (license, compatibility, metadata)
+- REFACTOR: Memory, init-project, greeting skills converted from bash scripts to instructional prompts
+- REFACTOR: All 24 agent .md files standardized with consistent permission format
+- REFACTOR: Removed `name:` field from agent frontmatter (OpenCode uses filename as agent name)
+- ADD: All skills now have `license`, `compatibility`, and `metadata` frontmatter fields
+- ADD: opencode.json now registers all 24 subagents with mode and hidden flags
+- ADD: opencode.json now has `permission:task` for codexen primary agent
+- ADD: validate.sh enhanced with SKILL.md name validation, description length check, closing frontmatter check
+- ADD: validate.sh removed `name:` requirement for agents (OpenCode uses filename)
+- FIX: codexen.md session auto-save replaced bash script with instructional steps
+- FIX: diary-YYYY-MM.md template placeholder format
+- FIX: Removed `trigger:` non-standard field from init-project SKILL.md
+
+### v0.5.0
 - ADD: First-time setup prompts for agent name
 - ADD: User can choose custom name (default: codexen)
 - ADD: Agent set as mode: primary automatically
@@ -69,212 +83,104 @@ When this file is loaded, AI must know:
 - User wants to install/copy files to ~/.config/opencode/
 - NOT just reading the file
 - AI must execute install steps
-- IMPORTANT: Skip copying opencode.json if already exists
+- IMPORTANT: Skip copying opencode.json if already exists and user has custom settings
 - IMPORTANT: Skip copying global-memory if it already contains files
 
 ## AI Execution
 
-When executing install, use conditional copy:
+When executing install, follow these steps:
 
-```bash
-# Check for dry-run mode
-DRY_RUN=false
-if [[ "$*" == *"--dry-run"* ]]; then
-  DRY_RUN=true
-  echo "🔍 DRY-RUN MODE: No changes will be made"
-  echo ""
-fi
+### Step 1: Check for dry-run mode
 
-# Create backup before install (unless dry-run)
-if [ "$DRY_RUN" = false ]; then
-  BACKUP_DIR="$HOME/.config/opencode.backup-$(date +%Y-%m-%d-%H%M)"
-  if [ -d ~/.config/opencode ]; then
-    cp -r ~/.config/opencode "$BACKUP_DIR" && echo "✅ Backup created: $BACKUP_DIR"
-  fi
-fi
+If the user said `--dry-run`, only preview what will change without making any changes.
 
-# Function to update or preview with conflict resolution
-update_or_skip() {
-  local source="$1"
-  local dest="$2"
-  local name="$3"
+### Step 2: Create backup
 
-  if [ ! -f "$dest" ]; then
-    [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would add: $name" || cp "$source" "$dest" && echo "Added: $name"
-  elif ! diff -q "$source" "$dest" > /dev/null 2>&1; then
-    # File exists and is different - ask user
-    if [ "$DRY_RUN" = true ]; then
-      echo "[DRY-RUN] Would update: $name (CONFLICT - user has custom version)"
-      echo "         Run without --dry-run to resolve"
-    else
-      echo ""
-      echo "⚠️  CONFLICT: $name differs from CodeXen version"
-      echo "    [1] Keep mine (custom) - skip update"
-      echo "    [2] Use CodeXen version - overwrite"
-      echo "    [3] Show diff - see differences"
-      read -p "Choice [1]: " choice
-      case "$choice" in
-        2)
-          cp "$source" "$dest" && echo "Updated: $name"
-          ;;
-        3)
-          echo "--- Your version ---"
-          head -20 "$dest"
-          echo "--- CodeXen version ---"
-          head -20 "$source"
-          echo ""
-          read -p "Choose [1=keep mine, 2=use codexen]: " choice2
-          case "$choice2" in
-            2) cp "$source" "$dest" && echo "Updated: $name" ;;
-            *) echo "Keeping your version" ;;
-          esac
-          ;;
-        *)
-          echo "Keeping your version"
-          ;;
-      esac
-    fi
-  else
-    echo "Skipping: $name (unchanged)"
-  fi
-}
+If not dry-run, create a backup:
+- Backup `~/.config/opencode/` to `~/.config/opencode.backup-YYYY-MM-DD-HHMM/`
+- Only if `~/.config/opencode/` already exists
 
-echo ""
-echo "=== Installing Agents ==="
-mkdir -p ~/.config/opencode/agents
+### Step 3: Create directories
 
-# Check if primary agent exists
-primary_agent_file=$(ls ~/.config/opencode/agents/*.md 2>/dev/null | xargs -I{} grep -l "^mode: primary" {} 2>/dev/null | head -1)
+Ensure these directories exist:
+- `~/.config/opencode/agents/`
+- `~/.config/opencode/skills/`
+- `~/.config/opencode/global-memory/`
+- `~/.config/opencode/global-memory/work-diary/`
+- `~/.config/opencode/global-memory/work-diary/archive/`
+- `~/.config/opencode/scripts/`
 
-if [ -z "$primary_agent_file" ]; then
-  # First install - prompt for agent name
-  echo ""
-  echo "🎉 First time setup!"
-  echo "What would you like to name your primary agent?"
-  echo "Press Enter for default: codexen"
-  read -p "Agent name: " agent_name
-  [ -z "$agent_name" ] && agent_name="codexen"
-  
-  # Validate name (lowercase, numbers, hyphens only)
-  if [[ ! "$agent_name" =~ ^[a-z0-9-]+$ ]] || [[ "$agent_name" =~ ^- || "$agent_name" =~ -$ ]]; then
-    echo "Invalid name. Using default: codexen"
-    agent_name="codexen"
-  fi
-  
-  # Create agent with user's chosen name
-  echo "Creating agent: $agent_name"
-  cp core/agents/codexen.md ~/.config/opencode/agents/"$agent_name.md"
-  
-  # Set as primary agent
-  sed -i 's/^name: codexen$/name: '"$agent_name"'/' ~/.config/opencode/agents/"$agent_name.md"
-  sed -i 's/^mode: .*/mode: primary/' ~/.config/opencode/agents/"$agent_name.md"
-  
-  echo "✅ Primary agent '$agent_name' created!"
-else
-  echo "Primary agent already exists - skipping first-time setup"
-fi
+### Step 4: Install agents
 
-echo ""
-echo "=== Updating Agents ==="
-for f in core/agents/*.md; do
-  agent_name=$(basename "$f")
-  dest=~/.config/opencode/agents/"$agent_name"
-  update_or_skip "$f" "$dest" "$agent_name"
-done
+Copy `core/agents/*.md` to `~/.config/opencode/agents/`.
 
-echo ""
-echo "=== Installing Skills ==="
-for f in core/skills/*/*.md; do
-  skill_name=$(basename "$f")
-  skill_dir=$(basename "$(dirname "$f")")
-  dest=~/.config/opencode/skills/"$skill_dir"/"$skill_name"
-  mkdir -p ~/.config/opencode/skills/"$skill_dir"
-  update_or_skip "$f" "$dest" "$skill_dir"
-done
+For each agent file:
+- If the file does not exist at destination: copy it (new install)
+- If the file exists and differs: ask user whether to keep theirs, overwrite with CodeXen version, or show diff
+- If the file exists and is identical: skip (unchanged)
 
-echo ""
-echo "=== Installing Config ==="
-# opencode.json - merge to preserve user settings
-if [ -f ~/.config/opencode/opencode.json ]; then
-  if ! diff -q core/opencode.json ~/.config/opencode/opencode.json > /dev/null 2>&1; then
-    # User has custom config - prompt with merge option
-    if [ "$DRY_RUN" = true ]; then
-      echo "[DRY-RUN] Would update: opencode.json (CONFLICT - user has custom config)"
-    else
-      echo ""
-      echo "⚠️  CONFLICT: opencode.json differs from CodeXen version"
-      echo "    [1] Keep mine - skip, don't change (RECOMMENDED)"
-      echo "    [2] Merge - add CodeXen settings to mine"
-      echo "    [3] Show diff - see before deciding"
-      read -p "Choice [1]: " choice
-      case "$choice" in
-        2)
-          # Merge JSON - CodeXen adds new keys, keeps user values
-          if command -v jq >/dev/null 2>&1; then
-            jq -s '.[0] * .[1]' ~/.config/opencode/opencode.json core/opencode.json > ~/.config/opencode/opencode.json.tmp && \
-            mv ~/.config/opencode/opencode.json.tmp ~/.config/opencode/opencode.json && \
-            echo "Merged opencode.json (your settings kept + new CodeXen settings added)"
-          else
-            # No jq - fallback to keeping user config
-            echo "jq not found - keeping your config (install jq for merge)"
-          fi
-          ;;
-        3)
-          echo "--- Your config ---"
-          cat ~/.config/opencode/opencode.json
-          echo "--- CodeXen config ---"
-          cat core/opencode.json
-          echo ""
-          read -p "Choose [1=keep mine, 2=merge]: " choice2
-          case "$choice2" in
-            2)
-              if command -v jq >/dev/null 2>&1; then
-                jq -s '.[0] * .[1]' ~/.config/opencode/opencode.json core/opencode.json > ~/.config/opencode/opencode.json.tmp && \
-                mv ~/.config/opencode/opencode.json.tmp ~/.config/opencode/opencode.json && \
-                echo "Merged opencode.json"
-              else
-                echo "jq not found - keeping your config"
-              fi
-              ;;
-            *) echo "Keeping your config" ;;
-          esac
-          ;;
-        *)
-          echo "Keeping your config"
-          ;;
-      esac
-    fi
-  else
-    echo "Skipping opencode.json (unchanged)"
-  fi
-else
-  [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would add: opencode.json" || cp core/opencode.json ~/.config/opencode/opencode.json && echo "Copied opencode.json"
-fi
+Note: OpenCode uses the filename as the agent name. The `codexen.md` file becomes the `codexen` agent. No `sed` modifications are needed since the filename determines the agent name.
 
-# global-memory
-if [ -z "$(ls -A ~/.config/opencode/global-memory 2>/dev/null)" ]; then
-  [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would init: global-memory" || cp -r templates/global-memory/* ~/.config/opencode/global-memory/ && echo "Initialized global-memory"
-else
-  echo "Skipping global-memory (already exists)"
-fi
+### Step 5: Install skills
 
-# validation script
-echo ""
-echo "=== Installing Validation Script ==="
-mkdir -p ~/.config/opencode/scripts
-update_or_skip "scripts/validate.sh" "$HOME/.config/opencode/scripts/validate.sh" "validate.sh"
+Copy `core/skills/*/SKILL.md` to `~/.config/opencode/skills/*/SKILL.md` (preserving directory structure).
 
-echo ""
-[ "$DRY_RUN" = true ] && echo "🔍 DRY-RUN complete. Run without --dry-run to apply." || echo "✅ Install complete!"
+For each skill:
+- Create the skill directory if it does not exist
+- If the file does not exist at destination: copy it (new install)
+- If the file exists and differs: ask user whether to keep theirs, overwrite, or show diff
+- If the file exists and is identical: skip (unchanged)
+
+### Step 6: Install opencode.json
+
+Handle the opencode.json config carefully:
+- If the file does not exist: copy `core/opencode.json` to `~/.config/opencode/opencode.json`
+- If the file exists and is different:
+  - Ask user: Keep theirs (RECOMMENDED), Merge (requires `jq`), or Show diff
+  - If merging, use: `jq -s '.[0] * .[1]' user_config codexen_config`
+  - If `jq` is not available, keep the user's config and inform them
+
+### Step 7: Install global-memory templates
+
+Copy `templates/global-memory/*` to `~/.config/opencode/global-memory/` only if the global-memory directory is empty or does not contain user data.
+
+Files to copy:
+- `templates/global-memory/user-profile.md` → `~/.config/opencode/global-memory/user-profile.md`
+- `templates/global-memory/current-session.md` → `~/.config/opencode/global-memory/current-session.md`
+- `templates/global-memory/work-diary/diary-YYYY-MM.md` → `~/.config/opencode/global-memory/work-diary/diary-YYYY-MM.md`
+
+### Step 8: Install validation script
+
+Copy `scripts/validate.sh` to `~/.config/opencode/scripts/validate.sh`.
+
+### Step 9: Confirm
+
+After completing all steps, show a summary:
+
 ```
+Install complete!
+
+Agents: 24 files → ~/.config/opencode/agents/
+Skills: 17 directories → ~/.config/opencode/skills/
+Config: opencode.json → ~/.config/opencode/opencode.json
+Memory: templates → ~/.config/opencode/global-memory/
+Script: validate.sh → ~/.config/opencode/scripts/validate.sh
+
+Next steps:
+1. Restart OpenCode
+2. Press TAB until you see codexen
+3. Say: hello!
+```
+
+---
 
 ## What It Does
 
 | Action | Location |
 |--------|---------|
-| Updates 24 agents (compare first) | `~/.config/opencode/agents/` |
-| Updates 17 skills (compare first) | `~/.config/opencode/skills/` |
-| Copies opencode.json (if different) | `~/.config/opencode/opencode.json` |
+| Copies 24 agents (with conflict resolution) | `~/.config/opencode/agents/` |
+| Copies 17 skills (with conflict resolution) | `~/.config/opencode/skills/` |
+| Copies opencode.json (with merge option) | `~/.config/opencode/opencode.json` |
 | Creates memory templates (if empty) | `~/.config/opencode/global-memory/` |
 | Copies validation script | `~/.config/opencode/scripts/validate.sh` |
 | **Preserves user's custom agents/skills** | Unchanged |
@@ -300,7 +206,8 @@ Then in OpenCode:
 ## After Install
 
 1. Restart OpenCode
-2. Say: `codexen, hello!`
+2. Press `TAB` until you see `codexen`
+3. Say: `hello!`
 
 ---
 
@@ -309,45 +216,30 @@ Then in OpenCode:
 If something goes wrong, manually run:
 
 ```bash
-mkdir -p ~/.config/opencode/agents ~/.config/opencode/skills ~/.config/opencode/global-memory
+mkdir -p ~/.config/opencode/agents ~/.config/opencode/skills ~/.config/opencode/global-memory ~/.config/opencode/scripts
 
-# Update OUR agents only, preserve user's custom agents
+# Copy agents
 for f in core/agents/*.md; do
-  agent_name=$(basename "$f")
-  if [ -f ~/.config/opencode/agents/"$agent_name" ]; then
-    if ! diff -q "$f" ~/.config/opencode/agents/"$agent_name" > /dev/null 2>&1; then
-      cp "$f" ~/.config/opencode/agents/"$agent_name" && echo "Updated: $agent_name"
-    fi
-  else
-    cp "$f" ~/.config/opencode/agents/ && echo "Added: $agent_name"
-  fi
+  cp "$f" ~/.config/opencode/agents/
 done
 
-# Update OUR skills only, preserve user's custom skills
-for f in core/skills/*/*.md; do
-  skill_name=$(basename "$f")
-  skill_dir=$(dirname "$f" | xargs basename)
+# Copy skills
+for f in core/skills/*/SKILL.md; do
+  skill_dir=$(basename "$(dirname "$f")")
   mkdir -p ~/.config/opencode/skills/"$skill_dir"
-  if [ -f ~/.config/opencode/skills/"$skill_dir"/"$skill_name" ]; then
-    if ! diff -q "$f" ~/.config/opencode/skills/"$skill_dir"/"$skill_name" > /dev/null 2>&1; then
-      cp "$f" ~/.config/opencode/skills/"$skill_dir"/"$skill_name" && echo "Updated: $skill_name"
-    fi
-  else
-    cp "$f" ~/.config/opencode/skills/"$skill_dir"/ && echo "Added: $skill_name"
-  fi
+  cp "$f" ~/.config/opencode/skills/"$skill_dir"/
 done
 
-# Compare and update opencode.json
-if [ -f ~/.config/opencode/opencode.json ]; then
-  if ! diff -q core/opencode.json ~/.config/opencode/opencode.json > /dev/null 2>&1; then
-    cp core/opencode.json ~/.config/opencode/opencode.json && echo "Updated opencode.json"
-  fi
-else
-  cp core/opencode.json ~/.config/opencode/opencode.json && echo "Copied opencode.json"
+# Copy config (overwrite with caution)
+cp core/opencode.json ~/.config/opencode/opencode.json
+
+# Copy global-memory templates (skip if user data exists)
+if [ -z "$(ls -A ~/.config/opencode/global-memory/ 2>/dev/null)" ]; then
+  cp -r templates/global-memory/* ~/.config/opencode/global-memory/
 fi
 
-# Copy global-memory if directory is empty
-[ -z "$(ls -A ~/.config/opencode/global-memory 2>/dev/null)" ] && cp -r templates/global-memory/* ~/.config/opencode/global-memory/ || echo "Skipping global-memory (already exists)"
+# Copy validation script
+cp scripts/validate.sh ~/.config/opencode/scripts/
 ```
 
 ## Development

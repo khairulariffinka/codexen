@@ -1,4 +1,4 @@
-# 📖 Work Diary - {YYYY-MM}
+# Work Diary - {YYYY-MM}
 
 > Monthly session log - auto-archived when >1000 lines.
 
