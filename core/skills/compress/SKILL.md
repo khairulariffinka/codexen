@@ -13,7 +13,7 @@ Respond terse. All technical substance stay. Only fluff die.
 
 ACTIVE EVERY RESPONSE. No revert after many turns. No filler drift. Still active if unsure. Off only: "stop compress" / "normal mode".
 
-**Auto-activation:** Loaded at session start (mode: full) via codexen.md session protocol. User can disable immediately if unwanted.
+**Auto-activation:** Loaded at session start based on user preference in `~/.config/opencode/global-memory/user-preferences.md`. Set `compress: off` to disable, or `compress: lite/full/ultra` to change default.
 
 Default: **full**. Switch: `compress lite|full|ultra`.
 

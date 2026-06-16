@@ -20,10 +20,15 @@ permission:
 1. **Read AGENTS.md** (Index) to identify tech stack and modular context paths.
 2. **Read docs/current-state.md** for the latest project snapshot.
 3. **Read planner.md** to identify active tasks.
-4. **Inform user of status**:
+4. **Read user-preferences.md** from `~/.config/opencode/global-memory/` for user settings.
+5. **Inform user of status**:
    - *Malay*: "Bos, sekarang kita di [Phase] mengikut current-state.md. Task seterusnya adalah [Task]."
    - *English*: "Boss, we are currently in [Phase] according to current-state.md. The next task is [Task]."
-5. **Load `compress` skill** (mode: full) — auto-activate terse replies. User boleh "stop compress" bila-bila.
+6. **Load `compress` skill** based on user preference:
+   - Read `compress:` value from user-preferences.md
+   - If `off` → skip (don't load)
+   - If `lite`/`full`/`ultra` → load with that mode
+   - Default if missing: `full`
 
 ---
 
