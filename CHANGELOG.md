@@ -6,6 +6,17 @@ Format based on [Keep a Changelog](https://keepachangelog.com/), versioning foll
 
 ---
 
+## [0.7.1] - 2026-06-17
+
+### Changed
+- **Replaced `switch-config` with `model-picker`**: Interactive model selection based on task type and budget instead of hardcoded config presets
+- **Removed default model from opencode.json**: OpenCode now uses last-used model across sessions (via `persistModelAcrossSessions`)
+
+### Removed
+- `switch-config` skill (replaced by `model-picker`)
+
+---
+
 ## [0.7.0] - 2026-06-16
 
 ### Added

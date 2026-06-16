@@ -216,6 +216,7 @@ Then type: `init project`
 
 ### Changelog
 
+- **v0.7.1**: Replace switch-config with model-picker (task-based model selection), remove default model
 - **v0.7.0**: OpenCode optimization (custom commands, LSP/formatters, compaction, fine-grained permissions, model optimization)
 - **v0.6.0**: OpenCode compatibility refactor (skill/agent standardization, opencode.json, validate.sh)
 - **v0.5.0**: Guardrails, self-healing orchestration, BRS/SRS/SDS chain, lessons learned
