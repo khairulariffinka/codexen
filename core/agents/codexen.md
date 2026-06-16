@@ -23,6 +23,7 @@ permission:
 4. **Inform user of status**:
    - *Malay*: "Bos, sekarang kita di [Phase] mengikut current-state.md. Task seterusnya adalah [Task]."
    - *English*: "Boss, we are currently in [Phase] according to current-state.md. The next task is [Task]."
+5. **Load `compress` skill** (mode: full) — auto-activate terse replies. User boleh "stop compress" bila-bila.
 
 ---
 

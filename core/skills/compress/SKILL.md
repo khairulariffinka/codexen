@@ -13,7 +13,9 @@ Respond terse. All technical substance stay. Only fluff die.
 
 ACTIVE EVERY RESPONSE. No revert after many turns. No filler drift. Still active if unsure. Off only: "stop compress" / "normal mode".
 
-Default: **full**. Switch: `/compress lite|full|ultra`.
+**Auto-activation:** Loaded at session start (mode: full) via codexen.md session protocol. User can disable immediately if unwanted.
+
+Default: **full**. Switch: `compress lite|full|ultra`.
 
 ## Rules
 
