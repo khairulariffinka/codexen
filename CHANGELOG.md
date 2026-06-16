@@ -10,6 +10,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/), versioning foll
 
 ### Added
 - **`compress` skill**: Ultra-compressed communication mode (~75% output token savings). Supports lite/full/ultra intensity levels. Trigger: "compress mode" / "terse mode" / "be brief". Auto-clarity for security warnings
+- **User preferences**: Set compress default (full/lite/ultra/off) in `user-preferences.md` — respected across all sessions
 - **`/compress-file` skill**: Compress memory files (AGENTS.md, planner.md, DECISIONS.md) to save ~46% input tokens per session
 - **Terse subagent output**: All subagents now emit structured terse output to preserve main context
 

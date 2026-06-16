@@ -16,7 +16,16 @@ Comprehensive guide to using all 24 subagents in CodeXen.
 
 ---
 
-## v0.7.0 New Features
+## v0.8.0 New Features
+
+| Feature | Description | More Info |
+|---------|-------------|-----------|
+| **Compress Mode** | Auto-activate terse replies at session start (~75% token savings) | Config: `user-preferences.md` |
+| **User Preferences** | Set compress default (full/lite/ultra/off) per session | `~/.config/opencode/global-memory/user-preferences.md` |
+| **Compress-file** | Compress memory files to save ~46% input tokens | `compress-file` skill |
+| **Terse Subagent Output** | All subagents emit structured terse output to preserve main context | Built-in |
+
+### Previous (v0.7.0)
 
 | Feature | Description | More Info |
 |---------|-------------|-----------|
