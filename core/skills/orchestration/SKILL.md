@@ -14,11 +14,14 @@ The central logic for coordinating agents, managing task flows, and ensuring sys
 
 ## Task Lifecycle
 
-1. **Plan Generation**: Invoke `@planner` to break down user requests based on BRS/SDS.
-2. **Context Loading**: Ensure relevant modular context (`docs/context/`) is loaded for the assigned agent.
-3. **Execution**: Distribute tasks to specialized agents (e.g., `backend-coder`, `frontend-coder`).
-4. **Validation**: Invoke `@auditor` for code review and compliance check.
-5. **Commit**: Invoke `@git-manager` ONLY if Auditor status is `✅ PASSED`.
+1. **Smart Recall**: Auto-check `@memory smart-recall [task]` for relevant lessons.
+2. **Agent Check**: Query `agent-performance.md` for best agent for this task type.
+3. **Plan Generation**: Invoke `@planner` to break down user requests based on BRS/SDS.
+4. **Context Loading**: Ensure relevant modular context (`docs/context/`) is loaded for the assigned agent.
+5. **Execution**: Distribute tasks to specialized agents (e.g., `backend-coder`, `frontend-coder`).
+6. **Validation**: Invoke `@auditor` for code review and compliance check.
+7. **Commit**: Invoke `@git-manager` ONLY if Auditor status is `✅ PASSED`.
+8. **Performance Log**: Update `agent-performance.md` with task result.
 
 ## Spec Change Propagation
 
@@ -269,3 +272,100 @@ Before allowing any `git commit` or `git push`:
 - **Efficiency**: Don't call 3 agents if 1 agent can complete.
 - **Traceability**: Every orchestrator move must be recorded in `current-state.md`.
 - **Safety First**: If decision has major impact on UI or core logic, must ask User.
+
+---
+
+## Agent Performance Tracking
+
+Track success/failure rate per agent to make intelligent routing decisions.
+
+### Data Collection
+
+After every agent dispatch, log to `~/.config/opencode/global-memory/agent-performance.md`:
+
+```markdown
+## Agent: @backend-coder
+
+| Date | Task | Status | Duration | Error |
+|------|------|--------|----------|-------|
+| 2026-06-16 | Create API endpoint | ✅ SUCCESS | 45s | - |
+| 2026-06-15 | Fix auth bug | ❌ FAILED | 120s | timeout |
+| 2026-06-14 | Setup database | ✅ SUCCESS | 90s | - |
+
+**Stats:**
+- Total: 15 tasks
+- Success: 12 (80%)
+- Failed: 3 (20%)
+- Avg Duration: 65s
+- Common Errors: timeout (2x), permission (1x)
+```
+
+### Performance Metrics
+
+| Metric | Calculation | Use Case |
+|--------|-------------|----------|
+| **Success Rate** | success / total × 100 | Route to highest success rate agent |
+| **Avg Duration** | total duration / total tasks | Estimate task time |
+| **Error Pattern** | group by error type | Identify systematic issues |
+| **Trend** | last 7 days vs previous 7 days | Detect improvement/regression |
+
+### Smart Routing
+
+Use performance data to influence agent selection:
+
+```
+IF multiple agents can handle same task:
+  1. Filter by success rate > 70%
+  2. Sort by success rate (highest first)
+  3. Tie-break by avg duration (lowest first)
+  4. If all agents < 70% success → warn user, suggest @research first
+
+IF agent fails 3x same task type:
+  1. Auto-switch to next highest success rate agent
+  2. Log routing decision to lessons.md
+  3. Notify user: "Switched to @agent-name (better track record)"
+```
+
+### Performance Report
+
+Command: `@memory agent-report [agent-name]`
+
+Output:
+```
+[AGENT PERFORMANCE]
+
+Agent: @backend-coder
+Period: Last 30 days
+
+Metrics:
+├─ Success Rate: 85% (17/20 tasks)
+├─ Avg Duration: 52s
+├─ Trend: ↑ Improving (+5% from last week)
+└─ Best Category: REST APIs (95% success)
+
+Weak Areas:
+├─ GraphQL: 60% success (3/5 tasks)
+└─ Common Error: timeout on complex queries
+
+Recommendation: Use @backend-coder for REST, consider @coder for GraphQL
+```
+
+### Data Storage
+
+```
+~/.config/opencode/global-memory/
+  agent-performance.md      # All agent stats
+  agent-performance/
+    @backend-coder.md       # Individual agent history
+    @frontend-coder.md
+    @test-coder.md
+    ...
+```
+
+### Integration with Orchestration
+
+Before dispatching any agent:
+1. Check `agent-performance.md` for success rate
+2. If success rate < 50% → suggest alternative agent
+3. If success rate < 30% → block dispatch, require user confirmation
+4. Update stats after task completion (success or failure)

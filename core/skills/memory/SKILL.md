@@ -19,6 +19,8 @@ Manages persistent project context and global knowledge preservation.
 | **READ** | Selective loading of AGENTS.md, current-state.md, and specific module context. |
 | **UPDATE** | Marking planner.md progress, syncing decisions. |
 | **SAVE** | Local session diary + global work diary sync. |
+| **RECALL** | Auto-suggest relevant lessons based on task context. |
+| **SCORE** | Rank lessons by frequency and severity. |
 
 ---
 
@@ -122,6 +124,80 @@ Search past lessons for a given topic.
 4. Present matching lessons with date, agent, symptom, root cause, and fix.
 
 **MANDATORY:** Agents MUST run this before starting any task. If no lessons found, proceed normally. If lessons are ignored, the agent must explain why.
+
+---
+
+### @memory smart-recall [task-description]
+
+Auto-suggest relevant lessons based on task context (no manual topic needed).
+
+**Steps:**
+1. Parse the task description for keywords:
+   - Agent names (@backend-coder, @frontend-coder, etc.)
+   - Topic keywords (auth, database, API, deployment, etc.)
+   - Error patterns (timeout, permission, failed, etc.)
+2. Read `docs/lessons.md` (project-level).
+3. Read `~/.config/opencode/global-memory/lessons.md` (global).
+4. Match lessons using keyword scoring:
+   - Exact keyword match: +3 points
+   - Related tag match: +2 points
+   - Partial keyword match: +1 point
+5. Sort by score (highest first).
+6. Present top 5 lessons with relevance score.
+
+**Output format:**
+```
+[SMART RECALL]
+
+Task: [task description]
+Keywords detected: [keyword1], [keyword2], [keyword3]
+
+Top Relevant Lessons:
+
+1. [Score: 9] Lesson: [title]
+   Agent: @agent-name | Date: YYYY-MM-DD
+   Symptom: [what went wrong]
+   Fix: [solution]
+   Tags: #tag1 #tag2
+
+2. [Score: 7] Lesson: [title]
+   ...
+
+Action: Review lessons before proceeding? [Y/n]
+```
+
+**Auto-trigger:** When orchestration detects a new task, run `@memory smart-recall [task]` automatically.
+
+---
+
+### @memory score-lessons
+
+Rank all lessons by frequency and severity for prioritized viewing.
+
+**Steps:**
+1. Read `docs/lessons.md` and `~/.config/opencode/global-memory/lessons.md`.
+2. Calculate priority score for each lesson:
+   - **Frequency**: How many times this pattern appeared (+2 per occurrence)
+   - **Severity**: Impact level (+3 critical, +2 high, +1 medium, +0 low)
+   - **Recency**: Within last 7 days (+2), within 30 days (+1)
+3. Sort by total score (highest first).
+4. Present ranked table.
+
+**Output format:**
+```
+[LESSON SCORES]
+
+| Rank | Score | Title | Agent | Frequency | Severity | Last Seen |
+|------|-------|-------|-------|-----------|----------|-----------|
+| 1 | 12 | JWT expiry bug | @backend-coder | 5x | Critical | 2 days ago |
+| 2 | 8 | N+1 query | @performance-auditor | 3x | High | 1 week ago |
+| ... |
+
+Top 3 Priority Lessons:
+1. [title] — [fix summary]
+2. [title] — [fix summary]
+3. [title] — [fix summary]
+```
 
 ---
 
@@ -274,6 +350,11 @@ Global memory (cross-project):
   current-session.md      # RAM for current session
   patterns.md             # Patterns across projects
   lessons.md              # Cross-project lessons learned
+  agent-performance.md    # Agent success/failure stats
+  agent-performance/      # Individual agent history
+    @backend-coder.md
+    @frontend-coder.md
+    ...
   work-diary/
     diary-YYYY-MM.md      # Monthly session log
     archive/               # Archived diaries (>1000 lines)
@@ -298,8 +379,10 @@ When a session begins, the primary agent should:
 1. Read `AGENTS.md` for tech stack
 2. Read `docs/current-state.md` for project snapshot
 3. Read `DECISIONS.md` for active decisions
-4. Run `@memory show lessons about [project-type]` to check past mistakes
-5. Check `docs/patterns.md` for applicable patterns
+4. Run `@memory smart-recall [project-type]` to auto-suggest relevant lessons
+5. Run `@memory score-lessons` to see top priority issues
+6. Check `docs/patterns.md` for applicable patterns
+7. Check `~/.config/opencode/global-memory/agent-performance.md` for agent routing
 
 ---
 
