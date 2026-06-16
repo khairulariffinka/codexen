@@ -7,11 +7,12 @@ Complete reference for all CodeXen commands and operations.
 ## Table of Contents
 
 1. [Basic Commands](#basic-commands)
-2. [Development Commands](#development-commands)
-3. [Operating Modes](#operating-modes)
-4. [Subagent Commands](#subagent-commands)
-5. [Setup Commands](#setup-commands)
-6. [Exit Commands](#exit-commands)
+2. [Slash Commands (OpenCode Native)](#slash-commands-opencode-native)
+3. [Development Commands](#development-commands)
+4. [Operating Modes](#operating-modes)
+5. [Subagent Commands](#subagent-commands)
+6. [Setup Commands](#setup-commands)
+7. [Exit Commands](#exit-commands)
 
 ---
 
@@ -73,6 +74,44 @@ Save current work session to memory.
 ```bash
 save
 ```
+
+---
+
+## Slash Commands (OpenCode Native)
+
+CodeXen provides slash commands that work directly in OpenCode's TUI. Type `/` followed by the command name.
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `/audit` | Full security + quality audit | `/audit` |
+| `/test` | Run tests with coverage report | `/test` |
+| `/lint` | Lint and auto-fix code issues | `/lint` |
+| `/review` | Code review recent changes | `/review` |
+| `/plan` | Create implementation plan | `/plan user auth` |
+| `/brs` | Generate Business Requirements | `/brs e-commerce system` |
+| `/srs` | Generate Software Requirements | `/srs from BRS` |
+| `/sds` | Generate System Design | `/sds from SRS` |
+| `/commit` | Smart git commit (conventional) | `/commit` |
+| `/refactor` | Refactor with SOLID principles | `/refactor UserService` |
+| `/init-codexen` | Initialize CodeXen in project | `/init-codexen` |
+| `/docker` | Setup Docker configuration | `/docker` |
+
+### OpenCode Built-in Commands
+
+| Command | Description |
+|---------|-------------|
+| `/init` | Create/update AGENTS.md |
+| `/connect` | Add provider API keys |
+| `/models` | List available models |
+| `/new` | Start new session |
+| `/undo` | Undo last message + file changes |
+| `/redo` | Redo undone message |
+| `/share` | Share current session |
+| `/compact` | Compact session context |
+| `/editor` | Open external editor |
+| `/export` | Export session to Markdown |
+| `/help` | Show help dialog |
+| `/themes` | List available themes |
 
 ---
 
@@ -413,6 +452,10 @@ Error message: Cannot read property 'compare' of undefined
 ├─────────────────────────────────────────────────────────────┤
 │ BASIC                                                        │
 │   hello, help, status, save, bye                            │
+├─────────────────────────────────────────────────────────────┤
+│ SLASH COMMANDS (OpenCode Native)                             │
+│   /audit /test /lint /review /plan /commit /refactor        │
+│   /brs /srs /sds /init-codexen /docker                      │
 ├─────────────────────────────────────────────────────────────┤
 │ DEVELOPMENT                                                  │
 │   build, create, plan, review, debug, refactor, test        │

@@ -1,10 +1,14 @@
 # CodeXen
 
-![Version](https://img.shields.io/badge/version-0.6.0-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
-![Validation](https://img.shields.io/badge/validation-12/12-passing-brightgreen)
+**The Complete AI Framework for OpenCode**
 
-**AI Coding Assistant for OpenCode**
+![Version](https://img.shields.io/badge/version-0.7.0-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Agents](https://img.shields.io/badge/agents-24-blue)
+![Skills](https://img.shields.io/badge/skills-17-blue)
+![Commands](https://img.shields.io/badge/commands-12-blue)
+
+> 24 agents, 17 skills, 12 commands. Zero config. Just install and start building. CodeXen turns OpenCode into a full development team with planning, coding, auditing, and deployment.
 
 Give it a task, it handles the rest.
 
@@ -102,6 +106,28 @@ core/skills/
 
 ---
 
+## Custom Commands
+
+CodeXen provides slash commands for repetitive tasks:
+
+```
+core/commands/
+├── audit.md          # /audit → Full security + quality audit
+├── test.md           # /test → Run tests with coverage
+├── lint.md           # /lint → Lint and auto-fix issues
+├── review.md         # /review → Code review recent changes
+├── plan.md           # /plan → Create implementation plan
+├── brs.md            # /brs → Generate Business Requirements
+├── srs.md            # /srs → Generate Software Requirements
+├── sds.md            # /sds → Generate System Design
+├── commit.md         # /commit → Smart git commit
+├── refactor.md       # /refactor → Refactor with SOLID
+├── init-codexen.md   # /init-codexen → Initialize CodeXen
+└── docker.md         # /docker → Setup Docker config
+```
+
+---
+
 ## Subagents
 
 | Category | Agents |
@@ -125,13 +151,18 @@ Cross-project memory that follows you:
 - Session tracking
 - Work diary
 
-### OpenCode Compatibility
+### OpenCode Native Integration
 
-CodeXen v0.6.0 is fully compatible with OpenCode's native systems:
-- **Agent system**: All 24 agents defined as Markdown with proper frontmatter
+CodeXen v0.7.0 is fully optimized for OpenCode:
+- **Agent system**: All 24 agents with fine-grained permissions
 - **Skill system**: All 17 skills with `SKILL.md` format and valid frontmatter
-- **Permission system**: Read-only auditors have `edit: deny, bash: deny`
+- **Custom commands**: 12 slash commands for common workflows
+- **Permission system**: Role-based permissions per agent (coders get edit, auditors are read-only)
 - **Subagent routing**: Defined in `opencode.json` with `mode` and `hidden` flags
+- **LSP integration**: Language server protocol for code intelligence
+- **Auto-formatters**: Prettier, Ruff, GoFmt, etc. auto-format on save
+- **Compaction**: Auto-compact context when token limit approaches
+- **Model optimization**: Use cheaper models for lightweight tasks (title generation)
 
 ---
 
@@ -142,6 +173,7 @@ codexen/
 ├── core/
 │   ├── agents/            # 24 agents (Markdown format)
 │   ├── skills/            # 17 skills (SKILL.md format)
+│   ├── commands/          # 12 slash commands (Markdown format)
 │   └── opencode.json      # Agent configuration
 ├── templates/             # Global memory templates
 ├── scripts/               # Validation scripts
@@ -184,6 +216,7 @@ Then type: `init project`
 
 ### Changelog
 
+- **v0.7.0**: OpenCode optimization (custom commands, LSP/formatters, compaction, fine-grained permissions, model optimization)
 - **v0.6.0**: OpenCode compatibility refactor (skill/agent standardization, opencode.json, validate.sh)
 - **v0.5.0**: Guardrails, self-healing orchestration, BRS/SRS/SDS chain, lessons learned
 - **v0.4.4**: Dry-run, auto-backup, conflict resolution
@@ -208,4 +241,4 @@ For detailed flow diagrams, see [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md).
 
 MIT License
 
-**Version**: 0.6.0
+**Version**: 0.7.0

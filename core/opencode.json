@@ -1,8 +1,42 @@
 {
   "$schema": "https://opencode.ai/config.json",
+
+  "model": "opencode/claude-sonnet-4-5",
+  "small_model": "opencode/claude-haiku-4-5",
+
+  "lsp": true,
+  "formatter": true,
+
+  "compaction": {
+    "auto": true,
+    "prune": true,
+    "reserved": 10000
+  },
+
+  "instructions": [
+    "AGENTS.md",
+    "docs/context/*.md",
+    "docs/architecture.md"
+  ],
+
+  "permission": {
+    "edit": "allow",
+    "bash": "allow",
+    "glob": "allow",
+    "grep": "allow",
+    "read": "allow",
+    "list": "allow",
+    "task": {
+      "*": "allow"
+    },
+    "skill": "allow",
+    "webfetch": "allow",
+    "websearch": "allow"
+  },
+
   "agent": {
     "codexen": {
-      "description": "Customizable AI coding agent framework for OpenCode with persistent memory, parallel subagent execution, and intelligent task routing",
+      "description": "The Complete AI Framework for OpenCode — 24 agents, 17 skills, 12 commands for planning, coding, auditing, and deployment",
       "mode": "primary",
       "permission": {
         "edit": "allow",
@@ -15,98 +49,197 @@
           "*": "allow"
         },
         "skill": "allow",
-        "webfetch": "allow"
+        "webfetch": "allow",
+        "websearch": "allow"
       }
     },
     "research": {
       "mode": "subagent",
-      "hidden": true
+      "hidden": true,
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
+      }
     },
     "planner": {
       "mode": "subagent",
-      "hidden": true
+      "hidden": true,
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
+      }
     },
     "coder": {
       "mode": "subagent",
-      "hidden": true
+      "hidden": true,
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
     },
     "auditor": {
       "mode": "subagent",
-      "hidden": true
+      "hidden": true,
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
+      }
     },
     "security": {
       "mode": "subagent",
-      "hidden": true
+      "hidden": true,
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
+      }
     },
     "backend-coder": {
-      "mode": "subagent"
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
     },
     "frontend-coder": {
-      "mode": "subagent"
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
     },
     "test-coder": {
       "mode": "subagent",
-      "hidden": true
+      "hidden": true,
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
     },
     "refactor-expert": {
       "mode": "subagent",
-      "hidden": true
+      "hidden": true,
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
     },
     "devops-coder": {
       "mode": "subagent",
-      "hidden": true
+      "hidden": true,
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
     },
     "database-expert": {
       "mode": "subagent",
-      "hidden": true
+      "hidden": true,
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
     },
     "api-designer": {
       "mode": "subagent",
-      "hidden": true
+      "hidden": true,
+      "permission": {
+        "edit": "allow",
+        "bash": "deny"
+      }
     },
     "git-manager": {
       "mode": "subagent",
-      "hidden": true
+      "hidden": true,
+      "permission": {
+        "edit": "deny",
+        "bash": {
+          "*": "allow",
+          "git push *": "ask",
+          "git reset --hard *": "ask"
+        }
+      }
     },
     "docs-manager": {
       "mode": "subagent",
-      "hidden": true
+      "hidden": true,
+      "permission": {
+        "edit": "allow",
+        "bash": "deny"
+      }
     },
     "doc-scout": {
       "mode": "subagent",
-      "hidden": true
+      "hidden": true,
+      "permission": {
+        "edit": "deny",
+        "bash": "deny",
+        "webfetch": "allow",
+        "websearch": "allow"
+      }
     },
     "memory": {
       "mode": "subagent",
-      "hidden": true
+      "hidden": true,
+      "permission": {
+        "edit": "allow",
+        "bash": "deny"
+      }
     },
     "decision-log": {
       "mode": "subagent",
-      "hidden": true
+      "hidden": true,
+      "permission": {
+        "edit": "allow",
+        "bash": "deny"
+      }
     },
     "security-auditor": {
       "mode": "subagent",
-      "hidden": true
+      "hidden": true,
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
+      }
     },
     "performance-auditor": {
       "mode": "subagent",
-      "hidden": true
+      "hidden": true,
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
+      }
     },
     "style-auditor": {
       "mode": "subagent",
-      "hidden": true
+      "hidden": true,
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
+      }
     },
     "brs-manager": {
       "mode": "subagent",
-      "hidden": true
+      "hidden": true,
+      "permission": {
+        "edit": "allow",
+        "bash": "deny"
+      }
     },
     "srs-manager": {
       "mode": "subagent",
-      "hidden": true
+      "hidden": true,
+      "permission": {
+        "edit": "allow",
+        "bash": "deny"
+      }
     },
     "sds-manager": {
       "mode": "subagent",
-      "hidden": true
+      "hidden": true,
+      "permission": {
+        "edit": "allow",
+        "bash": "deny"
+      }
     }
   }
 }

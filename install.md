@@ -21,7 +21,18 @@ That's it!
 
 ## Changelog
 
-### v0.6.0 (Current)
+### v0.7.0 (Current)
+- ADD: 12 custom slash commands (`/audit`, `/test`, `/lint`, `/review`, `/plan`, `/brs`, `/srs`, `/sds`, `/commit`, `/refactor`, `/init-codexen`, `/docker`)
+- ADD: Model optimization (`model` + `small_model` for cost savings)
+- ADD: LSP integration (`lsp: true` for code intelligence)
+- ADD: Auto-formatters (`formatter: true` for Prettier, Ruff, etc.)
+- ADD: Auto-compaction (`compaction: auto + prune` to prevent context overflow)
+- ADD: Instructions config (multi-file instruction loading)
+- ADD: Fine-grained permissions per agent role (coders=edit, auditors=read-only, etc.)
+- ADD: `copy_core_commands` in install config
+- CHANGE: All 24 agents have explicit permission configs in opencode.json
+
+### v0.6.0
 - REFACTOR: All 17 SKILL.md files standardized with OpenCode-compatible frontmatter (license, compatibility, metadata)
 - REFACTOR: Memory, init-project, greeting skills converted from bash scripts to instructional prompts
 - REFACTOR: All 24 agent .md files standardized with consistent permission format
@@ -111,6 +122,7 @@ If not dry-run, create a backup:
 Ensure these directories exist:
 - `~/.config/opencode/agents/`
 - `~/.config/opencode/skills/`
+- `~/.config/opencode/commands/`
 - `~/.config/opencode/global-memory/`
 - `~/.config/opencode/global-memory/work-diary/`
 - `~/.config/opencode/global-memory/work-diary/archive/`
@@ -133,6 +145,15 @@ Copy `core/skills/*/SKILL.md` to `~/.config/opencode/skills/*/SKILL.md` (preserv
 
 For each skill:
 - Create the skill directory if it does not exist
+- If the file does not exist at destination: copy it (new install)
+- If the file exists and differs: ask user whether to keep theirs, overwrite, or show diff
+- If the file exists and is identical: skip (unchanged)
+
+### Step 5b: Install commands
+
+Copy `core/commands/*.md` to `~/.config/opencode/commands/`.
+
+For each command file:
 - If the file does not exist at destination: copy it (new install)
 - If the file exists and differs: ask user whether to keep theirs, overwrite, or show diff
 - If the file exists and is identical: skip (unchanged)
@@ -168,6 +189,7 @@ Install complete!
 
 Agents: 24 files → ~/.config/opencode/agents/
 Skills: 17 directories → ~/.config/opencode/skills/
+Commands: 12 files → ~/.config/opencode/commands/
 Config: opencode.json → ~/.config/opencode/opencode.json
 Memory: templates → ~/.config/opencode/global-memory/
 Script: validate.sh → ~/.config/opencode/scripts/validate.sh
@@ -176,6 +198,7 @@ Next steps:
 1. Restart OpenCode
 2. Press TAB until you see codexen
 3. Say: hello!
+4. Try: /audit or /test
 ```
 
 ---
@@ -186,6 +209,7 @@ Next steps:
 |--------|---------|
 | Copies 24 agents (with conflict resolution) | `~/.config/opencode/agents/` |
 | Copies 17 skills (with conflict resolution) | `~/.config/opencode/skills/` |
+| Copies 12 commands (with conflict resolution) | `~/.config/opencode/commands/` |
 | Copies opencode.json (with merge option) | `~/.config/opencode/opencode.json` |
 | Creates memory templates (if empty) | `~/.config/opencode/global-memory/` |
 | Copies validation script | `~/.config/opencode/scripts/validate.sh` |
@@ -222,7 +246,7 @@ Then in OpenCode:
 If something goes wrong, manually run:
 
 ```bash
-mkdir -p ~/.config/opencode/agents ~/.config/opencode/skills ~/.config/opencode/global-memory ~/.config/opencode/scripts
+mkdir -p ~/.config/opencode/agents ~/.config/opencode/skills ~/.config/opencode/commands ~/.config/opencode/global-memory ~/.config/opencode/scripts
 
 # Copy agents
 for f in core/agents/*.md; do
@@ -234,6 +258,11 @@ for f in core/skills/*/SKILL.md; do
   skill_dir=$(basename "$(dirname "$f")")
   mkdir -p ~/.config/opencode/skills/"$skill_dir"
   cp "$f" ~/.config/opencode/skills/"$skill_dir"/
+done
+
+# Copy commands
+for f in core/commands/*.md; do
+  cp "$f" ~/.config/opencode/commands/
 done
 
 # Copy config (overwrite with caution)

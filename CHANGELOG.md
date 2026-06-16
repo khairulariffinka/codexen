@@ -6,6 +6,31 @@ Format based on [Keep a Changelog](https://keepachangelog.com/), versioning foll
 
 ---
 
+## [0.7.0] - 2026-06-16
+
+### Added
+- **12 custom slash commands**: `/audit`, `/test`, `/lint`, `/review`, `/plan`, `/brs`, `/srs`, `/sds`, `/commit`, `/refactor`, `/init-codexen`, `/docker`
+- **Model optimization**: `model` + `small_model` config for cost savings (cheap model for title generation)
+- **LSP integration**: `lsp: true` for language server protocol code intelligence
+- **Auto-formatters**: `formatter: true` for Prettier, Ruff, GoFmt, etc. on save
+- **Auto-compaction**: `compaction: auto + prune` to prevent context overflow
+- **Instructions config**: Multi-file instruction loading via `instructions` array
+- **Fine-grained permissions**: Role-based permissions per agent type:
+  - Coders: edit + bash allowed
+  - Auditors: read-only (edit + bash denied)
+  - Research/Planner: read-only (edit + bash denied)
+  - Git Manager: bash with push confirmation
+  - Doc Scout: webfetch + websearch only
+  - Memory/Spec writers: edit allowed, bash denied
+
+### Changed
+- Version: 0.6.0 → 0.7.0
+- All 24 agents now have explicit permission configs in opencode.json
+- README.md updated with slash commands and new features
+- COMMANDS.md updated with slash commands section
+
+---
+
 ## [0.5.0] - 2026-04-29
 
 ### Added

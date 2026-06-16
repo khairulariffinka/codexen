@@ -55,6 +55,14 @@ You should get a greeting back. If you do, you're ready to go!
 
 ---
 
+### New in v0.7.0
+
+- **12 slash commands** — `/audit`, `/test`, `/lint`, `/review`, `/plan`, `/commit`, etc.
+- **Model optimization** — cheaper model for lightweight tasks
+- **LSP + formatters** — code intelligence and auto-formatting
+- **Auto-compaction** — prevents context overflow
+- **Fine-grained permissions** — coders edit, auditors read-only
+
 ### New in v0.5.0
 
 - **Subagent routing** — task auto-routed to 24 specialized agents
@@ -99,6 +107,9 @@ That's it! No need to manage 24 subagents - CodeXen handles everything.
 | `review my code` | Security & performance audit |
 | `debug: login error` | Finds and fixes the bug |
 | `write tests for auth` | Unit & integration tests |
+| `/audit` | Full security + quality audit |
+| `/test` | Run tests with coverage |
+| `/commit` | Smart conventional commit |
 
 ---
 
