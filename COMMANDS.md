@@ -93,7 +93,7 @@ CodeXen provides slash commands that work directly in OpenCode's TUI. Type `/` f
 | `/sds` | Generate System Design | `/sds from SRS` |
 | `/commit` | Smart git commit (conventional) | `/commit` |
 | `/refactor` | Refactor with SOLID principles | `/refactor UserService` |
-| `/init-codexen` | Initialize CodeXen in project | `/init-codexen` |
+
 | `/docker` | Setup Docker configuration | `/docker` |
 
 ### OpenCode Built-in Commands
@@ -462,7 +462,7 @@ Error message: Cannot read property 'compare' of undefined
 ├─────────────────────────────────────────────────────────────┤
 │ SLASH COMMANDS (OpenCode Native)                             │
 │   /audit /test /lint /review /plan /commit /refactor        │
-│   /brs /srs /sds /init-codexen /docker                      │
+│   /brs /srs /sds /docker                      │
 ├─────────────────────────────────────────────────────────────┤
 │ DEVELOPMENT                                                  │
 │   build, create, plan, review, debug, refactor, test        │

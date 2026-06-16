@@ -20,7 +20,7 @@ Comprehensive guide to using all 24 subagents in CodeXen.
 
 | Feature | Description | More Info |
 |---------|-------------|-----------|
-| **12 Slash Commands** | `/audit`, `/test`, `/lint`, `/review`, `/plan`, `/brs`, `/srs`, `/sds`, `/commit`, `/refactor`, `/init-codexen`, `/docker` | See: [COMMANDS.md](./COMMANDS.md) |
+| **11 Slash Commands** | `/audit`, `/test`, `/lint`, `/review`, `/plan`, `/brs`, `/srs`, `/sds`, `/commit`, `/refactor`, `/docker` | See: [COMMANDS.md](./COMMANDS.md) |
 | **Model Optimization** | Use cheaper models for lightweight tasks (title generation) | Config: `model` + `small_model` |
 | **LSP Integration** | Language server protocol for code intelligence | Config: `lsp: true` |
 | **Auto-formatters** | Prettier, Ruff, GoFmt auto-format on save | Config: `formatter: true` |

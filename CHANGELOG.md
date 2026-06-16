@@ -20,7 +20,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/), versioning foll
 ## [0.7.0] - 2026-06-16
 
 ### Added
-- **12 custom slash commands**: `/audit`, `/test`, `/lint`, `/review`, `/plan`, `/brs`, `/srs`, `/sds`, `/commit`, `/refactor`, `/init-codexen`, `/docker`
+- **11 custom slash commands**: `/audit`, `/test`, `/lint`, `/review`, `/plan`, `/brs`, `/srs`, `/sds`, `/commit`, `/refactor`, `/docker`
 - **Model optimization**: `model` + `small_model` config for cost savings (cheap model for title generation)
 - **LSP integration**: `lsp: true` for language server protocol code intelligence
 - **Auto-formatters**: `formatter: true` for Prettier, Ruff, GoFmt, etc. on save

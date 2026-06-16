@@ -22,7 +22,7 @@ That's it!
 ## Changelog
 
 ### v0.7.0 (Current)
-- ADD: 12 custom slash commands (`/audit`, `/test`, `/lint`, `/review`, `/plan`, `/brs`, `/srs`, `/sds`, `/commit`, `/refactor`, `/init-codexen`, `/docker`)
+- ADD: 11 custom slash commands (`/audit`, `/test`, `/lint`, `/review`, `/plan`, `/brs`, `/srs`, `/sds`, `/commit`, `/refactor`, `/docker`)
 - ADD: Model optimization (`model` + `small_model` for cost savings)
 - ADD: LSP integration (`lsp: true` for code intelligence)
 - ADD: Auto-formatters (`formatter: true` for Prettier, Ruff, etc.)

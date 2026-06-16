@@ -74,7 +74,7 @@ core_commands:
   - sds
   - commit
   - refactor
-  - init-codexen
+
   - docker
 
 template_skills:

@@ -122,7 +122,7 @@ core/commands/
 ├── sds.md            # /sds → Generate System Design
 ├── commit.md         # /commit → Smart git commit
 ├── refactor.md       # /refactor → Refactor with SOLID
-├── init-codexen.md   # /init-codexen → Initialize CodeXen
+
 └── docker.md         # /docker → Setup Docker config
 ```
 
