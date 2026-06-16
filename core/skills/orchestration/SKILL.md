@@ -275,6 +275,123 @@ Before allowing any `git commit` or `git push`:
 
 ---
 
+## Goal/Stop Condition
+
+Prevent premature agent stop by setting explicit stopping conditions.
+
+### Problem
+
+Without a goal, agents may stop early:
+- Agent says "Done!" but tests not written
+- Agent completes 80% and claims success
+- No way to verify if task is truly complete
+
+### Solution
+
+User sets a goal, agent must satisfy it before stopping.
+
+### Usage
+
+```
+User: /goal "All API endpoints have tests and pass security audit"
+```
+
+Or inline:
+
+```
+Build user auth with goal: "JWT working, tests passing, no security issues"
+```
+
+### Goal Evaluation
+
+When agent tries to stop, run evaluation:
+
+```
+[GOAL EVALUATION]
+
+Goal: "All API endpoints have tests and pass security audit"
+
+Checklist:
+├─ [✅] API endpoints created (5/5)
+├─ [✅] Tests written (5/5)
+├─ [✅] Tests passing (100%)
+├─ [❌] Security audit passed (0/1 — not run yet)
+└─ [❌] No TODO/FIXME in code (found 2)
+
+Verdict: ❌ NOT COMPLETE
+Missing: security audit, cleanup TODOs
+
+Action: Continue working...
+```
+
+### Judge Model
+
+For complex goals, use separate evaluation step:
+
+```
+1. Agent claims: "Task complete"
+2. Orchestrator runs: @auditor + @test-coder
+3. Judge evaluates: Does output match goal?
+4. If NO → return to agent with gaps
+5. If YES → allow stop, log success
+```
+
+### Goal Format
+
+```
+/goal "[specific, measurable condition]"
+
+Examples:
+/goal "All tests pass with >80% coverage"
+/goal "No security vulnerabilities found"
+/goal "API handles 100 concurrent users"
+/goal "Code follows PSR-12 style"
+```
+
+### Auto-Stop Prevention
+
+```
+IF agent says "done" OR "complete" OR "finished":
+  1. Check if /goal is active
+  2. If YES → run evaluation
+  3. If evaluation FAILS → return to agent with gaps
+  4. If evaluation PASSES → allow stop
+  5. If NO goal set → normal stop (no evaluation)
+```
+
+### Goal Storage
+
+Store active goal in `~/.config/opencode/global-memory/current-goal.md`:
+
+```markdown
+# Active Goal
+
+**Set:** 2026-06-16 14:30
+**Goal:** All API endpoints have tests and pass security audit
+**Status:** In Progress
+
+## Checklist
+- [ ] API endpoints created
+- [ ] Tests written
+- [ ] Tests passing
+- [ ] Security audit passed
+- [ ] No TODO/FIXME
+
+## Evaluation Log
+- 14:35 — ❌ Failed (tests not run)
+- 14:45 — ❌ Failed (2 security issues)
+- 14:55 — ✅ Passed
+```
+
+### Clearing Goal
+
+```
+User: /goal clear
+→ Clears active goal, normal stop behavior resumes
+```
+
+---
+
 ## Agent Performance Tracking
 
 Track success/failure rate per agent to make intelligent routing decisions.

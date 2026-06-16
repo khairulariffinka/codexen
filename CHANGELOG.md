@@ -26,6 +26,9 @@ Format based on [Keep a Changelog](https://keepachangelog.com/), versioning foll
 - **Priority Scoring**: Rank lessons by frequency, severity, and recency
 - **Agent Performance Tracking**: Track success/failure rate, avg duration, error patterns per agent
 - **Smart Routing**: Auto-select best agent based on track record
+- **Goal/Stop Condition**: `/goal` command with judge evaluation to prevent premature agent stop
+- **Dream & Distill**: `/dream` extracts knowledge from sessions, `/distill` packages workflows into skills
+- **Auto-Checkpoint**: Save session state when context nears limit, auto-restore on resume
 
 ### Changed
 - Version: 0.6.0 → 0.7.0

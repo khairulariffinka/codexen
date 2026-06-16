@@ -97,6 +97,9 @@ features:
   - smart-recall
   - priority-scoring
   - agent-performance-tracking
+  - goal-stop-condition
+  - dream-distill
+  - auto-checkpoint
 
 paths:
   opencode_config: ~/.config/opencode

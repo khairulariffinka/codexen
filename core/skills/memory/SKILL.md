@@ -21,6 +21,9 @@ Manages persistent project context and global knowledge preservation.
 | **SAVE** | Local session diary + global work diary sync. |
 | **RECALL** | Auto-suggest relevant lessons based on task context. |
 | **SCORE** | Rank lessons by frequency and severity. |
+| **DREAM** | Extract persistent knowledge from session traces. |
+| **DISTILL** | Package repeated workflows into reusable skills. |
+| **CHECKPOINT** | Auto-save session state when context nears limit. |
 
 ---
 
@@ -201,6 +204,207 @@ Top 3 Priority Lessons:
 
 ---
 
+### @memory dream
+
+Scan recent session traces, extract persistent knowledge into project memory, and remove outdated entries.
+
+**Purpose:** Like MiMo-Code's `/dream` — automatically learn from sessions without manual logging.
+
+**Steps:**
+1. Read last 5 sessions from `~/.config/opencode/global-memory/work-diary/`.
+2. Read `docs/lessons.md` and `docs/DECISIONS.md`.
+3. Extract knowledge types:
+
+| Type | Source | Target |
+|------|--------|--------|
+| **Architecture decisions** | Session traces | `docs/DECISIONS.md` |
+| **Recurring patterns** | Multiple sessions | `docs/patterns.md` |
+| **Lessons learned** | Failures/challenges | `docs/lessons.md` |
+| **Tech stack info** | Project files | `docs/current-state.md` |
+| **Outdated entries** | Old sessions | Remove from active files |
+
+4. Merge extracted knowledge with existing files (avoid duplicates).
+5. Remove outdated entries (older than 90 days, no longer relevant).
+6. Report what was added/removed.
+
+**Output format:**
+```
+[DREAM COMPLETE]
+
+Sessions scanned: 5
+Knowledge extracted:
+├─ Architecture decisions: 2 added to DECISIONS.md
+├─ Patterns: 3 added to patterns.md
+├─ Lessons: 1 added to lessons.md
+└─ Outdated: 4 entries removed
+
+Memory updated: docs/ (4 files changed)
+```
+
+**Auto-trigger:**
+- After 10 sessions: auto-run dream
+- Token budget > 80%: run dream to clean up
+- Manual: `@memory dream`
+
+---
+
+### @memory distill
+
+Discover repeated manual workflows in recent work and package into reusable skills, subagents, or commands.
+
+**Purpose:** Like MiMo-Code's `/distill` — learn new workflows automatically.
+
+**Steps:**
+1. Read last 10 sessions from `~/.config/opencode/global-memory/work-diary/`.
+2. Analyze workflow patterns:
+   - Same sequence of steps repeated 3+ times
+   - Same agent combinations used together
+   - Same file operations (create → edit → test → commit)
+3. For each pattern found:
+   - Calculate confidence score (frequency × consistency)
+   - If confidence > 70% → candidate for packaging
+4. Present candidates to user for approval.
+
+**Output format:**
+```
+[DISTILL CANDIDATES]
+
+Scanned: 10 sessions
+Patterns found: 3
+
+1. [Score: 85%] "API Endpoint Workflow"
+   Pattern: @planner → @backend-coder → @test-coder → @auditor → @git-manager
+   Frequency: 8 times
+   Suggestion: Create /api-workflow command
+
+2. [Score: 72%] "Bug Fix Workflow"
+   Pattern: @research → @coder → @test-coder → @git-manager
+   Frequency: 5 times
+   Suggestion: Create @bug-fixer subagent
+
+Package as skill/command? [Y/n]
+```
+
+**Packaging options:**
+
+| Option | Action |
+|--------|--------|
+| **Skill** | Create `core/skills/[name]/SKILL.md` with workflow steps |
+| **Command** | Create `core/commands/[name].md` with slash command |
+| **Subagent** | Create `core/agents/[name].md` with agent config |
+
+**After packaging:**
+1. Create the new skill/command/agent file
+2. Register in `opencode.json`
+3. Update `VERSION.yaml` if adding new components
+4. Log in `docs/patterns.md` as documented workflow
+
+---
+
+### @memory checkpoint [save|restore|list]
+
+Auto-save session state when context nears limit. Like MiMo-Code's checkpoint system.
+
+**Purpose:** Prevent context overflow by saving/restoring session state automatically.
+
+#### @memory checkpoint save
+
+Save current session state to checkpoint file.
+
+**Steps:**
+1. Capture current session state:
+   - Active task (from planner.md)
+   - Files being edited
+   - Decisions made this session
+   - Context loaded (AGENTS.md, current-state.md, etc.)
+   - Session history (compressed summary)
+2. Write to `~/.config/opencode/global-memory/checkpoint.md`:
+
+```markdown
+# Session Checkpoint
+
+**Saved:** 2026-06-16 14:30
+**Task:** Build user authentication
+**Progress:** 60% complete
+
+## Active Context
+- Files: src/auth.ts, src/user.ts, tests/auth.test.ts
+- Decisions: JWT over sessions (DEC-001)
+- Agent: @backend-coder
+
+## Session Summary
+- Created User model
+- Implemented JWT login
+- Next: Add refresh token
+
+## Files Modified
+- src/auth.ts (created)
+- src/user.ts (created)
+- tests/auth.test.ts (created)
+```
+
+3. Confirm to user:
+```
+Checkpoint saved (14:30)
+Task: Build user authentication
+Progress: 60%
+```
+
+#### @memory checkpoint restore
+
+Restore session from checkpoint.
+
+**Steps:**
+1. Read `~/.config/opencode/global-memory/checkpoint.md`.
+2. Load context from checkpoint:
+   - Read files listed in checkpoint
+   - Load decisions from DECISIONS.md
+   - Load project state from current-state.md
+3. Present summary:
+```
+[CHECKPOINT RESTORED]
+
+Saved: 2026-06-16 14:30
+Task: Build user authentication
+Progress: 60%
+
+Resumed context:
+├─ Files: 3 loaded
+├─ Decisions: 1 active
+└─ Next: Add refresh token
+
+Ready to continue!
+```
+
+#### @memory checkpoint list
+
+List all available checkpoints.
+
+**Output:**
+```
+[CHECKPOINTS]
+
+| # | Date | Task | Progress | Files |
+|---|------|------|----------|-------|
+| 1 | 14:30 | Build auth | 60% | 3 files |
+| 2 | 12:15 | Setup DB | 100% | 5 files |
+| 3 | 10:00 | Init project | 100% | 2 files |
+```
+
+**Auto-checkpoint triggers:**
+| Threshold | Action |
+|-----------|--------|
+| > 80% context | Auto-save checkpoint |
+| > 90% context | Save + compress old sessions |
+| > 95% context | Save + prompt user to resume later |
+
+**Auto-cleanup:**
+- Keep last 5 checkpoints
+- Delete checkpoints older than 7 days
+- Never delete checkpoint with incomplete task
+
+---
+
 ### @memory lesson: [title] -- [what went wrong + fix]
 
 Log a lesson learned.
@@ -348,6 +552,10 @@ Global memory (cross-project):
 ~/.config/opencode/global-memory/
   user-profile.md        # User preferences
   current-session.md      # RAM for current session
+  current-goal.md         # Active goal/stop condition
+  checkpoint.md           # Latest session checkpoint
+  checkpoint/             # Older checkpoints
+    checkpoint-YYYY-MM-DD-HHMM.md
   patterns.md             # Patterns across projects
   lessons.md              # Cross-project lessons learned
   agent-performance.md    # Agent success/failure stats

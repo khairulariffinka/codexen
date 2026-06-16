@@ -283,6 +283,10 @@ Invoke specific subagents directly with `@` mention.
 | `@memory, show lessons about [topic]` | Check past mistakes | `@memory, show lessons about auth` |
 | `@memory, smart-recall [task]` | Auto-suggest relevant lessons | `@memory, smart-recall create API endpoint` |
 | `@memory, score-lessons` | Rank lessons by priority | `@memory, score-lessons` |
+| `@memory, dream` | Extract knowledge from sessions | `@memory, dream` |
+| `@memory, distill` | Package workflows into skills | `@memory, distill` |
+| `@memory, checkpoint save` | Save session checkpoint | `@memory, checkpoint save` |
+| `@memory, checkpoint restore` | Restore from checkpoint | `@memory, checkpoint restore` |
 | `@memory, lesson: [title] — [desc]` | Log a lesson | `@memory, lesson: JWT expiry — forgot to check` |
 | `@memory, analyze lessons` | Scan sessions for patterns | `@memory, analyze lessons` |
 | `@memory, analyze patterns` | Update patterns.md | `@memory, analyze patterns` |
