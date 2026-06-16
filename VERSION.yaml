@@ -80,7 +80,7 @@ core_commands:
 template_skills:
   - setup-profile
   - init-project
-  - switch-config
+  - model-picker
 
 features:
   - lessons-learned

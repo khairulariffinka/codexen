@@ -101,7 +101,7 @@ core/skills/
 ├── greeting/         # Time-based greetings
 ├── init-project/     # Project initialization
 ├── setup-profile/    # User profile setup
-└── switch-config/    # Config switching
+└── model-picker/     # Model selection
 ```
 
 ---
