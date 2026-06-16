@@ -22,6 +22,10 @@ Format based on [Keep a Changelog](https://keepachangelog.com/), versioning foll
   - Git Manager: bash with push confirmation
   - Doc Scout: webfetch + websearch only
   - Memory/Spec writers: edit allowed, bash denied
+- **Smart Recall**: Auto-suggest relevant lessons based on task keywords (no manual topic needed)
+- **Priority Scoring**: Rank lessons by frequency, severity, and recency
+- **Agent Performance Tracking**: Track success/failure rate, avg duration, error patterns per agent
+- **Smart Routing**: Auto-select best agent based on track record
 
 ### Changed
 - Version: 0.6.0 → 0.7.0

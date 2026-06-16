@@ -94,6 +94,9 @@ features:
   - auto-formatters
   - compaction
   - model-optimization
+  - smart-recall
+  - priority-scoring
+  - agent-performance-tracking
 
 paths:
   opencode_config: ~/.config/opencode

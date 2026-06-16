@@ -281,10 +281,13 @@ Invoke specific subagents directly with `@` mention.
 |---------|-------------|---------|
 | `@memory` | Manage memory | `@memory, update AGENTS.md` |
 | `@memory, show lessons about [topic]` | Check past mistakes | `@memory, show lessons about auth` |
+| `@memory, smart-recall [task]` | Auto-suggest relevant lessons | `@memory, smart-recall create API endpoint` |
+| `@memory, score-lessons` | Rank lessons by priority | `@memory, score-lessons` |
 | `@memory, lesson: [title] — [desc]` | Log a lesson | `@memory, lesson: JWT expiry — forgot to check` |
 | `@memory, analyze lessons` | Scan sessions for patterns | `@memory, analyze lessons` |
 | `@memory, analyze patterns` | Update patterns.md | `@memory, analyze patterns` |
 | `@memory, budget` | Check token usage | `@memory, budget` |
+| `@memory, agent-report [agent]` | View agent performance stats | `@memory, agent-report @backend-coder` |
 | `@memory, update check` | Check CodeXen updates | `@memory, update check` |
 | `@decision-log` | Log decisions | `@decision-log, record why we chose JWT` |
 | `@decision-log, find [topic]` | Search decisions | `@decision-log, find decisions about auth` |

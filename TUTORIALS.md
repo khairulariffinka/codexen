@@ -1068,11 +1068,14 @@ The `memory` agent maintains context across sessions. It provides keyword search
 | Feature | Description |
 |---------|-------------|
 | **Keyword Search** | Search by tags, keywords, and file names |
+| **Smart Recall** | Auto-suggest lessons based on task keywords |
+| **Priority Scoring** | Rank lessons by frequency, severity, recency |
 | **Decision Tracking** | Log why decisions were made |
 | **File Relationship Map** | Track connections between files and features |
 | **Cross-Project Context** | Reuse patterns from other projects |
 | **Context Compression** | Summarize old sessions to save tokens |
 | **Pattern Documentation** | Document recurring implementation patterns |
+| **Agent Performance** | Track success/failure rate per agent |
 
 #### When to Use
 
@@ -1090,6 +1093,18 @@ The `memory` agent maintains context across sessions. It provides keyword search
 
 ```
 @memory, show me similar implementations of payment integration
+```
+
+```
+@memory, smart-recall create REST API endpoint
+```
+
+```
+@memory, score-lessons
+```
+
+```
+@memory, agent-report @backend-coder
 ```
 
 #### Example Output
