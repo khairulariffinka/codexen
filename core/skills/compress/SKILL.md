@@ -3,7 +3,7 @@ name: compress
 description: >
   Ultra-compressed communication mode. Cuts token usage ~75% by speaking tersely
   while keeping full technical accuracy. Supports intensity levels: lite, full (default), ultra.
-  Use when user says "compress mode", "terse mode", "less tokens", "be brief", "/compress".
+  Trigger: "compress mode", "terse mode", "less tokens", "be brief".
   Also auto-triggers when token efficiency is requested.
 ---
 
