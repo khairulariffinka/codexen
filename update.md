@@ -23,41 +23,31 @@ To use, append after command: `"load update.md --dry-run"`
 
 ## Changelog
 
-### v0.5.0 (Current)
-- ADD: Detect user's agent by mode: primary
-- ADD: Update directly to user's primary agent file
-- ADD: User can choose custom agent name
-- ADD: `--dry-run` option for preview
-- ADD: Automatic backup before update
-- ADD: Conflict resolution for agents/skills
-- ADD: Merge option for opencode.json
-- ADD: Subagent routing table mapping task types to all 24 agents
-- ADD: Cross-agent handoffs (@test-coder, @auditor, @decision-log, @doc-scout) to coder agents
-- ADD: Mandatory audit gate in git-manager.md before commit
-- ADD: Search/query and supersession logic to decision-log
-- ADD: FR/NFR templates, ERD/API contract templates to srs/sds skills
-- ADD: Parallel grouping and estimation criteria to planner skill
-- FIX: Expanded incomplete agents (research, refactor-expert, backend-coder, auditor, brs-manager)
-- FIX: Overclaim terminology in memory agent (semantic search → keyword search, etc.)
-- FIX: planner.md edit:deny → edit:allow (content producer consistency)
-- FIX: Restricted unnecessary bash:allow → bash:deny (api-designer, brs-manager, docs-manager)
-- FIX: .gitignore scope (/memory/, /docs/ instead of memory/, docs/)
-- FIX: Memory skill paths, sed pattern, RAM population flow
+### v0.7.0 (Current)
+- ADD: 12 custom slash commands (`/audit`, `/test`, `/lint`, `/review`, `/plan`, `/brs`, `/srs`, `/sds`, `/commit`, `/refactor`, `/init-codexen`, `/docker`)
+- ADD: Model optimization (`model` + `small_model` for cost savings)
+- ADD: LSP integration (`lsp: true` for code intelligence)
+- ADD: Auto-formatters (`formatter: true` for Prettier, Ruff, etc.)
+- ADD: Auto-compaction (`compaction: auto + prune` to prevent context overflow)
+- ADD: Instructions config (multi-file instruction loading)
+- ADD: Fine-grained permissions per agent role (coders=edit, auditors=read-only, etc.)
+- ADD: `copy_core_commands` in install config
+- CHANGE: All 24 agents have explicit permission configs in opencode.json
+
+### v0.6.0
+- REFACTOR: All 17 SKILL.md files standardized with OpenCode-compatible frontmatter
+- REFACTOR: All 24 agent .md files standardized with consistent permission format
+- REFACTOR: Removed `name:` field from agent frontmatter (OpenCode uses filename)
+- ADD: opencode.json now registers all 24 subagents with mode and hidden flags
+- ADD: validate.sh enhanced with SKILL.md name validation
+
+### v0.5.0
 - ADD: Self-healing orchestration (8 error recovery scenarios)
 - ADD: Feedback loop with lessons learned system (lessons.md)
 - ADD: CI/CD validation script (scripts/validate.sh, 12 checks)
-- ADD: Formal changelog workflow for BRS/SRS/SDS spec chain
-- ADD: Parallel execution validation (dependency, file conflict, circular dep)
 - ADD: Token budgeting system with auto-triggers and sliding window
 - ADD: Guardrails (ask before modify, circuit breaker, rate limit, scope)
-- ADD: Git guardrails (secret scan, large file warning, message validation)
-- ADD: `--installed` flag for validate.sh
 - ADD: Open source files (CONTRIBUTING.md, SECURITY.md, CODE_OF_CONDUCT.md)
-- ADD: GitHub issue/PR templates
-- ADD: Agent generator script (scripts/generate-agent.sh)
-- ADD: Production test suite (tests/test-self-healing.sh, 18 scenarios)
-- ADD: GitHub Actions CI pipeline (.github/workflows/validate.yml)
-- ADD: SemVer policy (VERSIONING.md)
 
 ### v0.4.0
 - Initial release with conditional update logic
@@ -294,7 +284,7 @@ In OpenCode:
 
 ## Version
 
-Current: **0.5.0**
+Current: **0.7.0**
 
 ---
 

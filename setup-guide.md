@@ -71,11 +71,17 @@ Check that files are in place:
 │   ├── memory.md     ← Memory subagent
 │   ├── planner.md    ← Planning subagent
 │   ├── coder.md      ← Coding subagent
-│   └── ... (other subagents)
-└── skills/
-├── greeting.md   ← Greeting system
-├── modes.md      ← Operating modes
-    └── ... (other skills)
+│   └── ... (24 agents total)
+├── skills/
+│   ├── greeting/     ← Greeting system
+│   ├── modes/        ← Operating modes
+│   └── ... (17 skills total)
+├── commands/
+│   ├── audit.md      ← /audit
+│   ├── test.md       ← /test
+│   ├── commit.md     ← /commit
+│   └── ... (12 commands total)
+└── opencode.json     ← Configuration
 ```
 
 ### Test Basic Functionality

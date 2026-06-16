@@ -16,9 +16,10 @@ When this file is loaded, AI must know:
 **Are you sure you want to uninstall CodeXen?**
 
 This will remove ALL CodeXen data:
-- All agents (22 files)
-- All skills (11 folders)
-- Version file
+- All agents (24 files)
+- All skills (17 folders)
+- All commands (12 files)
+- Config (opencode.json)
 - Global memory (user profile, work diary, knowledge library)
 
 **Choose your option:**
@@ -51,6 +52,11 @@ rm -rf ~/.config/opencode/skills
 rm -rf ~/.config/opencode/agents
 
 # ============================================
+# Remove commands folder
+# ============================================
+rm -rf ~/.config/opencode/commands
+
+# ============================================
 # Remove global memory folder
 # ============================================
 rm -rf ~/.config/opencode/global-memory
@@ -73,8 +79,10 @@ If you get "Agent not found" or error - uninstall successful!
 ## Notes
 
 This will remove everything CodeXen installed:
-- Skills folder: 1 folder (all skills)
-- Agents folder: 1 folder (all agents)
-- Global memory folder: 1 folder (user profile, work diary, knowledge library)
+- Skills folder: 17 skills
+- Agents folder: 24 agents
+- Commands folder: 12 commands
+- Config: opencode.json
+- Global memory folder: user profile, work diary, knowledge library
 
 **After uninstall, you will need to run the setup again to use CodeXen.**

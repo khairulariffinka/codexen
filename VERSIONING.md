@@ -7,8 +7,8 @@ CodeXen uses **Semantic Versioning** (SemVer 2.0): `MAJOR.MINOR.PATCH`
 | Bump | When | Example |
 |------|------|---------|
 | **MAJOR** | Breaking changes to agent API, permission model, or core workflow | `0.5.0` → `1.0.0` |
-| **MINOR** | New features, new agents, new guardrails (backward compatible) | `0.5.0` → `0.6.0` |
-| **PATCH** | Bug fixes, documentation, validation improvements | `0.5.0` → `0.5.1` |
+| **MINOR** | New features, new agents, new guardrails (backward compatible) | `0.7.0` → `0.8.0` |
+| **PATCH** | Bug fixes, documentation, validation improvements | `0.7.0` → `0.7.1` |
 
 ## Breaking Changes (MAJOR)
 

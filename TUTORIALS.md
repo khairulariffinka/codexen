@@ -16,7 +16,18 @@ Comprehensive guide to using all 24 subagents in CodeXen.
 
 ---
 
-## v0.5.0 New Features
+## v0.7.0 New Features
+
+| Feature | Description | More Info |
+|---------|-------------|-----------|
+| **12 Slash Commands** | `/audit`, `/test`, `/lint`, `/review`, `/plan`, `/brs`, `/srs`, `/sds`, `/commit`, `/refactor`, `/init-codexen`, `/docker` | See: [COMMANDS.md](./COMMANDS.md) |
+| **Model Optimization** | Use cheaper models for lightweight tasks (title generation) | Config: `model` + `small_model` |
+| **LSP Integration** | Language server protocol for code intelligence | Config: `lsp: true` |
+| **Auto-formatters** | Prettier, Ruff, GoFmt auto-format on save | Config: `formatter: true` |
+| **Auto-compaction** | Prevents context overflow with auto-compact + prune | Config: `compaction: auto` |
+| **Fine-grained Permissions** | Role-based: coders edit, auditors read-only | Config: `permission` in opencode.json |
+
+### Previous (v0.5.0)
 
 | Feature | Description | More Info |
 |---------|-------------|-----------|
@@ -29,7 +40,7 @@ Comprehensive guide to using all 24 subagents in CodeXen.
 | **Changelog Workflow** | Formal change propagation: BRS → SRS → SDS → Planner | See: [Spec Chain](#advanced-spec-chain) |
 | **Parallel Validation** | Dependency check, file conflict detection before parallel execution | Auto-validated by `@planner` |
 
-Version: **0.5.0** | Branch: `main` (stable), `develop` (latest)
+Version: **0.7.0** | Branch: `main` (stable), `develop` (latest)
 
 
 ---
