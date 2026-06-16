@@ -1,6 +1,6 @@
-version: 0.7.1
+version: 0.8.0
 name: CodeXen
-description: The Complete AI Framework for OpenCode — 24 agents, 17 skills, 12 commands for planning, coding, auditing, and deployment
+description: The Complete AI Framework for OpenCode — 24 agents, 19 skills, 11 commands for planning, coding, auditing, and deployment
 author: khairulariffinka
 license: MIT
 default_agent: codexen
@@ -62,6 +62,8 @@ core_skills:
   - modes
   - output
   - greeting
+  - compress
+  - compress-file
 
 core_commands:
   - audit

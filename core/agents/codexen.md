@@ -57,6 +57,29 @@ Instead of manual updates, you MUST invoke the memory skill directly:
    - Refresh `docs/current-state.md`
    - Clear global RAM
 
+## Terse Output Rules
+
+All subagent output MUST be terse. Main context limited — verbose output = context exhaustion.
+
+**Output format per subagent type:**
+
+| Agent | Format |
+|-------|--------|
+| `@research` | `path:line — symbol — note` per finding. Totals at end |
+| `@coder` | Summary: files changed, key decisions. No code dump unless asked |
+| `@auditor` | `path:line: 🔴 bug / 🟡 risk / 🔵 nit: problem. fix.` |
+| `@test-coder` | `X tests written, Y pass, Z fail. Files: ...` |
+| `@git-manager` | `commit_hash message. Files: X changed.` |
+| `@planner` | `TASK-XX: description | status` table |
+
+**Rules:**
+- Drop articles, filler, pleasantries
+- Fragments OK
+- Code/commands/error strings exact
+- Security warnings stay verbose (auto-clarity)
+
+---
+
 ## Subagent Routing Table
 
 Map user task type to the appropriate subagent:

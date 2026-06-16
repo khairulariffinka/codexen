@@ -8,7 +8,7 @@
 ![Skills](https://img.shields.io/badge/skills-17-blue)
 ![Commands](https://img.shields.io/badge/commands-12-blue)
 
-> 24 agents, 17 skills, 12 commands. Zero config. Just install and start building. CodeXen turns OpenCode into a full development team with planning, coding, auditing, and deployment.
+> 24 agents, 19 skills, 11 commands. Zero config. Just install and start building. CodeXen turns OpenCode into a full development team with planning, coding, auditing, and deployment.
 
 Give it a task, it handles the rest.
 
@@ -101,7 +101,9 @@ core/skills/
 ├── greeting/         # Time-based greetings
 ├── init-project/     # Project initialization
 ├── setup-profile/    # User profile setup
-└── model-picker/     # Model selection
+├── model-picker/     # Model selection
+├── compress/         # Terse communication mode (~75% token savings)
+└── compress-file/    # Compress memory files (~46% input savings)
 ```
 
 ---
@@ -155,7 +157,7 @@ Cross-project memory that follows you:
 
 CodeXen v0.7.0 is fully optimized for OpenCode:
 - **Agent system**: All 24 agents with fine-grained permissions
-- **Skill system**: All 17 skills with `SKILL.md` format and valid frontmatter
+- **Skill system**: All 19 skills with `SKILL.md` format and valid frontmatter
 - **Custom commands**: 12 slash commands for common workflows
 - **Permission system**: Role-based permissions per agent (coders get edit, auditors are read-only)
 - **Subagent routing**: Defined in `opencode.json` with `mode` and `hidden` flags
@@ -172,7 +174,7 @@ CodeXen v0.7.0 is fully optimized for OpenCode:
 codexen/
 ├── core/
 │   ├── agents/            # 24 agents (Markdown format)
-│   ├── skills/            # 17 skills (SKILL.md format)
+│   ├── skills/            # 19 skills (SKILL.md format)
 │   ├── commands/          # 12 slash commands (Markdown format)
 │   └── opencode.json      # Agent configuration
 ├── templates/             # Global memory templates
@@ -216,6 +218,7 @@ Then type: `init project`
 
 ### Changelog
 
+- **v0.8.0**: Token optimization (compress mode, compress-file, terse subagent output)
 - **v0.7.1**: Replace switch-config with model-picker (task-based model selection), remove default model
 - **v0.7.0**: OpenCode optimization (custom commands, LSP/formatters, compaction, fine-grained permissions, model optimization)
 - **v0.6.0**: OpenCode compatibility refactor (skill/agent standardization, opencode.json, validate.sh)
