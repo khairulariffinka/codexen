@@ -12,16 +12,91 @@ metadata:
 
 The central logic for coordinating agents, managing task flows, and ensuring system stability through self-healing protocols.
 
-## Task Lifecycle
+**IMPORTANT:** All mandatory steps MUST run before/after tasks. No exceptions.
 
-1. **Smart Recall**: Auto-check `@memory smart-recall [task]` for relevant lessons.
-2. **Agent Check**: Query `agent-performance.md` for best agent for this task type.
-3. **Plan Generation**: Invoke `@planner` to break down user requests based on BRS/SDS.
-4. **Context Loading**: Ensure relevant modular context (`docs/context/`) is loaded for the assigned agent.
-5. **Execution**: Distribute tasks to specialized agents (e.g., `backend-coder`, `frontend-coder`).
-6. **Validation**: Invoke `@auditor` for code review and compliance check.
-7. **Commit**: Invoke `@git-manager` ONLY if Auditor status is `✅ PASSED`.
-8. **Performance Log**: Update `agent-performance.md` with task result.
+---
+
+## Task Lifecycle (Mandatory)
+
+Every task follows this lifecycle. Skipping any step is a violation.
+
+### Pre-Task (BEFORE agent starts)
+
+| Step | Action | Mandatory |
+|------|--------|-----------|
+| 1 | Run `@memory smart-recall [task]` | ✅ YES |
+| 2 | Run `@memory score-lessons` | ✅ YES |
+| 3 | Check `agent-performance.md` for best agent | ✅ YES |
+| 4 | Share relevant lessons with assigned agent | ✅ YES |
+| 5 | Check if `/goal` is active → set checklist | ✅ YES |
+| 6 | Invoke `@planner` for task breakdown | ✅ YES |
+| 7 | Load modular context (`docs/context/`) | ✅ YES |
+
+### During Execution
+
+| Step | Action | Mandatory |
+|------|--------|-----------|
+| 8 | Dispatch to specialized agents | ✅ YES |
+| 9 | Track agent performance (success/fail/duration) | ✅ YES |
+| 10 | Auto-save checkpoint if context > 80% | ✅ YES |
+
+### Post-Task (BEFORE agent stops)
+
+| Step | Action | Mandatory |
+|------|--------|-----------|
+| 11 | Run `@auditor` for code review | ✅ YES |
+| 12 | Run `@test-coder` for test verification | ✅ YES |
+| 13 | Check `/goal` evaluation (if active) | ✅ YES |
+| 14 | Update `agent-performance.md` with result | ✅ YES |
+| 15 | Run `@memory dream` (if 10+ sessions) | ✅ YES |
+| 16 | Run `@memory checkpoint save` (if context > 80%) | ✅ YES |
+| 17 | Invoke `@git-manager` ONLY if all checks PASS | ✅ YES |
+
+---
+
+## Mandatory Auto-Check Enforcement
+
+### What Happens If Skipped
+
+```
+IF agent skips mandatory step:
+  → Log violation to docs/lessons.md
+  → Add "SKIPPED MANDATORY STEP" to failure report
+  → Force re-run of skipped step before proceeding
+```
+
+### Pre-Task Enforcement
+
+```
+BEFORE any agent dispatch:
+  1. @memory smart-recall [task] → MUST complete
+  2. @memory score-lessons → MUST complete
+  3. agent-performance check → MUST complete
+  4. Share lessons with agent → MUST confirm received
+  5. /goal check → MUST set if not active
+
+IF any step fails:
+  → STOP task
+  → Log to lessons.md
+  → Report to user
+```
+
+### Post-Task Enforcement
+
+```
+BEFORE agent says "done":
+  1. @auditor → MUST return ✅ PASSED
+  2. @test-coder → MUST return ✅ PASSED
+  3. /goal evaluation → MUST pass (if active)
+  4. agent-performance → MUST log result
+  5. @memory dream → MUST run (if 10+ sessions)
+  6. @memory checkpoint save → MUST run (if context > 80%)
+
+IF any step fails:
+  → Agent CANNOT stop
+  → Return to agent with gaps
+  → Re-run failed step
+```
 
 ## Spec Change Propagation
 

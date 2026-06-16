@@ -581,21 +581,137 @@ Sessions older than 30 days are automatically summarized when `@memory save` is 
 
 ---
 
-## Start of Session (Auto)
+## Start of Session (MANDATORY)
 
-When a session begins, the primary agent should:
-1. Read `AGENTS.md` for tech stack
-2. Read `docs/current-state.md` for project snapshot
-3. Read `DECISIONS.md` for active decisions
-4. Run `@memory smart-recall [project-type]` to auto-suggest relevant lessons
-5. Run `@memory score-lessons` to see top priority issues
-6. Check `docs/patterns.md` for applicable patterns
-7. Check `~/.config/opencode/global-memory/agent-performance.md` for agent routing
+**IMPORTANT:** All steps MUST run at session start. No exceptions.
+
+When a session begins, the primary agent MUST:
+
+| Step | Action | Skip? |
+|------|--------|-------|
+| 1 | Read `AGENTS.md` for tech stack | ❌ NO |
+| 2 | Read `docs/current-state.md` for project snapshot | ❌ NO |
+| 3 | Read `DECISIONS.md` for active decisions | ❌ NO |
+| 4 | Run `@memory smart-recall [project-type]` | ❌ NO |
+| 5 | Run `@memory score-lessons` | ❌ NO |
+| 6 | Check `docs/patterns.md` for applicable patterns | ❌ NO |
+| 7 | Check `agent-performance.md` for routing | ❌ NO |
+| 8 | Check `current-goal.md` for active goal | ❌ NO |
+| 9 | Load checkpoint if exists | ❌ NO |
+
+### Enforcement Rules
+
+```
+IF any step skipped:
+  → Log "SKIPPED SESSION INIT STEP" to lessons.md
+  → Force re-run of skipped step
+  → Cannot proceed until all steps complete
+```
+
+### Session Init Output
+
+```
+[SESSION INIT - MANDATORY]
+
+✅ Step 1: AGENTS.md loaded (Laravel + React)
+✅ Step 2: current-state.md loaded (v2.1, 60% complete)
+✅ Step 3: DECISIONS.md loaded (3 active decisions)
+✅ Step 4: smart-recall found 4 relevant lessons
+✅ Step 5: score-lessons — top issue: "N+1 query bug"
+✅ Step 6: patterns.md loaded (2 patterns found)
+✅ Step 7: agent-performance — @backend-coder 85% success
+✅ Step 8: no active goal
+✅ Step 9: no checkpoint to restore
+
+All mandatory steps complete. Ready to work!
+```
+
+---
+
+## During Task (MANDATORY)
+
+While agent is working, orchestration MUST:
+
+| Step | Action | When |
+|------|--------|------|
+| 1 | Track agent performance | Every dispatch |
+| 2 | Auto-save checkpoint | Context > 80% |
+| 3 | Monitor for premature stop | Agent says "done" |
+| 4 | Check /goal if active | Before allowing stop |
+
+### Auto-Checkpoint Enforcement
+
+```
+IF context > 80%:
+  → Auto-save checkpoint (MANDATORY)
+  → Log "AUTO-CHECKPOINT" to session diary
+  → Compress low-priority items
+
+IF context > 90%:
+  → Save checkpoint + compress session history
+  → Log "EMERGENCY-CHECKPOINT" to session diary
+
+IF context > 95%:
+  → Save checkpoint
+  → Prompt user: "Context full. Resume later?"
+```
+
+---
+
+## Post-Task (MANDATORY)
+
+**BEFORE agent can stop, ALL steps MUST complete:**
+
+| Step | Action | Skip? |
+|------|--------|-------|
+| 1 | `@auditor` → ✅ PASSED | ❌ NO |
+| 2 | `@test-coder` → ✅ PASSED | ❌ NO |
+| 3 | `/goal` evaluation (if active) | ❌ NO |
+| 4 | Log to `agent-performance.md` | ❌ NO |
+| 5 | `@memory dream` (if 10+ sessions) | ❌ NO |
+| 6 | `@memory checkpoint save` (if context > 80%) | ❌ NO |
+| 7 | `@git-manager` commit (only if all pass) | ❌ NO |
+
+### Stop Prevention
+
+```
+IF agent says "done" OR "complete" OR "finished":
+  1. Check if ALL post-task steps complete
+  2. If ANY step missing → BLOCK stop
+  3. Return to agent: "Cannot stop. Missing: [step]"
+  4. Force completion of missing steps
+  5. Only THEN allow stop
+```
+
+### Enforcement Log
+
+```
+[POST-TASK ENFORCEMENT]
+
+Agent: @backend-coder
+Task: Create user auth API
+
+Checking mandatory steps:
+├─ [✅] @auditor PASSED
+├─ [✅] @test-coder PASSED (100% coverage)
+├─ [✅] /goal evaluation PASSED
+├─ [✅] agent-performance logged
+├─ [✅] @memory dream ran (extracted 2 patterns)
+├─ [✅] @memory checkpoint saved (context 85%)
+└─ [✅] @git-manager committed
+
+All steps complete. Agent may stop.
+```
 
 ---
 
 ## Guidelines
 
+- **ZERO EXCEPTIONS:** Mandatory steps cannot be skipped, deferred, or ignored
+- **Auto-trigger:** System runs steps automatically, not user
+- **Enforcement:** Orchestration BLOCKS task completion if steps missing
+- **Logging:** All mandatory step results logged to session diary
+- **Audit trail:** Every enforcement action recorded in lessons.md
 - Tag all session entries with keywords for easier search
 - Log every significant decision via `@decision-log`
 - Keep `docs/patterns.md` up to date with recurring patterns
