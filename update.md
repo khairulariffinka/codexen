@@ -32,7 +32,14 @@ To use, append after command: `"load update.md --dry-run"`
 - ADD: Instructions config (multi-file instruction loading)
 - ADD: Fine-grained permissions per agent role (coders=edit, auditors=read-only, etc.)
 - ADD: `copy_core_commands` in install config
-- CHANGE: All 24 agents have explicit permission configs in opencode.json
+- ADD: Smart Recall — auto-suggest lessons based on task keywords
+- ADD: Priority Scoring — rank lessons by frequency/severity/recency
+- ADD: Agent Performance Tracking — track success/failure rate per agent
+- ADD: Smart Routing — auto-select best agent based on track record
+- ADD: Goal/Stop Condition — `/goal` command with judge evaluation
+- ADD: Dream & Distill — `/dream` extract knowledge, `/distill` package workflows
+- ADD: Auto-Checkpoint — save session state when context nears limit
+- ADD: Mandatory Auto-Enforcement — 17 mandatory steps, zero exceptions
 
 ### v0.6.0
 - REFACTOR: All 17 SKILL.md files standardized with OpenCode-compatible frontmatter
