@@ -209,13 +209,23 @@ User: "Add TikTok integration"
 | **Circuit Breaker** | 3 failures same agent/task | Halt all retries, generate Failure Report |
 | **Rate Limit** | 5 subagent dispatches per msg | Batch remaining, execute sequentially |
 | **Parallel Cap** | 3 concurrent agents max | Queue overflow agents for next batch |
-| **File Modification Gate** | Existing file edit | Ask user before overwriting |
-| **Git Push Gate** | Any `git push` command | MUST ask user first: "Push ke GitHub sekarang, bos?" |
-| **Git Commit Gate** | Any `git commit` command | Show summary + ask permission before commit |
+| **File Modification Gate** | Edit user's personal files | Ask user before overwriting (e.g., ~/.config/opencode/*) |
 | **Delete Gate** | Any file/branch deletion | MUST ask user first |
 | **Install/Uninstall Gate** | Package install/remove | MUST ask user first |
 | **Network Gate** | External API calls | MUST ask user first (except localhost) |
 | **Config Gate** | Config file changes | MUST ask user first |
+
+**What needs confirmation:**
+| Operation | Confirm? |
+|-----------|----------|
+| Edit new file | ❌ No |
+| Edit project file (core/*) | ❌ No |
+| Edit user's personal file | ✅ Yes |
+| Delete any file | ✅ Yes |
+| Git push | ✅ Yes |
+| Git commit | ✅ Yes |
+| Install package | ✅ Yes |
+| External API call | ✅ Yes |
 
 ### Session Permission
 
