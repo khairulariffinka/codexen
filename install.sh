@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# Install script for CodeXen v0.8.0
+# Install script for CodeXen v0.9.0
 # Usage: bash install.sh [--dry-run]
 
 DRY_RUN=false
@@ -38,6 +38,45 @@ update_or_skip() {
     [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would add: $name" || { cp "$source" "$dest" && echo "Added: $name"; }
   elif ! diff -q "$source" "$dest" > /dev/null 2>&1; then
     [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would update: $name" || { cp "$source" "$dest" && echo "Updated: $name"; }
+  else
+    echo "Skipping: $name (unchanged)"
+  fi
+}
+
+# Function: update or skip with conflict resolution
+update_or_skip_with_prompt() {
+  local source="$1"
+  local dest="$2"
+  local name="$3"
+
+  if [ ! -f "$dest" ]; then
+    [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would add: $name" || { cp "$source" "$dest" && echo "Added: $name"; }
+  elif ! diff -q "$source" "$dest" > /dev/null 2>&1; then
+    if [ "$DRY_RUN" = true ]; then
+      echo "[DRY-RUN] Would update: $name (CONFLICT - user has custom config)"
+    else
+      echo ""
+      echo "WARNING: $name differs from CodeXen version"
+      echo "  [1] Keep mine - skip (RECOMMENDED)"
+      echo "  [2] Overwrite with CodeXen version"
+      echo "  [3] Merge (requires jq)"
+      read -p "Choice [1]: " choice
+      case "$choice" in
+        2) cp "$source" "$dest" && echo "Updated: $name" ;;
+        3)
+          if command -v jq >/dev/null 2>&1; then
+            TMPFILE=$(mktemp "${dest}.XXXXXX")
+            trap 'rm -f "$TMPFILE"' EXIT
+            jq -s '.[0] * .[1]' "$dest" "$source" > "$TMPFILE" && \
+            mv "$TMPFILE" "$dest" && \
+            echo "Merged: $name"
+          else
+            echo "jq not found - keeping your config. Install jq for merge."
+          fi
+          ;;
+        *) echo "Keeping your config" ;;
+      esac
+    fi
   else
     echo "Skipping: $name (unchanged)"
   fi
@@ -94,6 +133,40 @@ if [ -f ~/.config/opencode/opencode.json ]; then
   fi
 else
   [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would add: opencode.json" || { cp "$SCRIPT_DIR/core/opencode.json" ~/.config/opencode/opencode.json && echo "Added: opencode.json"; }
+fi
+
+echo ""
+echo "=== Installing Plugins & Commands ==="
+if [ -d "$SCRIPT_DIR/core/.opencode" ]; then
+  # Create .opencode directory structure
+  mkdir -p ~/.config/opencode/plugin
+  mkdir -p ~/.config/opencode/command
+
+  # Copy plugins
+  for f in "$SCRIPT_DIR"/core/.opencode/plugin/*.ts; do
+    if [ -f "$f" ]; then
+      fname=$(basename "$f")
+      dest="$HOME/.config/opencode/plugin/$fname"
+      update_or_skip "$f" "$dest" "plugin/$fname"
+    fi
+  done
+
+  # Copy commands
+  for f in "$SCRIPT_DIR"/core/.opencode/command/*.md; do
+    if [ -f "$f" ]; then
+      fname=$(basename "$f")
+      dest="$HOME/.config/opencode/command/$fname"
+      update_or_skip "$f" "$dest" "command/$fname"
+    fi
+  done
+
+  # Copy package.json (with conflict resolution)
+  if [ -f "$SCRIPT_DIR/core/.opencode/package.json" ]; then
+    dest_pkg="$HOME/.config/opencode/package.json"
+    update_or_skip_with_prompt "$SCRIPT_DIR/core/.opencode/package.json" "$dest_pkg" "package.json"
+  fi
+else
+  echo "No plugins directory found (skipping)"
 fi
 
 echo ""
