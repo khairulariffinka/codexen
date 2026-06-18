@@ -204,16 +204,18 @@ User: "Add TikTok integration"
 
 **Principle:** All sensitive operations require user confirmation. Exception: user has given explicit permission in current session.
 
-| Guardrail | Threshold | Action |
-|-----------|-----------|--------|
+| Guardrail | Scope | Action |
+|-----------|-------|--------|
 | **Circuit Breaker** | 3 failures same agent/task | Halt all retries, generate Failure Report |
 | **Rate Limit** | 5 subagent dispatches per msg | Batch remaining, execute sequentially |
 | **Parallel Cap** | 3 concurrent agents max | Queue overflow agents for next batch |
-| **File Modification Gate** | Edit user's personal files | Ask user before overwriting (e.g., ~/.config/opencode/*) |
-| **Delete Gate** | Any file/branch deletion | MUST ask user first |
-| **Install/Uninstall Gate** | Package install/remove | MUST ask user first |
-| **Network Gate** | External API calls | MUST ask user first (except localhost) |
-| **Config Gate** | Config file changes | MUST ask user first |
+| **Project Files Gate** | core/*, scripts/*, templates/* | ❌ Edit freely (no confirmation) |
+| **User Files Gate** | ~/.config/opencode/* | ✅ Ask before overwrite |
+| **Delete Gate** | Any file/branch deletion | ✅ Ask before delete |
+| **Git Push Gate** | Any `git push` command | ✅ Ask: "Push ke GitHub sekarang, bos?" |
+| **Git Commit Gate** | Any `git commit` command | ✅ Show summary + ask permission |
+| **Install Gate** | Package install/remove | ✅ Ask before install |
+| **Network Gate** | External API calls | ✅ Ask before call (except localhost) |
 
 **What needs confirmation:**
 | Operation | Confirm? |
@@ -247,6 +249,18 @@ User: "revoke auto-push"
 2. Exception: User said "allowed" / "proceed" / "yes" in this session
 3. Reset: New session = fresh permission (ask again)
 4. Scope: Permission only applies to current session
+
+### Quick Reference
+
+| Operation | Confirm? |
+|-----------|----------|
+| Edit project file (core/*) | ❌ |
+| Edit user's file (~/.config/opencode/*) | ✅ |
+| Delete any file/branch | ✅ |
+| Git push | ✅ |
+| Git commit | ✅ |
+| Install package | ✅ |
+| External API call | ✅ |
 
 ### 1. Agent Failure Continuum (Progressive)
 
