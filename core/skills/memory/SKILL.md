@@ -366,6 +366,82 @@ Package as skill/command? [Y/n]
 
 ---
 
+### @memory auto-dream-check
+
+Check if dream should run based on time since last dream.
+
+**Steps:**
+1. Read `docs/memory.md` or `~/.config/opencode/global-memory/memory-metadata.md` for last dream timestamp.
+2. If no timestamp found, assume never run.
+3. Calculate days since last dream.
+4. If > 7 days: run `@memory dream`.
+5. Update timestamp after dream completes.
+
+**Output format:**
+```
+[AUTO-DREAM CHECK]
+
+Last dream: 2026-06-10 (8 days ago)
+Threshold: 7 days
+Action: Running @memory dream...
+
+[DREAM COMPLETE]
+[results from dream]
+```
+
+**OR if not needed:**
+```
+[AUTO-DREAM CHECK]
+
+Last dream: 2026-06-17 (1 day ago)
+Threshold: 7 days
+Action: Skip (not needed)
+```
+
+**Timestamp storage:**
+```markdown
+# Memory Metadata
+
+last_dream: 2026-06-17T14:30:00Z
+last_distill: 2026-05-15T10:00:00Z
+```
+
+---
+
+### @memory auto-distill-check
+
+Check if distill should run based on time since last distill.
+
+**Steps:**
+1. Read `docs/memory.md` or `~/.config/opencode/global-memory/memory-metadata.md` for last distill timestamp.
+2. If no timestamp found, assume never run.
+3. Calculate days since last distill.
+4. If > 30 days: run `@memory distill`.
+5. Update timestamp after distill completes.
+
+**Output format:**
+```
+[AUTO-DISTILL CHECK]
+
+Last distill: 2026-05-15 (34 days ago)
+Threshold: 30 days
+Action: Running @memory distill...
+
+[DISTILL COMPLETE]
+[results from distill]
+```
+
+**OR if not needed:**
+```
+[AUTO-DISTILL CHECK]
+
+Last distill: 2026-06-10 (8 days ago)
+Threshold: 30 days
+Action: Skip (not needed)
+```
+
+---
+
 ### @memory checkpoint [save|restore|list]
 
 Auto-save session state when context nears limit. Like MiMo-Code's checkpoint system.
