@@ -189,16 +189,17 @@ Copy plugins and commands from `core/.opencode/` to `~/.config/opencode/`.
 
 **Special handling for package.json:**
 - If user has custom `~/.config/opencode/package.json`, ask before overwriting
-- Option to merge: `jq -s '.[0] * .[1]' user_pkg codexen_pkg`
+- Option to merge: `jq -s '.[0] * .[1]' codexen_pkg user_pkg` (user wins on conflict)
 
 ### Step 6: Install opencode.json
 
 Handle the opencode.json config carefully:
 - If the file does not exist: copy `core/opencode.json` to `~/.config/opencode/opencode.json`
 - If the file exists and is different:
-  - Ask user: Keep theirs (RECOMMENDED), Merge, or Show diff
+  - Ask user: Merge (RECOMMENDED), Keep theirs, or Overwrite
+  - **Merge** = keep user's existing keys + add new keys from CodeXen
   - If merging:
-    - **With jq:** `jq -s '.[0] * .[1]' user_config codexen_config > merged.json && mv merged.json user_config`
+    - **With jq:** `jq -s '.[0] * .[1]' codexen_config user_config > merged.json && mv merged.json user_config` (user wins on conflict)
     - **Without jq (manual merge):** Read both files, keep user's custom keys (model, provider, small_model), add missing keys from CodeXen config (new agents, updated descriptions)
   - Manual merge steps:
     1. Read `~/.config/opencode/opencode.json` (user config)

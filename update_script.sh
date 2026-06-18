@@ -110,40 +110,41 @@ if [ -f core/opencode.json ]; then
     else
       echo ""
       echo "CONFLICT: opencode.json differs from CodeXen version"
-      echo "  [1] Keep mine (custom) - skip"
-      echo "  [2] Use CodeXen version - overwrite"
-      echo "  [3] Merge (add new settings, keep yours)"
+      echo "  [1] Merge - keep your settings + add new CodeXen keys (RECOMMENDED)"
+      echo "  [2] Keep mine - skip (no changes)"
+      echo "  [3] Use CodeXen version - overwrite"
       echo "  [4] Show diff"
       read -p "Choice [1]: " choice
       case "$choice" in
-        2) cp core/opencode.json "$dest_json" && echo "Updated: opencode.json" ;;
-        3)
+        1)
           if command -v jq >/dev/null 2>&1; then
-            jq -s '.[0] * .[1]' "$dest_json" core/opencode.json > "$dest_json.tmp" && \
+            jq -s '.[0] * .[1]' core/opencode.json "$dest_json" > "$dest_json.tmp" && \
             mv "$dest_json.tmp" "$dest_json" && \
-            echo "Merged: opencode.json"
+            echo "Merged: opencode.json (your settings kept + new CodeXen keys added)"
           else
-            echo "jq not found - keeping your config"
+            echo "jq not found - keeping your config. Install jq for merge."
           fi
           ;;
+        2) echo "Keeping your config" ;;
+        3) cp core/opencode.json "$dest_json" && echo "Updated: opencode.json" ;;
         4)
           echo "--- Your version ---"
           cat "$dest_json"
           echo "--- CodeXen version ---"
           cat core/opencode.json
           echo ""
-          read -p "Choose [1=keep, 2=overwrite, 3=merge]: " choice2
+          read -p "Choose [1=merge, 2=overwrite, 3=keep mine]: " choice2
           case "$choice2" in
-            2) cp core/opencode.json "$dest_json" && echo "Updated: opencode.json" ;;
-            3)
+            1)
               if command -v jq >/dev/null 2>&1; then
-                jq -s '.[0] * .[1]' "$dest_json" core/opencode.json > "$dest_json.tmp" && \
+                jq -s '.[0] * .[1]' core/opencode.json "$dest_json" > "$dest_json.tmp" && \
                 mv "$dest_json.tmp" "$dest_json" && \
                 echo "Merged: opencode.json"
               else
                 echo "jq not found - keeping your config"
               fi
               ;;
+            2) cp core/opencode.json "$dest_json" && echo "Updated: opencode.json" ;;
             *) echo "Keeping your config" ;;
           esac
           ;;

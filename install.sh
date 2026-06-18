@@ -57,23 +57,24 @@ update_or_skip_with_prompt() {
     else
       echo ""
       echo "WARNING: $name differs from CodeXen version"
-      echo "  [1] Keep mine - skip (RECOMMENDED)"
-      echo "  [2] Overwrite with CodeXen version"
-      echo "  [3] Merge (requires jq)"
+      echo "  [1] Merge - keep your settings + add new CodeXen keys (RECOMMENDED)"
+      echo "  [2] Keep mine - skip (no changes)"
+      echo "  [3] Overwrite with CodeXen version"
       read -p "Choice [1]: " choice
       case "$choice" in
-        2) cp "$source" "$dest" && echo "Updated: $name" ;;
-        3)
+        1)
           if command -v jq >/dev/null 2>&1; then
             TMPFILE=$(mktemp "${dest}.XXXXXX")
             trap 'rm -f "$TMPFILE"' EXIT
-            jq -s '.[0] * .[1]' "$dest" "$source" > "$TMPFILE" && \
+            jq -s '.[0] * .[1]' "$source" "$dest" > "$TMPFILE" && \
             mv "$TMPFILE" "$dest" && \
-            echo "Merged: $name"
+            echo "Merged: $name (your settings kept + new CodeXen keys added)"
           else
             echo "jq not found - keeping your config. Install jq for merge."
           fi
           ;;
+        2) echo "Keeping your config" ;;
+        3) cp "$source" "$dest" && echo "Updated: $name" ;;
         *) echo "Keeping your config" ;;
       esac
     fi
@@ -107,26 +108,27 @@ if [ -f ~/.config/opencode/opencode.json ]; then
       echo "[DRY-RUN] Would update: opencode.json (CONFLICT - user has custom config)"
     else
       echo ""
-      echo "WARNING: opencode.json differs from CodeXen version"
-      echo "  [1] Keep mine - skip (RECOMMENDED)"
-      echo "  [2] Overwrite with CodeXen version"
-      echo "  [3] Merge (requires jq)"
-      read -p "Choice [1]: " choice
-      case "$choice" in
-        2) cp "$SCRIPT_DIR/core/opencode.json" ~/.config/opencode/opencode.json && echo "Updated: opencode.json" ;;
-        3)
-          if command -v jq >/dev/null 2>&1; then
-            TMPFILE=$(mktemp ~/.config/opencode/opencode.json.XXXXXX)
-            trap 'rm -f "$TMPFILE"' EXIT
-            jq -s '.[0] * .[1]' ~/.config/opencode/opencode.json "$SCRIPT_DIR/core/opencode.json" > "$TMPFILE" && \
-            mv "$TMPFILE" ~/.config/opencode/opencode.json && \
-            echo "Merged: opencode.json"
-          else
-            echo "jq not found - keeping your config. Install jq for merge."
-          fi
-          ;;
-        *) echo "Keeping your config" ;;
-      esac
+    echo "WARNING: opencode.json differs from CodeXen version"
+    echo "  [1] Merge - keep your settings + add new CodeXen keys (RECOMMENDED)"
+    echo "  [2] Keep mine - skip (no changes)"
+    echo "  [3] Overwrite with CodeXen version"
+    read -p "Choice [1]: " choice
+    case "$choice" in
+      1)
+        if command -v jq >/dev/null 2>&1; then
+          TMPFILE=$(mktemp ~/.config/opencode/opencode.json.XXXXXX)
+          trap 'rm -f "$TMPFILE"' EXIT
+          jq -s '.[0] * .[1]' "$SCRIPT_DIR/core/opencode.json" ~/.config/opencode/opencode.json > "$TMPFILE" && \
+          mv "$TMPFILE" ~/.config/opencode/opencode.json && \
+          echo "Merged: opencode.json (your settings kept + new CodeXen keys added)"
+        else
+          echo "jq not found - keeping your config. Install jq for merge."
+        fi
+        ;;
+      2) echo "Keeping your config" ;;
+      3) cp "$SCRIPT_DIR/core/opencode.json" ~/.config/opencode/opencode.json && echo "Updated: opencode.json" ;;
+      *) echo "Keeping your config" ;;
+    esac
     fi
   else
     echo "Skipping: opencode.json (unchanged)"

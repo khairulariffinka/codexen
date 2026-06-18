@@ -238,15 +238,14 @@ if [ -f core/.opencode/package.json ]; then
     else
       echo ""
       echo "⚠️  CONFLICT: package.json differs from CodeXen version"
-      echo "    [1] Keep mine - skip (RECOMMENDED)"
-      echo "    [2] Use CodeXen version - overwrite"
-      echo "    [3] Merge - add new dependencies"
+      echo "    [1] Merge - keep your deps + add new CodeXen deps (RECOMMENDED)"
+      echo "    [2] Keep mine - skip"
+      echo "    [3] Use CodeXen version - overwrite"
       read -p "Choice [1]: " choice
       case "$choice" in
-        2) cp core/.opencode/package.json "$dest_pkg" && echo "Updated: package.json" ;;
-        3)
+        1)
           if command -v jq >/dev/null 2>&1; then
-            jq -s '.[0] * .[1]' "$dest_pkg" core/.opencode/package.json > "$dest_pkg.tmp" && \
+            jq -s '.[0] * .[1]' core/.opencode/package.json "$dest_pkg" > "$dest_pkg.tmp" && \
             mv "$dest_pkg.tmp" "$dest_pkg" && \
             echo "Merged: package.json"
           else
@@ -268,6 +267,8 @@ print('Merged: package.json')
 " && echo "Merged: package.json" || echo "Merge failed - keeping your version"
           fi
           ;;
+        2) echo "Keeping your config" ;;
+        3) cp core/.opencode/package.json "$dest_pkg" && echo "Updated: package.json" ;;
         *) echo "Keeping your config" ;;
       esac
     fi
@@ -287,15 +288,15 @@ if [ -f ~/.config/opencode/opencode.json ]; then
     else
       echo ""
       echo "⚠️  CONFLICT: opencode.json differs from CodeXen version"
-      echo "    [1] Keep mine - skip, don't change (RECOMMENDED)"
-      echo "    [2] Merge - add CodeXen settings to mine"
+      echo "    [1] Merge - keep your settings + add new CodeXen keys (RECOMMENDED)"
+      echo "    [2] Keep mine - skip, don't change"
       echo "    [3] Show diff - see before deciding"
       read -p "Choice [1]: " choice
       case "$choice" in
-        2)
-          # Merge JSON - CodeXen adds new keys, keeps user values
+        1)
+          # Merge JSON - user keys win on conflict, CodeXen adds new keys
           if command -v jq >/dev/null 2>&1; then
-            jq -s '.[0] * .[1]' ~/.config/opencode/opencode.json core/opencode.json > ~/.config/opencode/opencode.json.tmp && \
+            jq -s '.[0] * .[1]' core/opencode.json ~/.config/opencode/opencode.json > ~/.config/opencode/opencode.json.tmp && \
             mv ~/.config/opencode/opencode.json.tmp ~/.config/opencode/opencode.json && \
             echo "Merged opencode.json (your settings kept + new CodeXen settings added)"
           else
@@ -334,11 +335,11 @@ print('Merged opencode.json (manual)')
           echo "--- CodeXen config ---"
           cat core/opencode.json
           echo ""
-          read -p "Choose [1=keep mine, 2=merge]: " choice2
+          read -p "Choose [1=merge, 2=overwrite, 3=keep mine]: " choice2
           case "$choice2" in
-            2)
+            1)
               if command -v jq >/dev/null 2>&1; then
-                jq -s '.[0] * .[1]' ~/.config/opencode/opencode.json core/opencode.json > ~/.config/opencode/opencode.json.tmp && \
+                jq -s '.[0] * .[1]' core/opencode.json ~/.config/opencode/opencode.json > ~/.config/opencode/opencode.json.tmp && \
                 mv ~/.config/opencode/opencode.json.tmp ~/.config/opencode/opencode.json && \
                 echo "Merged opencode.json"
               else
