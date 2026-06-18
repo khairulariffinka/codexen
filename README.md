@@ -2,9 +2,9 @@
 
 **The Complete AI Framework for OpenCode**
 
-![Version](https://img.shields.io/badge/version-0.8.0-blue)
+![Version](https://img.shields.io/badge/version-0.9.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
-![Agents](https://img.shields.io/badge/agents-24-blue)
+![Agents](https://img.shields.io/badge/agents-25-blue)
 ![Skills](https://img.shields.io/badge/skills-19-blue)
 ![Commands](https://img.shields.io/badge/commands-11-blue)
 
@@ -104,6 +104,38 @@ core/skills/
 ├── model-picker/     # Model selection
 ├── compress/         # Terse communication mode (~75% token savings)
 └── compress-file/    # Compress memory files (~46% input savings)
+```
+
+---
+
+## Plugins
+
+CodeXen includes a **context-monitor plugin** that tracks token usage and auto-checkpoints when context gets full.
+
+```
+core/.opencode/
+├── plugin/
+│   └── context-monitor.ts    # Context monitoring + auto-checkpoint
+├── command/
+│   └── context.md            # /context slash command
+└── package.json              # Plugin dependencies
+```
+
+### Context Monitor Features
+
+| Feature | Description |
+|---------|-------------|
+| **Token Tracking** | Input, output, reasoning, cache tokens |
+| **Thresholds** | 70% warn, 80% checkpoint, 90% compress, 95% critical |
+| **Auto-Checkpoint** | Triggers @checkpoint-writer at 80% context |
+| **Dynamic Limits** | Reads model.limit.context from API |
+| **Manual Check** | `/context` command for on-demand status |
+
+### Usage
+
+```
+/context           → Show context usage
+/context detailed  → Show threshold breakdown
 ```
 
 ---

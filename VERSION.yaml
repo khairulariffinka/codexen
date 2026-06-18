@@ -1,4 +1,4 @@
-version: 0.8.0
+version: 0.9.0
 name: CodeXen
 description: The Complete AI Framework for OpenCode — 25 agents, 19 skills, 11 commands for planning, coding, auditing, and deployment
 author: khairulariffinka
@@ -104,6 +104,10 @@ features:
   - goal-stop-condition
   - dream-distill
   - auto-checkpoint
+  - context-monitor-plugin
+  - budgeted-reading
+  - auto-dream-check
+  - auto-distill-check
 
 paths:
   opencode_config: ~/.config/opencode

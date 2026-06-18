@@ -6,6 +6,33 @@ Format based on [Keep a Changelog](https://keepachangelog.com/), versioning foll
 
 ---
 
+## [0.9.0] - 2026-06-18
+
+### Added
+- **Context Monitor Plugin**: `core/.opencode/plugin/context-monitor.ts` — event-based context monitoring via `message.updated` hooks
+- **Token Tracking**: Input, output, reasoning, cache.read, cache.write tokens
+- **Threshold Actions**: 70% warn, 80% checkpoint, 90% compress, 95% critical
+- **Auto-Checkpoint**: Triggers @checkpoint-writer agent at 80% context
+- **`/context` Command**: Manual context check with detailed breakdown
+- **Checkpoint Writer Agent**: `core/agents/checkpoint-writer.md` — auto-writes checkpoints when context is full
+- **`@memory read-budgeted`**: Token-budgeted file reading (~10 tokens/line) with priority-based compression
+- **`@memory auto-dream-check`**: Auto-run dream if > 7 days since last
+- **`@memory auto-distill-check`**: Auto-run distill if > 30 days since last
+- **Checkpoint Restore**: Budgeted reading for checkpoint.md (5K) and memory.md (3K)
+- **Orchestration Integration**: Plugin-based context monitoring documented in task lifecycle
+
+### Changed
+- **25 agents**: Added checkpoint-writer (total: 25 agents)
+- **Session Init Step 9**: Auto-inject checkpoint via budgeted read
+- **opencode.json**: Made generic for all users (removed hardcoded model)
+
+### Technical
+- Plugin: `@opencode-ai/plugin` package
+- Dynamic context limit: reads `model.limit.context` from API
+- Token budgets: checkpoint 5K, memory 3K, tasks 2K (total 8K)
+
+---
+
 ## [0.8.0] - 2026-06-17
 
 ### Added
