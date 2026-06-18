@@ -250,7 +250,22 @@ if [ -f core/.opencode/package.json ]; then
             mv "$dest_pkg.tmp" "$dest_pkg" && \
             echo "Merged: package.json"
           else
-            echo "jq not found - keeping your config. Install jq for merge."
+            # Manual merge for package.json
+            python3 -c "
+import json
+with open('$dest_pkg') as f:
+    user = json.load(f)
+with open('core/.opencode/package.json') as f:
+    codexen = json.load(f)
+# Merge dependencies
+if 'dependencies' in codexen:
+    if 'dependencies' not in user:
+        user['dependencies'] = {}
+    user['dependencies'].update(codexen['dependencies'])
+with open('$dest_pkg', 'w') as f:
+    json.dump(user, f, indent=2)
+print('Merged: package.json')
+" && echo "Merged: package.json" || echo "Merge failed - keeping your version"
           fi
           ;;
         *) echo "Keeping your config" ;;
@@ -284,8 +299,33 @@ if [ -f ~/.config/opencode/opencode.json ]; then
             mv ~/.config/opencode/opencode.json.tmp ~/.config/opencode/opencode.json && \
             echo "Merged opencode.json (your settings kept + new CodeXen settings added)"
           else
-            # No jq - fallback to keeping user config
-            echo "jq not found - keeping your config (install jq for merge)"
+            # No jq - manual merge: keep user keys, add missing CodeXen keys
+            echo "Merging manually (jq not found)..."
+            python3 -c "
+import json, sys
+
+with open('$HOME/.config/opencode/opencode.json') as f:
+    user = json.load(f)
+with open('core/opencode.json') as f:
+    codexen = json.load(f)
+
+# Keep user's top-level keys, add missing from CodeXen
+for key in codexen:
+    if key not in user:
+        user[key] = codexen[key]
+
+# Merge agent section: add new agents, keep existing
+if 'agent' in codexen:
+    if 'agent' not in user:
+        user['agent'] = {}
+    for agent_name, agent_cfg in codexen['agent'].items():
+        if agent_name not in user['agent']:
+            user['agent'][agent_name] = agent_cfg
+
+with open('$HOME/.config/opencode/opencode.json', 'w') as f:
+    json.dump(user, f, indent=2)
+print('Merged opencode.json (manual)')
+" && echo "Merged opencode.json" || echo "Merge failed - keeping your config"
           fi
           ;;
         3)
@@ -378,7 +418,7 @@ In OpenCode:
 
 ## Version
 
-Current: **0.8.0**
+Current: **0.9.0**
 
 ---
 

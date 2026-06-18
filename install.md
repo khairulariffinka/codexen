@@ -196,9 +196,17 @@ Copy plugins and commands from `core/.opencode/` to `~/.config/opencode/`.
 Handle the opencode.json config carefully:
 - If the file does not exist: copy `core/opencode.json` to `~/.config/opencode/opencode.json`
 - If the file exists and is different:
-  - Ask user: Keep theirs (RECOMMENDED), Merge (requires `jq`), or Show diff
-  - If merging, use: `jq -s '.[0] * .[1]' user_config codexen_config`
-  - If `jq` is not available, keep the user's config and inform them
+  - Ask user: Keep theirs (RECOMMENDED), Merge, or Show diff
+  - If merging:
+    - **With jq:** `jq -s '.[0] * .[1]' user_config codexen_config > merged.json && mv merged.json user_config`
+    - **Without jq (manual merge):** Read both files, keep user's custom keys (model, provider, small_model), add missing keys from CodeXen config (new agents, updated descriptions)
+  - Manual merge steps:
+    1. Read `~/.config/opencode/opencode.json` (user config)
+    2. Read `core/opencode.json` (CodeXen config)
+    3. Keep all user keys unchanged (model, provider, small_model, permission, etc.)
+    4. Add any missing top-level keys from CodeXen config
+    5. For `agent` section: add new agents from CodeXen, keep existing user agents unchanged
+    6. Write merged result back to `~/.config/opencode/opencode.json`
 
 ### Step 7: Install global-memory templates
 
