@@ -1,6 +1,6 @@
 # CodeXen
 
-**The Complete AI Framework for OpenCode**
+**Turn OpenCode into a full dev team — 25 agents, auto-memory, context monitoring, self-healing. Just tell it what to build.**
 
 ![Version](https://img.shields.io/badge/version-0.9.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -8,7 +8,7 @@
 ![Skills](https://img.shields.io/badge/skills-19-blue)
 ![Commands](https://img.shields.io/badge/commands-11-blue)
 
-> 25 agents, 19 skills, 11 commands. Zero config. Just install and start building. CodeXen turns OpenCode into a full development team with planning, coding, auditing, and deployment.
+> 25 AI agents that handle planning, coding, auditing, and deployment. Zero config. Just install and go.
 
 Give it a task, it handles the rest.
 

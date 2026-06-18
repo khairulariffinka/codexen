@@ -80,7 +80,7 @@ Check that files are in place:
 │   ├── audit.md      ← /audit
 │   ├── test.md       ← /test
 │   ├── commit.md     ← /commit
-│   └── ... (12 commands total)
+│   └── ... (11 commands total)
 └── opencode.json     ← Configuration
 ```
 

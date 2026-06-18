@@ -36,7 +36,7 @@
 
   "agent": {
     "codexen": {
-      "description": "The Complete AI Framework for OpenCode — 25 agents, 19 skills, 11 commands for planning, coding, auditing, and deployment",
+      "description": "Turn OpenCode into a full dev team — 25 agents, auto-memory, context monitoring, self-healing. Just tell it what to build.",
       "mode": "primary",
       "permission": {
         "edit": "allow",
