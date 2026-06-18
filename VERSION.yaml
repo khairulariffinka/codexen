@@ -1,6 +1,6 @@
 version: 0.8.0
 name: CodeXen
-description: The Complete AI Framework for OpenCode — 24 agents, 19 skills, 11 commands for planning, coding, auditing, and deployment
+description: The Complete AI Framework for OpenCode — 25 agents, 19 skills, 11 commands for planning, coding, auditing, and deployment
 author: khairulariffinka
 license: MIT
 default_agent: codexen
@@ -20,6 +20,7 @@ topics:
   - brs
   - srs
   - sds
+  - context-monitor-plugin
 
 core_agents:
   - codexen
@@ -46,6 +47,7 @@ core_agents:
   - brs-manager
   - srs-manager
   - sds-manager
+  - checkpoint-writer
 
 core_skills:
   - orchestration
