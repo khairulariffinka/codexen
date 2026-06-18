@@ -61,6 +61,71 @@ Ready to assist!
 
 ---
 
+### @memory read-budgeted [file] [max-tokens]
+
+Read a file with token budgeting — compresses content to fit within max-tokens limit.
+
+**Usage:**
+```
+@memory read-budgeted docs/checkpoint.md 5000
+@memory read-budgeted docs/memory.md 3000
+@memory read-budgeted planner.md 2000
+```
+
+**Steps:**
+1. Read the target file completely.
+2. Estimate tokens: ~10 tokens per line.
+3. If file exceeds max-tokens, compress using priority-based approach:
+   - **Keep (10%):** Headers, titles, metadata
+   - **Keep (30%):** Recent entries (last 20% of lines)
+   - **Keep (20%):** Decisions, blockers, critical info
+   - **Compress (40%):** Middle sections → 1-line summaries
+4. Return compressed content with token count.
+
+**Compression Rules:**
+
+| Section | Priority | Action |
+|---------|----------|--------|
+| Headers/titles | 🟢 High | Always keep |
+| Last 20% lines | 🟢 High | Always keep |
+| Decisions/DEC-XXX | 🟢 High | Always keep |
+| Blockers | 🟢 High | Always keep |
+| Middle sections | 🟡 Medium | Compress to 1-line summary |
+| Old entries (>30 days) | 🔴 Low | Drop or summarize |
+
+**Output format:**
+```
+[BUDGETED READ]
+
+File: docs/checkpoint.md
+Original: 8500 tokens → Compressed: 4800 tokens (43% reduction)
+
+Content:
+# Checkpoint — 2026-06-18 11:30
+
+## Session State
+- Branch: feature/auto-persistence-v0.9.0
+- Files modified: 3
+- Current task: TASK-07 (budgeted reading)
+
+## Active Decisions
+- DEC-014: Plugin-based context monitoring
+- DEC-016: Hybrid approach (Plugin + Skills)
+
+[... compressed middle sections ...]
+
+## Recent (last 5 entries)
+- 11:25 — Completed TASK-04 checkpoint-writer
+- 11:20 — Completed TASK-01 context-monitor plugin
+```
+
+**Use cases:**
+- Checkpoint-writer: Read checkpoint.md within 5K token budget
+- Session restore: Read memory.md within 3K token budget
+- Quick context: Read planner.md within 2K token budget
+
+---
+
 ### @memory complete TASK-ID
 
 Mark a task as complete in planner.md.
