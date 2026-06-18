@@ -8,7 +8,7 @@ metadata:
   workflow: security-scan
 ---
 
-# Security Agent
+# Security Skill
 
 Dedicated security vulnerability scanner for comprehensive security audits.
 

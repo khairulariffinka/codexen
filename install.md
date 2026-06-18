@@ -21,7 +21,12 @@ That's it!
 
 ## Changelog
 
-### v0.7.0 (Current)
+### v0.8.0 (Current)
+- ADD: Token optimization (compress mode with user preferences, compress-file, terse subagent output)
+- ADD: Model-picker (task-based model selection)
+- CHANGE: Removed default model setting
+
+### v0.7.0
 - ADD: 11 custom slash commands (`/audit`, `/test`, `/lint`, `/review`, `/plan`, `/brs`, `/srs`, `/sds`, `/commit`, `/refactor`, `/docker`)
 - ADD: Model optimization (`model` + `small_model` for cost savings)
 - ADD: LSP integration (`lsp: true` for code intelligence)
@@ -101,7 +106,7 @@ When this file is loaded, AI must know:
 - NOT just reading the file
 - AI must execute install steps
 - IMPORTANT: Skip copying opencode.json if already exists and user has custom settings
-- IMPORTANT: Skip copying global-memory if it already contains files
+- IMPORTANT: Copy only missing global-memory files (never overwrite user data)
 
 ## AI Execution
 
@@ -169,12 +174,15 @@ Handle the opencode.json config carefully:
 
 ### Step 7: Install global-memory templates
 
-Copy `templates/global-memory/*` to `~/.config/opencode/global-memory/` only if the global-memory directory is empty or does not contain user data.
+Copy missing files from `templates/global-memory/` to `~/.config/opencode/global-memory/`. For each file, check if it already exists at the destination — only copy if missing.
 
-Files to copy:
+Files to check:
 - `templates/global-memory/user-profile.md` → `~/.config/opencode/global-memory/user-profile.md`
 - `templates/global-memory/current-session.md` → `~/.config/opencode/global-memory/current-session.md`
+- `templates/global-memory/user-preferences.md` → `~/.config/opencode/global-memory/user-preferences.md`
 - `templates/global-memory/work-diary/diary-YYYY-MM.md` → `~/.config/opencode/global-memory/work-diary/diary-YYYY-MM.md`
+
+Never overwrite existing user data.
 
 ### Step 8: Install validation script
 
@@ -188,8 +196,8 @@ After completing all steps, show a summary:
 Install complete!
 
 Agents: 24 files → ~/.config/opencode/agents/
-Skills: 17 directories → ~/.config/opencode/skills/
-Commands: 12 files → ~/.config/opencode/commands/
+Skills: 19 directories → ~/.config/opencode/skills/
+Commands: 11 files → ~/.config/opencode/commands/
 Config: opencode.json → ~/.config/opencode/opencode.json
 Memory: templates → ~/.config/opencode/global-memory/
 Script: validate.sh → ~/.config/opencode/scripts/validate.sh
@@ -208,10 +216,10 @@ Next steps:
 | Action | Location |
 |--------|---------|
 | Copies 24 agents (with conflict resolution) | `~/.config/opencode/agents/` |
-| Copies 17 skills (with conflict resolution) | `~/.config/opencode/skills/` |
-| Copies 12 commands (with conflict resolution) | `~/.config/opencode/commands/` |
+| Copies 19 skills (with conflict resolution) | `~/.config/opencode/skills/` |
+| Copies 11 commands (with conflict resolution) | `~/.config/opencode/commands/` |
 | Copies opencode.json (with merge option) | `~/.config/opencode/opencode.json` |
-| Creates memory templates (if empty) | `~/.config/opencode/global-memory/` |
+| Creates memory templates (missing files only) | `~/.config/opencode/global-memory/` |
 | Copies validation script | `~/.config/opencode/scripts/validate.sh` |
 | **Preserves user's custom agents/skills** | Unchanged |
 
@@ -268,10 +276,15 @@ done
 # Copy config (overwrite with caution)
 cp core/opencode.json ~/.config/opencode/opencode.json
 
-# Copy global-memory templates (skip if user data exists)
-if [ -z "$(ls -A ~/.config/opencode/global-memory/ 2>/dev/null)" ]; then
-  cp -r templates/global-memory/* ~/.config/opencode/global-memory/
-fi
+# Copy missing global-memory templates
+for f in templates/global-memory/*; do
+  fname=$(basename "$f")
+  dest=~/.config/opencode/global-memory/"$fname"
+  if [ -f "$f" ] && [ ! -f "$dest" ]; then
+    cp "$f" "$dest" && echo "Added: $fname"
+  fi
+done
+[ ! -f ~/.config/opencode/global-memory/work-diary/diary-YYYY-MM.md ] && mkdir -p ~/.config/opencode/global-memory/work-diary && cp templates/global-memory/work-diary/diary-YYYY-MM.md ~/.config/opencode/global-memory/work-diary/ && echo "Added: work-diary/diary-YYYY-MM.md"
 
 # Copy validation script
 cp scripts/validate.sh ~/.config/opencode/scripts/

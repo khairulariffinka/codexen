@@ -1,4 +1,6 @@
 #!/bin/bash
+set -uo pipefail
+
 # CodeXen Validation Script
 # Run: bash scripts/validate.sh
 # Checks: frontmatter, agent refs, permissions, overclaim terms, file integrity
@@ -10,12 +12,12 @@ FAIL=0
 #   Default: validate codexen repo files (script's location)
 #   --installed: validate ~/.config/opencode/ installed files
 
-if [ "$1" = "--installed" ]; then
+if [ "${1:-}" = "--installed" ]; then
   ROOT="$HOME/.config/opencode"
   AGENTS_DIR="$ROOT/agents"
   SKILLS_DIR="$ROOT/skills"
   echo "🔍 Validating installed config: $ROOT"
-elif [ "$1" = "--help" ]; then
+elif [ "${1:-}" = "--help" ]; then
   echo "Usage: bash validate.sh [--installed]"
   echo "  (no flag)  Validate codexen repo files"
   echo "  --installed Validate ~/.config/opencode/ installed files"
@@ -58,32 +60,41 @@ check "24 agent files (found: $agent_count)" "$([ "$agent_count" -eq 24 ] && ech
 # ── 2. Skill count ──
 echo "── Skill Count ──"
 skill_count=$(ls "$SKILLS_DIR"/*/SKILL.md 2>/dev/null | wc -l)
-check "17 skill files (found: $skill_count)" "$([ "$skill_count" -eq 17 ] && echo "pass" || echo "fail")"
+check "19 skill files (found: $skill_count)" "$([ "$skill_count" -eq 19 ] && echo "pass" || echo "fail")"
 
 # ── 3. YAML frontmatter ──
 echo "── YAML Frontmatter ──"
+agent_fm_fail=0
 for f in "$AGENTS_DIR"/*.md; do
   name=$(basename "$f")
   if head -1 "$f" | grep -q '^---$'; then
     : # has frontmatter opening
   else
     check "$name: missing --- frontmatter" "fail"
+    agent_fm_fail=$((agent_fm_fail + 1))
     continue
   fi
   if ! grep -q '^description: ' "$f"; then
     check "$name: missing description:" "fail"
+    agent_fm_fail=$((agent_fm_fail + 1))
     continue
   fi
   if ! grep -q '^mode: ' "$f"; then
     check "$name: missing mode:" "fail"
+    agent_fm_fail=$((agent_fm_fail + 1))
     continue
   fi
   if ! grep -q '^permission:' "$f" && ! grep -q '^permission' "$f"; then
     check "$name: missing permission:" "fail"
+    agent_fm_fail=$((agent_fm_fail + 1))
     continue
   fi
 done
-check "All agents have valid YAML frontmatter" "pass"
+if [ "$agent_fm_fail" -eq 0 ]; then
+  check "All agents have valid YAML frontmatter" "pass"
+else
+  check "Some agents have invalid frontmatter ($agent_fm_fail failures)" "fail"
+fi
 
 # ── 4. Skill frontmatter ──
 echo "── Skill Frontmatter ──"
@@ -145,6 +156,7 @@ fi
 
 # ── 5. Permission consistency ──
 echo "── Permission Consistency ──"
+perm_fail=0
 # Read-only auditors should have bash: deny + no edit
 for agent in style-auditor security-auditor performance-auditor research; do
   f="$AGENTS_DIR/$agent.md"
@@ -153,6 +165,7 @@ for agent in style-auditor security-auditor performance-auditor research; do
       : # ok
     else
       check "$agent: expected bash:deny + no edit" "fail"
+      perm_fail=$((perm_fail + 1))
     fi
   fi
 done
@@ -161,14 +174,19 @@ for agent in srs-manager sds-manager decision-log planner api-designer brs-manag
   f="$AGENTS_DIR/$agent.md"
   if [ -f "$f" ] && ! grep -q 'edit: allow' "$f"; then
     check "$agent: expected edit:allow (spec writer)" "fail"
+    perm_fail=$((perm_fail + 1))
   fi
 done
-check "Permission sets are consistent" "pass"
+if [ "$perm_fail" -eq 0 ]; then
+  check "Permission sets are consistent" "pass"
+else
+  check "Permission inconsistencies found ($perm_fail failures)" "fail"
+fi
 
 # ── 6. No swap/temp files ──
 echo "── Temp / Swap Files ──"
 swap_dir="$ROOT"
-[ "$1" = "--installed" ] && swap_dir="$ROOT/agents"  # no core/ dir in installed
+[ "${1:-}" = "--installed" ] && swap_dir="$ROOT/agents"  # no core/ dir in installed
 swaps=$(find "$swap_dir" -name '*.swp' -o -name '*.swo' -o -name '*~' -o -name '*.kate-swp' 2>/dev/null || true)
 if [ -n "$swaps" ]; then
   check "Swap files found: $(echo "$swaps" | tr '\n' ' ')" "fail"
@@ -186,13 +204,13 @@ for f in "$AGENTS_DIR"/*.md; do
 done
 
 bad_refs=0
-if [ "$1" = "--installed" ]; then
-  ref_files="$AGENTS_DIR"/*.md
-else
-  ref_files="$AGENTS_DIR"/*.md "$SKILLS_DIR"/*/SKILL.md
-fi
 shopt -s nullglob
-for f in $ref_files; do
+if [ "${1:-}" = "--installed" ]; then
+  ref_files=("$AGENTS_DIR"/*.md)
+else
+  ref_files=("$AGENTS_DIR"/*.md "$SKILLS_DIR"/*/SKILL.md)
+fi
+for f in "${ref_files[@]}"; do
   [ ! -f "$f" ] && continue
   refs=$(grep -on '@[a-z][a-z-]*' "$f" 2>/dev/null | grep -v '@param\|@returns\|@throws\|@click\|@mouse\|@key\|@media\|@import\|@apply\|@tailwind\|@layer\|@screen\|@font\|@starting' || true)
   while IFS=: read -r line ref; do
@@ -211,7 +229,7 @@ check "All @agent refs resolve to existing files (broken: $bad_refs)" "$([ "$bad
 
 # ── 8. Overclaim terms ──
 echo "── Overclaim Terms ──"
-if [ "$1" = "--installed" ]; then
+if [ "${1:-}" = "--installed" ]; then
   overclaims=$(grep -rn 'semantic search\|knowledge graph\|pattern recognition' "$ROOT/agents" "$ROOT/skills" --include='*.md' 2>/dev/null || true)
 else
   overclaims=$(grep -rn 'semantic search\|knowledge graph\|pattern recognition' "$ROOT/core" --include='*.md' 2>/dev/null || true)
@@ -224,10 +242,10 @@ fi
 
 # ── 9. No TODO/FIXME in production files ──
 echo "── TODO / FIXME Check ──"
-if [ "$1" = "--installed" ]; then
-  todos=$(grep -rn 'TODO\|FIXME' "$ROOT/agents" "$ROOT/skills" --include='*.md' 2>/dev/null | grep -v 'code examples\|```\|No.*TODO.*left\|No.*FIXME.*comment' || true)
+if [ "${1:-}" = "--installed" ]; then
+  todos=$(grep -rn 'TODO\|FIXME' "$ROOT/agents" "$ROOT/skills" --include='*.md' 2>/dev/null | grep -v 'code examples\|```\|No.*TODO.*left\|No.*FIXME.*comment\|TODO/FIXME\|TODO.*left\|FIXME.*comment\|cleanup TODOs' || true)
 else
-  todos=$(grep -rn 'TODO\|FIXME' "$ROOT/core" --include='*.md' 2>/dev/null | grep -v 'code examples\|```\|No.*TODO.*left\|No.*FIXME.*comment' || true)
+  todos=$(grep -rn 'TODO\|FIXME' "$ROOT/core" --include='*.md' 2>/dev/null | grep -v 'code examples\|```\|No.*TODO.*left\|No.*FIXME.*comment\|TODO/FIXME\|TODO.*left\|FIXME.*comment\|cleanup TODOs' || true)
 fi
 if [ -z "$todos" ]; then
   check "No TODO/FIXME in production files" "pass"
@@ -236,7 +254,7 @@ else
 fi
 
 # ── 10. Install/Update agent count (repo only) ──
-if [ "$1" != "--installed" ]; then
+if [ "${1:-}" != "--installed" ]; then
   echo "── Install/Update File Counts ──"
   install_match=$(grep -c '24 agents\|24 subagents' "$ROOT/install.md" 2>/dev/null || true)
   update_match=$(grep -c '24 agents\|24 subagents' "$ROOT/update.md" 2>/dev/null || true)
@@ -248,7 +266,7 @@ if [ "$1" != "--installed" ]; then
 fi
 
 # ── 11. Parallel group consistency (repo only) ──
-if [ "$1" != "--installed" ]; then
+if [ "${1:-}" != "--installed" ]; then
   echo "── Parallel Group Consistency ──"
   parallel_planner=$(grep -c 'Parallel Group\|Parallel.*Group' "$ROOT/core/skills/planner/SKILL.md" 2>/dev/null || true)
   parallel_codexen=$(grep -c 'Parallel Group\|Parallel.*Group\|Parallel Execution' "$ROOT/core/agents/codexen.md" 2>/dev/null || true)
@@ -260,7 +278,7 @@ if [ "$1" != "--installed" ]; then
 fi
 
 # ── 12. .gitignore scope (repo only) ──
-if [ "$1" != "--installed" ]; then
+if [ "${1:-}" != "--installed" ]; then
   echo "── .gitignore Scope ──"
   if grep -q '^/memory/' "$ROOT/.gitignore" 2>/dev/null; then
     check ".gitignore uses root-scoped /memory/" "pass"

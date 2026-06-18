@@ -17,6 +17,16 @@ Thumbs.db
 *.bak
 *.orig
 
+# Environment & Secrets
+.env
+.env.*
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+*.jks
+
 # Backup files (we have separate backup folder)
 backup/
 history/

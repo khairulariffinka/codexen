@@ -23,7 +23,12 @@ To use, append after command: `"load update.md --dry-run"`
 
 ## Changelog
 
-### v0.7.0 (Current)
+### v0.8.0 (Current)
+- ADD: Token optimization (compress mode with user preferences, compress-file, terse subagent output)
+- ADD: Model-picker (task-based model selection)
+- CHANGE: Removed default model setting
+
+### v0.7.0
 - ADD: 11 custom slash commands (`/audit`, `/test`, `/lint`, `/review`, `/plan`, `/brs`, `/srs`, `/sds`, `/commit`, `/refactor`, `/docker`)
 - ADD: Model optimization (`model` + `small_model` for cost savings)
 - ADD: LSP integration (`lsp: true` for code intelligence)
@@ -69,7 +74,7 @@ When this file is loaded, AI must know:
 - NOT just reading the file
 - AI must execute update steps
 - IMPORTANT: Skip copying opencode.json if already exists AND same (preserve user customizations)
-- IMPORTANT: Skip copying global-memory if it already contains files
+- IMPORTANT: Copy only missing global-memory files (never overwrite user data)
 
 ## AI Execution
 
@@ -248,11 +253,25 @@ else
   [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would add: opencode.json" || cp core/opencode.json ~/.config/opencode/opencode.json && echo "Copied opencode.json"
 fi
 
-# global-memory
-if [ -z "$(ls -A ~/.config/opencode/global-memory 2>/dev/null)" ]; then
-  [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would init: global-memory" || cp -r templates/global-memory/* ~/.config/opencode/global-memory/ && echo "Initialized global-memory"
-else
-  echo "Skipping global-memory (already exists)"
+# global-memory - copy missing files only
+echo ""
+echo "=== Updating Global Memory ==="
+gm_dir="$HOME/.config/opencode/global-memory"
+mkdir -p "$gm_dir/work-diary/archive"
+for f in "$SCRIPT_DIR"/templates/global-memory/*; do
+  fname=$(basename "$f")
+  dest="$gm_dir/$fname"
+  if [ -f "$f" ]; then
+    if [ ! -f "$dest" ]; then
+      [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would add: $fname" || { cp "$f" "$dest" && echo "Added: $fname"; }
+    else
+      echo "Skipping: $fname (already exists)"
+    fi
+  fi
+done
+# Also copy work-diary template if missing
+if [ ! -f "$gm_dir/work-diary/diary-YYYY-MM.md" ]; then
+  [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would add: work-diary/diary-YYYY-MM.md" || { cp "$SCRIPT_DIR/templates/global-memory/work-diary/diary-YYYY-MM.md" "$gm_dir/work-diary/" && echo "Added: work-diary/diary-YYYY-MM.md"; }
 fi
 
 # validation script
@@ -270,7 +289,8 @@ echo ""
 | Action | Description |
 |--------|-----------|
 | Update agents (compare first) | Copy 24 agents |
-| Update skills (compare first) | Copy 17 skills |
+| Update skills (compare first) | Copy 19 skills |
+| Update global-memory (missing files only) | Copy templates if missing |
 | Update opencode.json (if different) | Preserve user customizations |
 | Update memory templates (if empty) | Skip if exists |
 | Update validation script | Copy to ~/.config/opencode/scripts/ |
@@ -291,7 +311,7 @@ In OpenCode:
 
 ## Version
 
-Current: **0.7.0**
+Current: **0.8.0**
 
 ---
 
@@ -335,8 +355,15 @@ else
   cp core/opencode.json ~/.config/opencode/opencode.json && echo "Copied opencode.json"
 fi
 
-# Copy global-memory if directory is empty
-[ -z "$(ls -A ~/.config/opencode/global-memory 2>/dev/null)" ] && cp -r templates/global-memory/* ~/.config/opencode/global-memory/ || echo "Skipping global-memory (already exists)"
+# Copy missing global-memory templates
+for f in templates/global-memory/*; do
+  fname=$(basename "$f")
+  dest=~/.config/opencode/global-memory/"$fname"
+  if [ -f "$f" ] && [ ! -f "$dest" ]; then
+    cp "$f" "$dest" && echo "Added: $fname"
+  fi
+done
+[ ! -f ~/.config/opencode/global-memory/work-diary/diary-YYYY-MM.md ] && mkdir -p ~/.config/opencode/global-memory/work-diary && cp templates/global-memory/work-diary/diary-YYYY-MM.md ~/.config/opencode/global-memory/work-diary/ && echo "Added: work-diary/diary-YYYY-MM.md"
 ```
 
 ---

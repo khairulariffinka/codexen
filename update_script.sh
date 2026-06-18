@@ -1,5 +1,8 @@
 #!/bin/bash
-cd /home/ka/projek/klien/codexen
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
 
 echo "=== Updating CodeXen ==="
 echo ""
@@ -22,7 +25,7 @@ echo ""
 echo "=== Skills ==="
 for f in core/skills/*/*.md; do
   skill_name=$(basename "$f")
-  skill_dir=$(dirname "$f" | xargs basename)
+  skill_dir=$(basename "$(dirname "$f")")
   if [ -f ~/.config/opencode/skills/"$skill_dir"/"$skill_name" ]; then
     if ! diff -q "$f" ~/.config/opencode/skills/"$skill_dir"/"$skill_name" > /dev/null 2>&1; then
       cp "$f" ~/.config/opencode/skills/"$skill_dir"/"$skill_name" && echo "Updated: $skill_name"

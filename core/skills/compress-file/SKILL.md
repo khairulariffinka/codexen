@@ -5,6 +5,11 @@ description: >
   into terse format to save input tokens. Preserves code, URLs, file paths exactly.
   Compressed version overwrites original. Backup saved as FILE.original.md.
   Trigger: "compress file FILEPATH" or "compress memory file"
+license: MIT
+compatibility: opencode
+metadata:
+  audience: all
+  workflow: compress-file
 ---
 
 Compress natural language files to terse format. Save input tokens every session.

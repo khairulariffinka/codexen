@@ -20,13 +20,13 @@ Focuses on server-side logic, APIs, and database migrations using specific backe
 2. **Check Past Lessons** - Run `@memory, show lessons about [task-topic]` to review past mistakes.
 3. **Research Patterns** - Check existing implementations via `@research` before writing new code.
 4. **Task Execution** - Follow `planner.md`, implement the next `[ ]` task.
-4. **API Design** - Refer to `docs/SDS-v1.0.md` for endpoint contracts. If SDS not available, call `@api-designer` first.
-5. **Database Migration** - Consult `@database-expert` for schema changes.
-6. **Decision Integration** - Check `DECISIONS.md` for active patterns. Log new decisions via `@decision-log`.
-7. **External Libraries** - If using a new library, call `@doc-scout` to fetch current API docs.
-8. **Self Review** - Run `@auditor` for quality check before marking complete.
-9. **Testing** - Hand off to `@test-coder` for test implementation.
-10. **Update Planner** - Mark task as `[x]` in `planner.md`.
+5. **API Design** - Refer to `docs/SDS-v1.0.md` for endpoint contracts. If SDS not available, call `@api-designer` first.
+6. **Database Migration** - Consult `@database-expert` for schema changes.
+7. **Decision Integration** - Check `DECISIONS.md` for active patterns. Log new decisions via `@decision-log`.
+8. **External Libraries** - If using a new library, call `@doc-scout` to fetch current API docs.
+9. **Self Review** - Run `@auditor` for quality check before marking complete.
+10. **Testing** - Hand off to `@test-coder` for test implementation.
+11. **Update Planner** - Mark task as `[x]` in `planner.md`.
 
 ## Guardrails
 - **Scope Check**: If task involves UI/UX, routing, or frontend logic → refuse and redirect to `@frontend-coder`.

@@ -237,7 +237,7 @@ Then type: `init project`
 
 ## Architecture
 
-For detailed flow diagrams, see [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md).
+CodeXen uses a modular architecture with agents, skills, and commands working together through an orchestration layer. For details, see the [Tutorials](TUTORIALS.md) and [Commands Reference](COMMANDS.md).
 
 ---
 

@@ -1,17 +1,31 @@
 #!/bin/bash
+set -euo pipefail
+
 # Generate a new CodeXen subagent from template
 # Usage: bash scripts/generate-agent.sh [agent-name]
 # Example: bash scripts/generate-agent.sh notification-coder
 
-set -e
-
-if [ -z "$1" ]; then
+if [ -z "${1:-}" ]; then
   echo "Usage: bash generate-agent.sh [agent-name]"
-  echo "Example: bash generate-agent.sh notification-coder"
+  echo "  Agent name must be lowercase alphanumeric with hyphens (e.g., my-coder)"
   exit 1
 fi
 
 NAME="$1"
+
+# Sanitize input — only allow [a-z0-9-], must start/end with alphanumeric, max 64 chars
+if [[ ! "$NAME" =~ ^[a-z0-9]([a-z0-9-]*[a-z0-9])?$ ]]; then
+  echo "ERROR: Invalid agent name '$NAME'"
+  echo "  Only lowercase letters, numbers, and hyphens allowed."
+  echo "  Must start and end with alphanumeric. Max 64 chars."
+  echo "  Example: my-new-coder"
+  exit 1
+fi
+
+if [ ${#NAME} -gt 64 ]; then
+  echo "ERROR: Agent name too long (${#NAME} chars, max 64)"
+  exit 1
+fi
 FILE="core/agents/$NAME.md"
 
 if [ -f "$FILE" ]; then

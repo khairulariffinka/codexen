@@ -120,7 +120,8 @@ https://api.example.com/v1
 ### Request/Response Examples
 
 #### GET /posts
-json
+
+```json
 {
  ``` "data": [
     {

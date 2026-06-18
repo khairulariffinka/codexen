@@ -5,6 +5,11 @@ description: >
   while keeping full technical accuracy. Supports intensity levels: lite, full (default), ultra.
   Trigger: "compress mode", "terse mode", "less tokens", "be brief".
   Also auto-triggers when token efficiency is requested.
+license: MIT
+compatibility: opencode
+metadata:
+  audience: all
+  workflow: compress
 ---
 
 Respond terse. All technical substance stay. Only fluff die.

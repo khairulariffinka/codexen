@@ -1,11 +1,11 @@
 #!/bin/bash
-# Install script for CodeXen v0.6.0
+set -euo pipefail
+
+# Install script for CodeXen v0.8.0
 # Usage: bash install.sh [--dry-run]
 
-set -e
-
 DRY_RUN=false
-if [[ "${1:-}" == *"--dry-run"* ]]; then
+if [[ "${1:-}" == "--dry-run" ]]; then
   DRY_RUN=true
   echo "DRY-RUN MODE: No changes will be made"
   echo ""
@@ -77,8 +77,10 @@ if [ -f ~/.config/opencode/opencode.json ]; then
         2) cp "$SCRIPT_DIR/core/opencode.json" ~/.config/opencode/opencode.json && echo "Updated: opencode.json" ;;
         3)
           if command -v jq >/dev/null 2>&1; then
-            jq -s '.[0] * .[1]' ~/.config/opencode/opencode.json "$SCRIPT_DIR/core/opencode.json" > ~/.config/opencode/opencode.json.tmp && \
-            mv ~/.config/opencode/opencode.json.tmp ~/.config/opencode/opencode.json && \
+            TMPFILE=$(mktemp ~/.config/opencode/opencode.json.XXXXXX)
+            trap 'rm -f "$TMPFILE"' EXIT
+            jq -s '.[0] * .[1]' ~/.config/opencode/opencode.json "$SCRIPT_DIR/core/opencode.json" > "$TMPFILE" && \
+            mv "$TMPFILE" ~/.config/opencode/opencode.json && \
             echo "Merged: opencode.json"
           else
             echo "jq not found - keeping your config. Install jq for merge."
@@ -96,14 +98,22 @@ fi
 
 echo ""
 echo "=== Installing Global Memory Templates ==="
-if [ -z "$(ls -A ~/.config/opencode/global-memory/ 2>/dev/null | grep -v 'work-diary')" ]; then
-  [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would init: global-memory templates" || {
-    cp "$SCRIPT_DIR/templates/global-memory/user-profile.md" ~/.config/opencode/global-memory/ 2>/dev/null && echo "Added: user-profile.md"
-    cp "$SCRIPT_DIR/templates/global-memory/current-session.md" ~/.config/opencode/global-memory/ 2>/dev/null && echo "Added: current-session.md"
-    cp "$SCRIPT_DIR/templates/global-memory/work-diary/diary-YYYY-MM.md" ~/.config/opencode/global-memory/work-diary/ 2>/dev/null && echo "Added: diary template"
-  }
-else
-  echo "Skipping: global-memory (user data exists)"
+gm_dir="$HOME/.config/opencode/global-memory"
+mkdir -p "$gm_dir/work-diary/archive"
+for f in "$SCRIPT_DIR"/templates/global-memory/*; do
+  fname=$(basename "$f")
+  dest="$gm_dir/$fname"
+  if [ -f "$f" ]; then
+    if [ ! -f "$dest" ]; then
+      [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would add: $fname" || { cp "$f" "$dest" && echo "Added: $fname"; }
+    else
+      echo "Skipping: $fname (already exists)"
+    fi
+  fi
+done
+# Also copy work-diary template if missing
+if [ ! -f "$gm_dir/work-diary/diary-YYYY-MM.md" ]; then
+  [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would add: work-diary/diary-YYYY-MM.md" || { cp "$SCRIPT_DIR/templates/global-memory/work-diary/diary-YYYY-MM.md" "$gm_dir/work-diary/" && echo "Added: work-diary/diary-YYYY-MM.md"; }
 fi
 
 echo ""
