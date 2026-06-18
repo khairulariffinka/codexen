@@ -700,10 +700,35 @@ IF any step skipped:
 ✅ Step 6: patterns.md loaded (2 patterns found)
 ✅ Step 7: agent-performance — @backend-coder 85% success
 ✅ Step 8: no active goal
-✅ Step 9: no checkpoint to restore
+✅ Step 9: checkpoint auto-injected (budgeted read)
 
 All mandatory steps complete. Ready to work!
 ```
+
+### Step 9: Auto-Inject Checkpoint
+
+When a checkpoint exists, auto-inject it as system reminder using budgeted reading:
+
+1. Check if `docs/checkpoint.md` exists
+2. If yes, use `@memory read-budgeted docs/checkpoint.md 5000`
+3. Check if `docs/memory.md` exists
+4. If yes, use `@memory read-budgeted docs/memory.md 3000`
+5. Inject as system reminder (not user message):
+   ```
+   [SYSTEM REMINDER - CHECKPOINT RESTORED]
+   
+   Saved: 2026-06-16 14:30
+   Task: Build user authentication
+   Progress: 60%
+   
+   Resumed context:
+   ├─ Files: 3 loaded
+   ├─ Decisions: 1 active
+   └─ Next: Add refresh token
+   
+   Token budget used: 7800 / 8000 (97%)
+   ```
+6. If no checkpoint exists, skip (Step 9 = "no checkpoint to restore")
 
 ---
 
@@ -720,6 +745,37 @@ While agent is working, orchestration MUST:
 
 ### Auto-Checkpoint Enforcement
 
+Auto-checkpoint is handled by `core/.opencode/plugin/context-monitor.ts`. The plugin monitors context usage and triggers actions at thresholds.
+
+**Plugin → Memory Integration:**
+
+```
+context-monitor.ts plugin
+    ↓ (message.updated event)
+Tracks tokens: input, output, reasoning, cache
+    ↓ (at 80% context)
+Logs: "Context 80% — checkpoint triggered"
+    ↓
+Orchestration detects log event
+    ↓
+Dispatches @checkpoint-writer agent
+    ↓
+@checkpoint-writer saves:
+  - docs/checkpoint.md (5K tokens max)
+  - docs/memory.md (3K tokens max)
+  - docs/task-progress.md (2K tokens max)
+```
+
+**Threshold Actions (from plugin):**
+
+| Threshold | Action | What Happens |
+|-----------|--------|--------------|
+| **70%** | `warn` | Log warning message |
+| **80%** | `checkpoint` | Trigger @checkpoint-writer |
+| **90%** | `compress` | Auto-compress low-priority content |
+| **95%** | `critical` | Log error, prompt user to intervene |
+
+**Manual checkpoint (fallback):**
 ```
 IF context > 80%:
   → Auto-save checkpoint (MANDATORY)
