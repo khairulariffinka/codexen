@@ -98,6 +98,62 @@ IF any step fails:
   → Re-run failed step
 ```
 
+## Plugin-Based Context Monitoring
+
+Context monitoring is handled by `core/.opencode/plugin/context-monitor.ts`. This plugin automatically tracks token usage and triggers actions at predefined thresholds.
+
+### How It Works
+
+1. **Event-driven:** Monitors `message.updated` events in real-time
+2. **Token tracking:** Counts input, output, reasoning, cache tokens
+3. **Dynamic limits:** Reads `model.limit.context` from each message
+4. **Auto-trigger:** Fires actions when thresholds are crossed
+
+### Threshold Actions
+
+| Threshold | Action | What Happens |
+|-----------|--------|--------------|
+| **70%** | `warn` | Log warning message |
+| **80%** | `checkpoint` | Trigger `@checkpoint-writer` agent |
+| **90%** | `compress` | Auto-compress low-priority content |
+| **95%** | `critical` | Log error, prompt user to intervene |
+
+### Plugin → Agent Handoff
+
+```
+Context Monitor Plugin
+    ↓ (at 80%)
+Logs: "Context 80% — checkpoint triggered"
+    ↓
+Orchestration detects log event
+    ↓
+Dispatches @checkpoint-writer agent
+    ↓
+@checkpoint-writer saves:
+  - docs/checkpoint.md (5K tokens max)
+  - docs/memory.md (3K tokens max)
+  - docs/task-progress.md (2K tokens max)
+```
+
+### Manual Context Check
+
+Use the `check_context` tool or `/context` command:
+```
+/check context
+→ Shows: tokens, percentage, cost estimate
+→ Optional: /context detailed (threshold breakdown)
+```
+
+### Integration with Task Lifecycle
+
+| Lifecycle Step | Plugin Integration |
+|----------------|-------------------|
+| **Pre-Task (Step 1-7)** | Plugin runs in background, no blocking |
+| **During (Step 10)** | Plugin auto-checkpoints at 80% |
+| **Post-Task (Step 16)** | Plugin confirms checkpoint saved |
+
+---
+
 ## Spec Change Propagation
 
 When a BRS/SRS/SDS document changes, propagate updates through the chain:
