@@ -417,29 +417,43 @@ Progress: 60%
 
 #### @memory checkpoint restore
 
-Restore session from checkpoint.
+Restore session from checkpoint using budgeted reading.
 
 **Steps:**
-1. Read `~/.config/opencode/global-memory/checkpoint.md`.
-2. Load context from checkpoint:
-   - Read files listed in checkpoint
+1. Read `~/.config/opencode/global-memory/checkpoint.md` with budget (5000 tokens max):
+   - Use `@memory read-budgeted checkpoint.md 5000`
+   - Compress middle sections if needed
+2. Read `docs/memory.md` with budget (3000 tokens max):
+   - Use `@memory read-budgeted memory.md 3000`
+   - Keep decisions and recent entries
+3. Load context from budgeted content:
+   - Extract files listed in checkpoint
    - Load decisions from DECISIONS.md
    - Load project state from current-state.md
-3. Present summary:
-```
-[CHECKPOINT RESTORED]
+4. Inject as system reminder (not user message):
+   ```
+   [SYSTEM REMINDER - CHECKPOINT RESTORED]
+   
+   Saved: 2026-06-16 14:30
+   Task: Build user authentication
+   Progress: 60%
+   
+   Resumed context:
+   ├─ Files: 3 loaded
+   ├─ Decisions: 1 active
+   └─ Next: Add refresh token
+   
+   Token budget used: 7800 / 8000 (97%)
+   
+   Ready to continue!
+   ```
 
-Saved: 2026-06-16 14:30
-Task: Build user authentication
-Progress: 60%
-
-Resumed context:
-├─ Files: 3 loaded
-├─ Decisions: 1 active
-└─ Next: Add refresh token
-
-Ready to continue!
-```
+**Token Budgets:**
+| File | Max Tokens | Compression |
+|------|------------|-------------|
+| checkpoint.md | 5000 | Keep headers, recent, decisions |
+| memory.md | 3000 | Keep decisions, lessons, patterns |
+| **Total** | **8000** | ~6% of 128K context |
 
 #### @memory checkpoint list
 
