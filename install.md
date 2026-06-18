@@ -21,7 +21,17 @@ That's it!
 
 ## Changelog
 
-### v0.8.0 (Current)
+### v0.9.0 (Current)
+- ADD: Context Monitor Plugin (`core/.opencode/plugin/context-monitor.ts`)
+- ADD: `/context` slash command (`core/.opencode/command/context.md`)
+- ADD: Checkpoint Writer agent (`core/agents/checkpoint-writer.md`)
+- ADD: `@memory read-budgeted` for token-budgeted file reading
+- ADD: `@memory auto-dream-check` and `@memory auto-distill-check`
+- ADD: Plugin install/update with conflict resolution
+- CHANGE: 25 agents (added checkpoint-writer)
+- CHANGE: Generic opencode.json for all users
+
+### v0.8.0
 - ADD: Token optimization (compress mode with user preferences, compress-file, terse subagent output)
 - ADD: Model-picker (task-based model selection)
 - CHANGE: Removed default model setting
@@ -163,6 +173,24 @@ For each command file:
 - If the file exists and differs: ask user whether to keep theirs, overwrite, or show diff
 - If the file exists and is identical: skip (unchanged)
 
+### Step 5c: Install plugins (.opencode)
+
+Copy plugins and commands from `core/.opencode/` to `~/.config/opencode/`.
+
+**Files to copy:**
+- `core/.opencode/plugin/*.ts` → `~/.config/opencode/plugin/`
+- `core/.opencode/command/*.md` → `~/.config/opencode/command/`
+- `core/.opencode/package.json` → `~/.config/opencode/package.json`
+
+**Conflict resolution (same as agents/skills):**
+- If the file does not exist at destination: copy it (new install)
+- If the file exists and differs: ask user whether to keep theirs, overwrite, or show diff
+- If the file exists and is identical: skip (unchanged)
+
+**Special handling for package.json:**
+- If user has custom `~/.config/opencode/package.json`, ask before overwriting
+- Option to merge: `jq -s '.[0] * .[1]' user_pkg codexen_pkg`
+
 ### Step 6: Install opencode.json
 
 Handle the opencode.json config carefully:
@@ -195,7 +223,7 @@ After completing all steps, show a summary:
 ```
 Install complete!
 
-Agents: 24 files → ~/.config/opencode/agents/
+Agents: 25 files → ~/.config/opencode/agents/
 Skills: 19 directories → ~/.config/opencode/skills/
 Commands: 11 files → ~/.config/opencode/commands/
 Config: opencode.json → ~/.config/opencode/opencode.json

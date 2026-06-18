@@ -23,7 +23,17 @@ To use, append after command: `"load update.md --dry-run"`
 
 ## Changelog
 
-### v0.8.0 (Current)
+### v0.9.0 (Current)
+- ADD: Context Monitor Plugin (`core/.opencode/plugin/context-monitor.ts`)
+- ADD: `/context` slash command (`core/.opencode/command/context.md`)
+- ADD: Checkpoint Writer agent (`core/agents/checkpoint-writer.md`)
+- ADD: `@memory read-budgeted` for token-budgeted file reading
+- ADD: `@memory auto-dream-check` and `@memory auto-distill-check`
+- ADD: Plugin install/update with conflict resolution
+- CHANGE: 25 agents (added checkpoint-writer)
+- CHANGE: Generic opencode.json for all users
+
+### v0.8.0
 - ADD: Token optimization (compress mode with user preferences, compress-file, terse subagent output)
 - ADD: Model-picker (task-based model selection)
 - CHANGE: Removed default model setting
@@ -193,6 +203,63 @@ for f in core/skills/*/*.md; do
   mkdir -p ~/.config/opencode/skills/"$skill_dir"
   update_or_skip "$f" "$dest" "$skill_dir"
 done
+
+echo ""
+echo "=== Updating Plugins (.opencode) ==="
+mkdir -p ~/.config/opencode/plugin
+mkdir -p ~/.config/opencode/command
+
+# Update plugins
+for f in core/.opencode/plugin/*.ts; do
+  if [ -f "$f" ]; then
+    fname=$(basename "$f")
+    dest=~/.config/opencode/plugin/"$fname"
+    update_or_skip "$f" "$dest" "plugin/$fname"
+  fi
+done
+
+# Update commands
+for f in core/.opencode/command/*.md; do
+  if [ -f "$f" ]; then
+    fname=$(basename "$f")
+    dest=~/.config/opencode/command/"$fname"
+    update_or_skip "$f" "$dest" "command/$fname"
+  fi
+done
+
+# Update package.json (with conflict resolution)
+if [ -f core/.opencode/package.json ]; then
+  dest_pkg=~/.config/opencode/package.json
+  if [ ! -f "$dest_pkg" ]; then
+    [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would add: package.json" || cp core/.opencode/package.json "$dest_pkg" && echo "Added: package.json"
+  elif ! diff -q core/.opencode/package.json "$dest_pkg" > /dev/null 2>&1; then
+    if [ "$DRY_RUN" = true ]; then
+      echo "[DRY-RUN] Would update: package.json (CONFLICT - user has custom package.json)"
+    else
+      echo ""
+      echo "⚠️  CONFLICT: package.json differs from CodeXen version"
+      echo "    [1] Keep mine - skip (RECOMMENDED)"
+      echo "    [2] Use CodeXen version - overwrite"
+      echo "    [3] Merge - add new dependencies"
+      read -p "Choice [1]: " choice
+      case "$choice" in
+        2) cp core/.opencode/package.json "$dest_pkg" && echo "Updated: package.json" ;;
+        3)
+          if command -v jq >/dev/null 2>&1; then
+            jq -s '.[0] * .[1]' "$dest_pkg" core/.opencode/package.json > "$dest_pkg.tmp" && \
+            mv "$dest_pkg.tmp" "$dest_pkg" && \
+            echo "Merged: package.json"
+          else
+            echo "jq not found - keeping your config. Install jq for merge."
+          fi
+          ;;
+        *) echo "Keeping your config" ;;
+      esac
+    fi
+  else
+    echo "Skipping: package.json (unchanged)"
+  fi
+fi
 
 echo ""
 echo "=== Updating Config ==="
