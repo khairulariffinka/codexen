@@ -1,0 +1,9 @@
+{
+  "name": "codexen-context-monitor",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Context monitoring plugin for CodeXen — tracks tokens, auto-checkpoint, threshold alerts",
+  "dependencies": {
+    "@opencode-ai/plugin": "latest"
+  }
+}
