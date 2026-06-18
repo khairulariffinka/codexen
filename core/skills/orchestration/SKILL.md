@@ -202,6 +202,8 @@ User: "Add TikTok integration"
 
 ### 0. Guardrails (Always Active)
 
+**Principle:** All sensitive operations require user confirmation. Exception: user has given explicit permission in current session.
+
 | Guardrail | Threshold | Action |
 |-----------|-----------|--------|
 | **Circuit Breaker** | 3 failures same agent/task | Halt all retries, generate Failure Report |
@@ -210,6 +212,31 @@ User: "Add TikTok integration"
 | **File Modification Gate** | Existing file edit | Ask user before overwriting |
 | **Git Push Gate** | Any `git push` command | MUST ask user first: "Push ke GitHub sekarang, bos?" |
 | **Git Commit Gate** | Any `git commit` command | Show summary + ask permission before commit |
+| **Delete Gate** | Any file/branch deletion | MUST ask user first |
+| **Install/Uninstall Gate** | Package install/remove | MUST ask user first |
+| **Network Gate** | External API calls | MUST ask user first (except localhost) |
+| **Config Gate** | Config file changes | MUST ask user first |
+
+### Session Permission
+
+User can pre-authorize actions for the session:
+
+```
+User: "auto-push allowed"
+→ All subsequent git push will skip confirmation
+
+User: "auto-commit allowed"
+→ All subsequent git commit will skip confirmation
+
+User: "revoke auto-push"
+→ Resume asking for confirmation
+```
+
+**Rules:**
+1. Default: ALWAYS ask for sensitive operations
+2. Exception: User said "allowed" / "proceed" / "yes" in this session
+3. Reset: New session = fresh permission (ask again)
+4. Scope: Permission only applies to current session
 
 ### 1. Agent Failure Continuum (Progressive)
 
