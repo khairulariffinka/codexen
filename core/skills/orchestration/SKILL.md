@@ -208,6 +208,8 @@ User: "Add TikTok integration"
 | **Rate Limit** | 5 subagent dispatches per msg | Batch remaining, execute sequentially |
 | **Parallel Cap** | 3 concurrent agents max | Queue overflow agents for next batch |
 | **File Modification Gate** | Existing file edit | Ask user before overwriting |
+| **Git Push Gate** | Any `git push` command | MUST ask user first: "Push ke GitHub sekarang, bos?" |
+| **Git Commit Gate** | Any `git commit` command | Show summary + ask permission before commit |
 
 ### 1. Agent Failure Continuum (Progressive)
 
