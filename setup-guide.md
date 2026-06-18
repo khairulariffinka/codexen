@@ -71,7 +71,7 @@ Check that files are in place:
 │   ├── memory.md     ← Memory subagent
 │   ├── planner.md    ← Planning subagent
 │   ├── coder.md      ← Coding subagent
-│   └── ... (24 agents total)
+│   └── ... (25 agents total)
 ├── skills/
 │   ├── greeting/     ← Greeting system
 │   ├── modes/        ← Operating modes

@@ -12,7 +12,7 @@
 >
 > This page is for **detailed guides** when you want to learn more.
 
-Comprehensive guide to using all 24 subagents in CodeXen.
+Comprehensive guide to using all 25 subagents in CodeXen.
 
 ---
 

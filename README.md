@@ -8,7 +8,7 @@
 ![Skills](https://img.shields.io/badge/skills-19-blue)
 ![Commands](https://img.shields.io/badge/commands-11-blue)
 
-> 24 agents, 19 skills, 11 commands. Zero config. Just install and start building. CodeXen turns OpenCode into a full development team with planning, coding, auditing, and deployment.
+> 25 agents, 19 skills, 11 commands. Zero config. Just install and start building. CodeXen turns OpenCode into a full development team with planning, coding, auditing, and deployment.
 
 Give it a task, it handles the rest.
 
@@ -187,8 +187,8 @@ Cross-project memory that follows you:
 
 ### OpenCode Native Integration
 
-CodeXen v0.8.0 is fully optimized for OpenCode:
-- **Agent system**: All 24 agents with fine-grained permissions
+CodeXen v0.9.0 is fully optimized for OpenCode:
+- **Agent system**: All 25 agents with fine-grained permissions
 - **Skill system**: All 19 skills with `SKILL.md` format and valid frontmatter
 - **Custom commands**: 12 slash commands for common workflows
 - **Permission system**: Role-based permissions per agent (coders get edit, auditors are read-only)
@@ -205,7 +205,7 @@ CodeXen v0.8.0 is fully optimized for OpenCode:
 ```
 codexen/
 ├── core/
-│   ├── agents/            # 24 agents (Markdown format)
+│   ├── agents/            # 25 agents (Markdown format)
 │   ├── skills/            # 19 skills (SKILL.md format)
 │   ├── commands/          # 12 slash commands (Markdown format)
 │   └── opencode.json      # Agent configuration

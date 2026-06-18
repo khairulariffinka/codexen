@@ -256,7 +256,7 @@ Drop: Exchanges 21+ (unless tagged #critical)
 @memory, analyze lessons     → Scan last 10 sessions, extract recurring issues
 @memory, analyze patterns    → Update patterns.md with frequency counts
 @memory, update check        → Check if CodeXen repo has new commits (via codexen.md)
-@memory, health              → Check all 24 agents and 17 skills are reachable
+@memory, health              → Check all 25 agents and 17 skills are reachable
 ```
 
 ## Context Compression
