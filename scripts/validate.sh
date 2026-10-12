@@ -54,13 +54,26 @@ echo ""
 
 # ── 1. Agent count ──
 echo "── Agent Count ──"
+# Expected counts come from VERSION.yaml (repo) — no hardcoded numbers to forget.
+# Installed mode: users may add their own agents/skills, so only check ours exist.
+yaml_count() { awk -v k="$1:" '$0==k{f=1;next} f&&/^  - /{n++;next} f{f=0} END{print n+0}' "$ROOT/VERSION.yaml"; }
 agent_count=$(ls "$AGENTS_DIR"/*.md 2>/dev/null | wc -l)
-check "25 agent files (found: $agent_count)" "$([ "$agent_count" -eq 25 ] && echo "pass" || echo "fail")"
+if [ "${1:-}" = "--installed" ]; then
+  check "codexen agent installed (agents found: $agent_count)" "$([ -f "$AGENTS_DIR/codexen.md" ] && echo "pass" || echo "fail")"
+else
+  want_agents=$(yaml_count core_agents)
+  check "$want_agents agent files per VERSION.yaml (found: $agent_count)" "$([ "$agent_count" -eq "$want_agents" ] && [ "$want_agents" -gt 0 ] && echo "pass" || echo "fail")"
+fi
 
 # ── 2. Skill count ──
 echo "── Skill Count ──"
 skill_count=$(ls "$SKILLS_DIR"/*/SKILL.md 2>/dev/null | wc -l)
-check "19 skill files (found: $skill_count)" "$([ "$skill_count" -eq 19 ] && echo "pass" || echo "fail")"
+if [ "${1:-}" = "--installed" ]; then
+  check "orchestration skill installed (skills found: $skill_count)" "$([ -f "$SKILLS_DIR/orchestration/SKILL.md" ] && echo "pass" || echo "fail")"
+else
+  want_skills=$(( $(yaml_count core_skills) + $(yaml_count template_skills) ))
+  check "$want_skills skill files per VERSION.yaml (found: $skill_count)" "$([ "$skill_count" -eq "$want_skills" ] && [ "$want_skills" -gt 0 ] && echo "pass" || echo "fail")"
+fi
 
 # ── 3. YAML frontmatter ──
 echo "── YAML Frontmatter ──"
@@ -256,8 +269,8 @@ fi
 # ── 10. Install/Update agent count (repo only) ──
 if [ "${1:-}" != "--installed" ]; then
   echo "── Install/Update File Counts ──"
-  install_match=$(grep -c '25 agents' "$ROOT/install.md" 2>/dev/null || true)
-  update_match=$(grep -c '25 agents' "$ROOT/update.md" 2>/dev/null || true)
+  install_match=$(grep -c "$agent_count agents" "$ROOT/install.md" 2>/dev/null || true)
+  update_match=$(grep -c "$agent_count agents" "$ROOT/update.md" 2>/dev/null || true)
   if [ "$install_match" -gt 0 ] && [ "$update_match" -gt 0 ]; then
     check "install/update.md reference correct agent count" "pass"
   else
@@ -351,6 +364,86 @@ if [ -z "$direct_calls" ]; then
   check "Subagents use ## Handoff instead of calling agents" "pass"
 else
   check "Subagents call other agents directly (use ## Handoff):$direct_calls" "fail"
+fi
+
+# ── 15. Docs match reality: counts, VERSION.yaml lists, version strings (repo only) ──
+# Counts come from the files on disk; changelog / "New in vX" sections are history and skipped.
+if [ "${1:-}" != "--installed" ]; then
+  echo "── Docs Consistency (counts + version) ──"
+  if command -v node >/dev/null 2>&1; then
+    docs_diff=$(node - "$ROOT" <<'NODE'
+const fs = require("fs"), path = require("path")
+const root = process.argv[2]
+const rd = (p) => { try { return fs.readFileSync(path.join(root, p), "utf8") } catch { return null } }
+const ls = (d, test) => fs.readdirSync(path.join(root, d)).filter(test)
+const agents = ls("core/agents", (f) => f.endsWith(".md")).map((f) => f.slice(0, -3)).sort()
+const skills = ls("core/skills", (d) => fs.existsSync(path.join(root, "core/skills", d, "SKILL.md"))).sort()
+const commands = ls("core/commands", (f) => f.endsWith(".md")).map((f) => f.slice(0, -3)).sort()
+const N = { agents: agents.length, subagents: agents.length - 1, skills: skills.length, commands: commands.length }
+const issues = []
+
+// VERSION.yaml lists = files on disk
+const vy = rd("VERSION.yaml")
+const list = (key) => { const m = vy.match(new RegExp(`^${key}:\\n((?:  - .*\\n?)+)`, "m")); return m ? m[1].trim().split("\n").map((l) => l.replace(/^\s*-\s*/, "").trim()).sort() : [] }
+const same = (a, b) => JSON.stringify(a) === JSON.stringify(b)
+if (!same(list("core_agents"), agents)) issues.push(`VERSION.yaml core_agents != core/agents (${list("core_agents").length} vs ${agents.length})`)
+if (!same([...list("core_skills"), ...list("template_skills")].sort(), skills)) issues.push(`VERSION.yaml core_skills+template_skills != core/skills`)
+if (!same(list("core_commands"), commands)) issues.push(`VERSION.yaml core_commands != core/commands (${list("core_commands").join(",")} vs ${commands.join(",")})`)
+
+// Version strings
+const V = (vy.match(/^version:\s*(\S+)/m) || [])[1]
+const want = [
+  ["README.md", new RegExp(`version-${V.replace(/\./g, "\\.")}-`), "badge"],
+  ["install.sh", new RegExp(`CodeXen v${V.replace(/\./g, "\\.")}\\b`), "header"],
+  ["update_script.sh", new RegExp(`CodeXen v${V.replace(/\./g, "\\.")}\\b`), "header"],
+  ["CHANGELOG.md", new RegExp(`^## \\[${V.replace(/\./g, "\\.")}\\]`, "m"), "top entry"],
+]
+for (const [f, re, what] of want) if (!re.test(rd(f) || "")) issues.push(`${f}: ${what} does not say ${V}`)
+for (const f of ["README.md", "install.md", "update.md"]) {
+  const t = rd(f) || ""
+  for (const m of t.matchAll(/CodeXen v(\d+\.\d+\.\d+)|### v(\d+\.\d+\.\d+) \(Current\)/g)) { const got = m[1] || m[2]; if (got !== V) issues.push(`${f}: says ${m[0]} but VERSION.yaml is ${V}`) }
+}
+
+// Count claims in current-state docs (history sections skipped)
+const files = ["README.md", "QUICKSTART.md", "install.md", "update.md", "uninstall.md", "setup-guide.md", "COMMANDS.md", "TUTORIALS.md", "docs/ARCHITECTURE.md", "core/opencode.json", "VERSION.yaml", "core/agents/memory.md", "core/agents/codexen.md"]
+const strip = (t) => {
+  const out = []; let skip = 0
+  for (const line of t.split("\n")) {
+    const h = line.match(/^(#{1,6})\s/)
+    if (h && skip && h[1].length <= skip) skip = 0
+    if (h && /changelog|new in v|\bv\d+\.\d+|^#+\s*\[\d/i.test(line)) { skip = h[1].length; continue }
+    if (!skip) out.push(line)
+  }
+  return out.join("\n")
+}
+const claims = [
+  [/agents-(\d+)-/g, "agents"], [/skills-(\d+)-/g, "skills"], [/commands-(\d+)-/g, "commands"],
+  [/\b(\d+)\s+subagents?\b(?!\s+(?:dispatch|call|run|per))/gi, "subagents"], [/\b(\d+)\s+(?:AI\s+)?agents?\b(?!-)/gi, "agents"],
+  [/\b(\d+)\s+agent definitions\b/gi, "agents"], [/\b(\d+)\s+skills?\b(?!-)/gi, "skills"],
+  [/\b(\d+)\s+(?:slash\s+|custom\s+)?commands?\b(?!-)/gi, "commands"],
+]
+for (const f of files) {
+  const t = rd(f); if (t == null) continue
+  const body = strip(t).split("\n")
+  body.forEach((line, i) => {
+    for (const [re, kind] of claims) for (const m of line.matchAll(re)) {
+      const n = Number(m[1]); if (n < 5) continue // "3 agents in parallel" etc. are limits, not totals
+      if (n !== N[kind]) issues.push(`${f}: "${m[0].trim()}" (actual ${kind}: ${N[kind]})`)
+    }
+  })
+}
+console.log([...new Set(issues)].join("\n"))
+NODE
+)
+    if [ -z "$docs_diff" ]; then
+      check "Docs counts/versions match files on disk + VERSION.yaml" "pass"
+    else
+      check "Docs out of date: $(echo "$docs_diff" | head -12 | tr '\n' ';')" "fail"
+      echo "$docs_diff" | sed 's/^/      - /'
+    fi
+  else
+    yellow "  ⚠️  node not found — skipped docs consistency check"
+  fi
 fi
 
 # ── Summary ──

@@ -21,10 +21,7 @@ Load the install documentation:
 "Load install.md"
 ```
 
-Select option `3` for both platforms, or your preferred option:
-- `1` = OpenCode
-- `2` = Gemini CLI  
-- `3` = Both
+CodeXen installs into OpenCode (`~/.config/opencode`). Works on OpenCode v1 (>= 1.18.29) and v2.
 
 Done!
 
@@ -67,7 +64,7 @@ You should get a greeting back. If you do, you're ready to go!
 
 - **Subagent routing** — task auto-routed to 24 specialized agents
 - **Self-healing** — 8 error recovery scenarios, circuit breaker
-- **Guardrails** — ask before modify, scope check, secret scan, 13 total
+- **Guardrails** — ask before modify, scope check, secret scan, 13 rules (prompt-level; hard limits via OpenCode permissions)
 - **CI/CD validation** — `validate.sh` with 12 checks, GitHub Actions
 - **Token budgeting** — auto context window management
 - **Feedback loop** — agents learn from past mistakes via lessons.md
@@ -94,7 +91,7 @@ CodeXen will:
 4. Run security checks
 5. Offer to commit
 
-That's it! No need to manage 25 subagents - CodeXen handles everything.
+That's it! No need to manage 25 agents - CodeXen handles everything.
 
 ---
 

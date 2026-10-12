@@ -81,7 +81,7 @@ If you get "Agent not found" or error - uninstall successful!
 This will remove everything CodeXen installed:
 - Skills folder: 19 skills
 - Agents folder: 25 agents
-- Commands folder: 11 commands
+- Commands folder: 13 commands
 - Config: opencode.json
 - Global memory folder: user profile, work diary, knowledge library
 

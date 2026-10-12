@@ -12,45 +12,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run validation script
-        run: bash scripts/validate.sh
-
-      - name: Check YAML frontmatter
-        run: |
-          for f in core/agents/*.md; do
-            if ! head -1 "$f" | grep -q '^---$'; then
-              echo "❌ $f missing frontmatter"
-              exit 1
-            fi
-          done
-          echo "✅ All agents have frontmatter"
-
-      - name: Verify agent count
-        run: |
-          COUNT=$(ls core/agents/*.md | wc -l)
-          if [ "$COUNT" -ne 25 ]; then
-            echo "❌ Expected 25 agents, found $COUNT"
-            exit 1
-          fi
-          echo "✅ 25 agents"
-
-      - name: Verify skill count
-        run: |
-          COUNT=$(ls core/skills/*/SKILL.md | wc -l)
-          if [ "$COUNT" -ne 19 ]; then
-            echo "❌ Expected 19 skills, found $COUNT"
-            exit 1
-          fi
-          echo "✅ 19 skills"
-
       - uses: actions/setup-node@v4
         with:
           node-version: 24
 
+      # Counts, frontmatter, permissions (.md vs opencode.json), handoff rule and
+      # docs/version consistency are all checked dynamically by validate.sh
+      - name: Run validation script
+        run: bash scripts/validate.sh
+
       - name: Test install/update scripts (sandbox HOME)
         run: bash tests/test-install.sh
 
-      - name: Test context-monitor plugin
+      - name: Test context-monitor plugin (OpenCode v1 + v2 adapters)
         run: |
           (cd core/.opencode && npm install --no-audit --no-fund)
           node tests/test-context-monitor.mts

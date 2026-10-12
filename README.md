@@ -6,7 +6,7 @@
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Agents](https://img.shields.io/badge/agents-25-blue)
 ![Skills](https://img.shields.io/badge/skills-19-blue)
-![Commands](https://img.shields.io/badge/commands-11-blue)
+![Commands](https://img.shields.io/badge/commands-13-blue)
 
 > 25 AI agents that handle planning, coding, auditing, and deployment. Zero config. Just install and go.
 
@@ -155,7 +155,8 @@ core/commands/
 ├── commit.md         # /commit → Smart git commit
 ├── refactor.md       # /refactor → Refactor with SOLID
 ├── docker.md         # /docker → Setup Docker config
-└── context.md        # /context → Context usage + token breakdown
+├── context.md        # /context → Context usage + token breakdown
+└── goal.md           # /goal → Set a goal the agent must meet before stopping
 ```
 
 ---
@@ -188,7 +189,7 @@ Cross-project memory that follows you:
 CodeXen v0.9.1 is fully optimized for OpenCode:
 - **Agent system**: All 25 agents with fine-grained permissions
 - **Skill system**: All 19 skills with `SKILL.md` format and valid frontmatter
-- **Custom commands**: 12 slash commands for common workflows
+- **Custom commands**: 13 slash commands for common workflows
 - **Permission system**: Role-based permissions per agent (coders get edit, auditors are read-only)
 - **Subagent routing**: Defined in `opencode.json` with `mode` and `hidden` flags
 - **LSP integration**: Language server protocol for code intelligence
@@ -205,7 +206,7 @@ codexen/
 ├── core/
 │   ├── agents/            # 25 agents (Markdown format)
 │   ├── skills/            # 19 skills (SKILL.md format)
-│   ├── commands/          # 12 slash commands (Markdown format)
+│   ├── commands/          # 13 slash commands (Markdown format)
 │   └── opencode.json      # Agent configuration
 ├── templates/             # Global memory templates
 ├── scripts/               # Validation scripts
@@ -261,13 +262,7 @@ Then type: `init project`
 
 ### Changelog
 
-- **v0.8.0**: Token optimization (compress mode with user preferences, compress-file, terse subagent output)
-- **v0.7.1**: Replace switch-config with model-picker (task-based model selection), remove default model
-- **v0.7.0**: OpenCode optimization (custom commands, LSP/formatters, compaction, fine-grained permissions, model optimization)
-- **v0.6.0**: OpenCode compatibility refactor (skill/agent standardization, opencode.json, validate.sh)
-- **v0.5.0**: Guardrails, self-healing orchestration, BRS/SRS/SDS chain, lessons learned
-- **v0.4.4**: Dry-run, auto-backup, conflict resolution
-- **v0.4.0**: Initial release
+See [CHANGELOG.md](CHANGELOG.md) for every release.
 
 ---
 
@@ -286,6 +281,4 @@ CodeXen uses a modular architecture with agents, skills, and commands working to
 
 ## License
 
-MIT License
-
-**Version**: 0.8.0
+MIT License — see [LICENSE](LICENSE). Current version: see [VERSION.yaml](VERSION.yaml).

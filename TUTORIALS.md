@@ -382,6 +382,4 @@ A: No. Your code stays on your computer.
 ---
 
 **Last Updated:** 2026-06-18
-**Version:** 0.9.0
-
 > Got a question? Just type it. CodeXen doesn't judge. 😄

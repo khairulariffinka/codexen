@@ -33,7 +33,7 @@ Documentation of the project structure and design decisions.
 │  research → [backend-coder + frontend-coder] →         │
 │    test-coder → auditor → git-manager                  │
 │                                                         │
-│  HANDOFFS (Built-in):                                   │
+│  HANDOFFS (## Handoff block → codexen dispatches):      │
 │  ├─ @test-coder     → Tests after code                  │
 │  ├─ @auditor        → Quality gate before commit        │
 │  ├─ @decision-log   → Log architectural choices         │
@@ -114,11 +114,14 @@ Documentation of the project structure and design decisions.
 │  2. Backup ~/.config/opencode ← backup/                 │
 │  3. Update primary agent (preserves name + mode)         │
 │  4. Update 24 subagents (with conflict resolution)       │
-│  5. Update 17 skills (with conflict resolution)          │
-│  6. Merge/preserve opencode.json                        │
-│  7. Done!                                               │
+│  5. Update 19 skills (with conflict resolution)          │
+│  6. Update 13 commands + context-monitor plugin          │
+│  7. Merge/preserve opencode.json                        │
+│  8. Done!                                               │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+Target dirs under `~/.config/opencode/`: `agents/`, `skills/`, `commands/`, `plugins/` (all plural), plus `opencode.json`.
 
 ---
 
@@ -150,6 +153,7 @@ Documentation of the project structure and design decisions.
 │  Business requirements       → @brs-manager              │
 │  Software requirements       → @srs-manager              │
 │  System design               → @sds-manager              │
+│  Checkpoint (context high)   → @checkpoint-writer        │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -157,14 +161,14 @@ Documentation of the project structure and design decisions.
 
 ## Project Overview
 
-CodeXen is an AI coding assistant for OpenCode that coordinates 24 specialized subagents and 17 skills to handle software development tasks.
+CodeXen is an AI coding assistant for OpenCode with 25 agents (1 primary `codexen` + 24 specialized subagents), 19 skills, 13 slash commands, and a context-monitor plugin to handle software development tasks.
 
 ## Directory Structure
 
 ```
 codexen/
 ├── core/                      # Framework (updated via install/update)
-│   ├── agents/                # 24 subagent definitions
+│   ├── agents/                # 25 agent definitions (1 primary + 24 subagents)
 │   │   ├── codexen.md         # Primary orchestrator
 │   │   ├── backend-coder.md
 │   │   ├── frontend-coder.md
@@ -177,19 +181,29 @@ codexen/
 │   │   ├── brs-manager.md
 │   │   ├── srs-manager.md
 │   │   ├── sds-manager.md
+│   │   ├── checkpoint-writer.md
 │   │   └── ... (12 more)
 │   │
-│   └── skills/                # 17 skill modules
-│       ├── planner/SKILL.md
-│       ├── coder/SKILL.md
-│       ├── auditor/SKILL.md
-│       ├── memory/SKILL.md
-│       ├── security/SKILL.md
-│       ├── research/SKILL.md
-│       ├── srs/SKILL.md
-│       ├── sds/SKILL.md
-│       ├── brs/SKILL.md
-│       └── ... (8 more)
+│   ├── skills/                # 19 skill modules
+│   │   ├── planner/SKILL.md
+│   │   ├── coder/SKILL.md
+│   │   ├── auditor/SKILL.md
+│   │   ├── memory/SKILL.md
+│   │   ├── security/SKILL.md
+│   │   ├── research/SKILL.md
+│   │   ├── srs/SKILL.md
+│   │   ├── sds/SKILL.md
+│   │   ├── brs/SKILL.md
+│   │   └── ... (10 more)
+│   │
+│   ├── commands/              # 13 slash commands (/audit, /brs, /commit,
+│   │                          #   /context, /docker, /lint, /plan, /refactor,
+│   │                          #   /review, /sds, /srs, /test)
+│   │
+│   ├── .opencode/plugins/
+│   │   └── context-monitor.ts # Context usage monitor (OpenCode v1 + v2)
+│   │
+│   └── opencode.json          # Agent modes + permissions (no `instructions` key)
 │
 ├── docs/                      # Project documentation
 │   └── ARCHITECTURE.md        # This file
@@ -214,6 +228,8 @@ The main orchestrator (default: `codexen`, user-renameable). Handles:
 - Mode selection (default/quick/review/debug)
 - Subagent routing via routing table
 - Workflow orchestration (chain, parallel)
+- Dispatching subagent `## Handoff` requests
+- Calling `check_context` and dispatching `@checkpoint-writer`
 
 ### Subagents (24 total)
 
@@ -222,31 +238,61 @@ The main orchestrator (default: `codexen`, user-renameable). Handles:
 | **Coders** | backend-coder, frontend-coder, coder, test-coder, refactor-expert, devops-coder |
 | **Auditors** | auditor, security-auditor, security, performance-auditor, style-auditor |
 | **Planners** | planner, research |
-| **Memory** | memory, decision-log |
+| **Memory** | memory, decision-log, checkpoint-writer |
 | **Specs** | brs-manager, srs-manager, sds-manager |
 | **Utilities** | git-manager, docs-manager, database-expert, api-designer, doc-scout |
 
-## Skills (17 total)
+## Skills (19 total)
 
 | Skill | Purpose |
 |-------|---------|
-| **greeting** | Time-based greetings |
-| **orchestration** | Workflow, parallel execution, self-healing |
-| **modes** | Operating modes (quick, review, debug) |
-| **output** | Output formatting |
-| **planner** | Task breakdown with estimation |
-| **coder** | Code writing standards |
-| **auditor** | Code review checklist |
-| **memory** | Session persistence, global diary |
-| **security** | OWASP Top 10 scanning |
-| **research** | Codebase analysis methodology |
-| **decision-log** | Decision format and tracking |
-| **brs** | Business requirements templates |
-| **srs** | Software requirements templates |
-| **sds** | System design templates |
-| **init-project** | New project scaffolding |
-| **setup-profile** | User profile wizard |
-| **switch-config** | OpenCode config switching |
+| **auditor** | Review code quality, security, and best practices (any framework/language) |
+| **brs** | Business Requirement Specification standards, templates, and guidelines (multilingual) |
+| **coder** | Write clean code based on planner.md task breakdown (any framework/language) |
+| **compress** | Ultra-compressed communication mode (lite/full/ultra), ~75% fewer tokens |
+| **compress-file** | Compress memory files (AGENTS.md, planner.md, etc.) into terse format; backup as FILE.original.md |
+| **decision-log** | Decision logging with rationale and impacted-file tracking |
+| **greeting** | Time-based greetings for CodeXen |
+| **init-project** | Initialize new project with Modular Memory, Decision-Log, and Current State |
+| **memory** | Project memory: modular context, decision syncing, global Work Diary |
+| **model-picker** | Interactive model selection based on task type, budget, and quality needs |
+| **modes** | Operating modes for different workflows |
+| **orchestration** | Orchestration logic with self-healing, parallel execution, pre-commit validation |
+| **output** | Standardized output formats for CodeXen |
+| **planner** | Task planning with estimation, dependency tracking, and decision alignment |
+| **research** | Analyze codebase and gather context before planning |
+| **sds** | System Design Specification: architecture, ERD generation, API contracts |
+| **security** | Security vulnerability scanner: OWASP Top 10, secrets, detailed reports |
+| **setup-profile** | Interactive wizard to configure user profile for global memory |
+| **srs** | Software Requirements Specification: maps business needs to functional requirements |
+
+## Slash Commands (12 total)
+
+Defined in `core/commands/*.md`, installed to `~/.config/opencode/commands/`:
+`/audit`, `/brs`, `/commit`, `/context`, `/docker`, `/lint`, `/plan`, `/refactor`, `/review`, `/sds`, `/srs`, `/test`.
+
+## Orchestration Model (Handoffs)
+
+OpenCode subagents cannot start other subagents (`subagent_depth = 1`), so only the primary agent dispatches work:
+
+1. `codexen` (primary) dispatches a subagent.
+2. The subagent finishes its task and ends its reply with a `## Handoff` block:
+   ```
+   ## Handoff
+   - @test-coder: write tests for the new auth endpoints
+   - @auditor: review changed files
+   ```
+   (or `- none` when nothing follows)
+3. `codexen` reads the block and dispatches the listed agents (in parallel or chained as needed).
+
+## Context Monitor Plugin
+
+`core/.opencode/plugins/context-monitor.ts` (installed to `~/.config/opencode/plugins/`) is one file that works on OpenCode v1 (>= 1.18.29) and v2.
+
+- Tracks context-window usage per session and alerts at **70 / 80 / 90 / 95%**.
+- v1: toast + log; v2: log only.
+- Provides the custom tool `check_context` (current tokens, percentage, cost estimate).
+- The plugin cannot dispatch agents. The `codexen` agent calls `check_context` and dispatches `@checkpoint-writer` itself (also available via `/context`).
 
 ## Key Architecture Decisions
 
@@ -259,6 +305,9 @@ Spec writers      allow  deny      (write docs, no execution)
 Read-only auditors deny  deny      (review only, no changes)
 Orchestrator      allow  allow     (full access + skill: allow)
 ```
+
+### Single Memory Entry Point
+`core/opencode.json` has no `instructions` key. `AGENTS.md` (auto-loaded by OpenCode) is the single entry point for project memory.
 
 ### Audit Gate
 All commits must pass `@auditor` check first. Enforced in `git-manager.md`.

@@ -267,7 +267,7 @@ Next steps:
 |--------|---------|
 | Copies 25 agents (with conflict resolution) | `~/.config/opencode/agents/` |
 | Copies 19 skills (with conflict resolution) | `~/.config/opencode/skills/` |
-| Copies 11 commands (with conflict resolution) | `~/.config/opencode/commands/` |
+| Copies 13 commands (with conflict resolution) | `~/.config/opencode/commands/` |
 | Copies opencode.json (with merge option) | `~/.config/opencode/opencode.json` |
 | Creates memory templates (missing files only) | `~/.config/opencode/global-memory/` |
 | Copies validation script | `~/.config/opencode/scripts/validate.sh` |

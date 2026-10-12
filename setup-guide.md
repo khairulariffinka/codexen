@@ -80,7 +80,7 @@ Check that files are in place:
 │   ├── audit.md      ← /audit
 │   ├── test.md       ← /test
 │   ├── commit.md     ← /commit
-│   └── ... (11 commands total)
+│   └── ... (13 commands total)
 └── opencode.json     ← Configuration
 ```
 
@@ -243,4 +243,3 @@ After installation:
 
 ---
 
-**Version**: 1.0.0

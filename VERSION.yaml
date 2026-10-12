@@ -80,6 +80,7 @@ core_commands:
   - refactor
   - docker
   - context
+  - goal
 
 template_skills:
   - setup-profile

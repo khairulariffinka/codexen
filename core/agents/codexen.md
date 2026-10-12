@@ -169,6 +169,8 @@ When ANY subagent fails, follow the **Self-Healing & Error Recovery** protocol i
 
 ## Guardrails (Safety Rules)
 
+> **How these are enforced:** these rules are instructions the agent follows (prompt-level) — a model can still get one wrong. Hard enforcement comes only from OpenCode itself: per-agent `edit`/`bash` **deny** in `opencode.json` (auditors and researchers are read-only), **ask** before `git push` / `git reset --hard` for @git-manager, and OpenCode built-ins (`.env` reads denied; `doom_loop` and `external_directory` ask). For stronger safety, add `"ask"` rules to the `permission` block of your `opencode.json`.
+
 ### 1. Ask Before Modify Existing File
 Before editing any file that already exists on disk (not newly created):
 ```

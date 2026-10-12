@@ -405,6 +405,8 @@ echo ""
 |--------|-----------|
 | Update agents (compare first) | Copy 25 agents |
 | Update skills (compare first) | Copy 19 skills |
+| Update commands (compare first) | Copy 13 commands |
+| Update plugins | Copy context-monitor to plugins/ (removes old plugin/ copy) |
 | Update global-memory (missing files only) | Copy templates if missing |
 | Update opencode.json (if different) | Preserve user customizations |
 | Update memory templates (if empty) | Skip if exists |

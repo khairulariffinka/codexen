@@ -21,7 +21,7 @@ Complete reference for all CodeXen commands and operations.
 ### How to Access CodeXen
 
 #### Primary Agent (Tab Key)
-Press **TAB** to cycle through primary agents. CodeXen is configured with `mode: all`, making it accessible in the Tab cycle:
+Press **TAB** to cycle through primary agents. CodeXen is configured with `mode: primary`, making it accessible in the Tab cycle:
 
 ```
 [TAB] cycles: Build → Plan → codexen → Build...
@@ -93,8 +93,9 @@ CodeXen provides slash commands that work directly in OpenCode's TUI. Type `/` f
 | `/sds` | Generate System Design | `/sds from SRS` |
 | `/commit` | Smart git commit (conventional) | `/commit` |
 | `/refactor` | Refactor with SOLID principles | `/refactor UserService` |
-
 | `/docker` | Setup Docker configuration | `/docker` |
+| `/context` | Context usage + token breakdown | `/context` |
+| `/goal` | Set / show / clear a goal the agent must meet before stopping | `/goal "all tests pass"` · `/goal` · `/goal clear` |
 
 ### OpenCode Built-in Commands
 
@@ -374,7 +375,7 @@ Creates:
 
 ## Guardrails (Safety)
 
-CodeXen has 13 built-in safety rules. Manage them via:
+CodeXen has 13 safety rules. Manage them via:
 
 ```
 @memory, guardrails status   → Show active guardrails
@@ -392,6 +393,8 @@ Key guardrails:
 - Large code generation warning
 - Environment detection
 - Dependency guard
+
+> **How these are enforced:** these rules are instructions the agent follows (prompt-level) — a model can still get one wrong. Hard enforcement comes only from OpenCode itself: per-agent `edit`/`bash` **deny** in `opencode.json` (auditors and researchers are read-only), **ask** before `git push` / `git reset --hard` for @git-manager, and OpenCode built-ins (`.env` reads denied; `doom_loop` and `external_directory` ask). For stronger safety, add `"ask"` rules to the `permission` block of your `opencode.json`.
 - Execution dry-run
 - Secret scan (git)
 - Message validation (git)
