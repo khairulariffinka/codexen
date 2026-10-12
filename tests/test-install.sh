@@ -34,8 +34,8 @@ ok $? "exit 0"
 ok "$([ "$(cnt "$(oc "$H")/agents" 1 '*.md')" = "$N_AGENTS" ] && echo 0 || echo 1)" "all $N_AGENTS agents"
 ok "$([ "$(cnt "$(oc "$H")/skills" 2 SKILL.md)" = "$N_SKILLS" ] && echo 0 || echo 1)" "all $N_SKILLS skills"
 ok "$([ "$(cnt "$(oc "$H")/commands" 1 '*.md')" = "$N_CMDS" ] && echo 0 || echo 1)" "all $N_CMDS commands"
-ok "$([ -f "$(oc "$H")/plugin/context-monitor.ts" ] && echo 0 || echo 1)" "plugin installed"
-ok "$([ -f "$(oc "$H")/command/context.md" ] && echo 0 || echo 1)" "/context command installed"
+ok "$([ -f "$(oc "$H")/plugins/context-monitor.ts" ] && echo 0 || echo 1)" "plugin installed"
+ok "$([ -f "$(oc "$H")/commands/context.md" ] && echo 0 || echo 1)" "/context command installed"
 ok "$([ -f "$(oc "$H")/scripts/validate.sh" ] && echo 0 || echo 1)" "validate.sh installed"
 ok "$(ls -d "$H"/.config/opencode.backup-* >/dev/null 2>&1 && echo 1 || echo 0)" "no backup of empty/missing config"
 
@@ -66,7 +66,7 @@ ok "$(grep -q '^Merged: opencode.json' "$WORK/enter.log" && echo 0 || echo 1)" "
 ok "$([ "$(jget "$(oc "$H")/opencode.json" model)" = user/model ] && echo 0 || echo 1)" "user model kept"
 ok "$([ "$(jget "$(oc "$H")/opencode.json" agent.coder.model)" = user/x ] && echo 0 || echo 1)" "user nested value kept"
 ok "$([ "$(jget "$(oc "$H")/opencode.json" agent.checkpoint-writer.mode)" != undefined ] && echo 0 || echo 1)" "new CodeXen agent added"
-ok "$([ -f "$(oc "$H")/plugin/context-monitor.ts" ] && echo 0 || echo 1)" "install continued after prompt"
+ok "$([ -f "$(oc "$H")/plugins/context-monitor.ts" ] && echo 0 || echo 1)" "install continued after prompt"
 
 echo "== opencode.json conflict: no stdin = keep, script completes =="
 H=$(newhome eof); mkdir -p "$(oc "$H")"; echo "$USER_JSON" >"$(oc "$H")/opencode.json"
@@ -104,6 +104,34 @@ for backend in jq node python3; do
   got=$(node -e 'const o=JSON.parse(require("fs").readFileSync(process.argv[1]));console.log(JSON.stringify([o.a,o.nested.x,o.nested.y,o.arr,o.new,"_comment" in o]))' "$WORK/dst-$backend.json" 2>/dev/null)
   ok "$([ $r = 0 ] && [ "$got" = '[9,9,2,[7],true,false]' ] && echo 0 || echo 1)" "$backend: user wins, new keys added, _comment dropped ($got)"
 done
+
+echo "== Legacy singular dirs (plugin/, command/) cleaned up =="
+legacy_home() {
+  local h; h=$(newhome "$1"); mkdir -p "$(oc "$h")/plugin" "$(oc "$h")/command"
+  printf 'export const X = 1 // check_context\n' >"$(oc "$h")/plugin/context-monitor.ts"
+  printf 'Call the `check_context` tool\n' >"$(oc "$h")/command/context.md"
+  echo "$h"
+}
+H=$(legacy_home legacy)
+echo "my plugin" >"$(oc "$H")/plugin/mine.ts"
+HOME=$H bash "$REPO/install.sh" </dev/null >"$WORK/legacy.log" 2>&1
+ok $? "exit 0"
+ok "$([ ! -e "$(oc "$H")/plugin/context-monitor.ts" ] && echo 0 || echo 1)" "old plugin/context-monitor.ts removed (no double load)"
+ok "$([ ! -e "$(oc "$H")/command/context.md" ] && echo 0 || echo 1)" "old command/context.md removed"
+ok "$([ ! -d "$(oc "$H")/command" ] && echo 0 || echo 1)" "empty legacy command/ dir removed"
+ok "$([ "$(cat "$(oc "$H")/plugin/mine.ts" 2>/dev/null)" = "my plugin" ] && echo 0 || echo 1)" "user's other plugin in plugin/ kept"
+ok "$([ -f "$(oc "$H")/plugins/context-monitor.ts" ] && echo 0 || echo 1)" "new plugins/context-monitor.ts installed"
+ok "$(ls "$H"/.config/opencode.backup-*/plugin/context-monitor.ts >/dev/null 2>&1 && echo 0 || echo 1)" "legacy file preserved in backup"
+H=$(newhome legacy-user); mkdir -p "$(oc "$H")/plugin"
+echo "user wrote this" >"$(oc "$H")/plugin/context-monitor.ts"
+HOME=$H bash "$REPO/install.sh" </dev/null >/dev/null 2>&1
+ok "$([ "$(cat "$(oc "$H")/plugin/context-monitor.ts")" = "user wrote this" ] && echo 0 || echo 1)" "same-name user file without CodeXen marker kept"
+H=$(legacy_home legacy-dry)
+HOME=$H bash "$REPO/install.sh" --dry-run </dev/null >"$WORK/legacy-dry.log" 2>&1
+ok "$([ -f "$(oc "$H")/plugin/context-monitor.ts" ] && grep -q 'Would remove legacy' "$WORK/legacy-dry.log" && echo 0 || echo 1)" "dry-run reports but keeps legacy file"
+H=$(legacy_home legacy-upd)
+printf '\n\n\n\n\n\n' | HOME=$H bash "$REPO/update_script.sh" >/dev/null 2>&1
+ok "$([ ! -e "$(oc "$H")/plugin/context-monitor.ts" ] && [ -f "$(oc "$H")/plugins/context-monitor.ts" ] && echo 0 || echo 1)" "update_script.sh migrates plugin/ -> plugins/"
 
 echo "== update: global-memory never overwritten, conflicts default keep =="
 H=$(newhome upd)

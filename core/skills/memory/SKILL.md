@@ -821,7 +821,7 @@ While agent is working, orchestration MUST:
 
 ### Auto-Checkpoint Enforcement
 
-Context size is tracked by `core/.opencode/plugin/context-monitor.ts`. The plugin alerts the user (toast + log) at thresholds; the agent checks with the `check_context` tool and dispatches @checkpoint-writer itself.
+Context size is tracked by `core/.opencode/plugins/context-monitor.ts` (OpenCode v1 + v2). The plugin alerts the user (v1: toast + log; v2: log only) at thresholds; the agent checks with the `check_context` tool and dispatches @checkpoint-writer itself.
 
 **Plugin → Memory Integration:**
 

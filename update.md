@@ -216,24 +216,21 @@ done
 
 echo ""
 echo "=== Updating Plugins (.opencode) ==="
-mkdir -p ~/.config/opencode/plugin
-mkdir -p ~/.config/opencode/command
+mkdir -p ~/.config/opencode/plugins
 
-# Update plugins
-for f in core/.opencode/plugin/*.ts; do
+# Update plugins (plugins/ = official plural dir; one file works on OpenCode v1 + v2)
+for f in core/.opencode/plugins/*.ts; do
   if [ -f "$f" ]; then
     fname=$(basename "$f")
-    dest=~/.config/opencode/plugin/"$fname"
-    update_or_skip "$f" "$dest" "plugin/$fname"
+    dest=~/.config/opencode/plugins/"$fname"
+    update_or_skip "$f" "$dest" "plugins/$fname"
   fi
 done
 
-# Update commands
-for f in core/.opencode/command/*.md; do
-  if [ -f "$f" ]; then
-    fname=$(basename "$f")
-    dest=~/.config/opencode/command/"$fname"
-    update_or_skip "$f" "$dest" "command/$fname"
+# Legacy cleanup: OpenCode loads plugin/ AND plugins/ — remove old CodeXen copies only
+for old in ~/.config/opencode/plugin/context-monitor.ts ~/.config/opencode/command/context.md; do
+  if [ -f "$old" ] && grep -q "check_context" "$old"; then
+    [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would remove legacy: $old" || { rm -f "$old" && echo "Removed legacy: $old"; rmdir "$(dirname "$old")" 2>/dev/null || true; }
   fi
 done
 

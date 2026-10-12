@@ -110,25 +110,23 @@ core/skills/
 
 ## Plugins
 
-CodeXen includes a **context-monitor plugin** that tracks token usage and auto-checkpoints when context gets full.
+CodeXen includes a **context-monitor plugin** that tracks token usage and alerts you when context gets full. One file works on **OpenCode v1 (>= 1.18.29) and v2**.
 
 ```
 core/.opencode/
-├── plugin/
-│   └── context-monitor.ts    # Context monitoring + auto-checkpoint
-├── command/
-│   └── context.md            # /context slash command
-└── package.json              # Plugin dependencies
+├── plugins/
+│   └── context-monitor.ts    # Context monitoring + threshold alerts (v1 + v2)
+└── package.json              # v1 plugin dependency (v2 needs none)
 ```
 
 ### Context Monitor Features
 
 | Feature | Description |
 |---------|-------------|
-| **Token Tracking** | Input, output, reasoning, cache tokens |
+| **Token Tracking** | Input, output, reasoning, cache tokens of the latest turn |
 | **Thresholds** | 70% warn, 80% checkpoint, 90% compress, 95% critical |
-| **Context Alerts** | Toast at 70/80/90/95% context; agent runs @checkpoint-writer at 80% |
-| **Dynamic Limits** | Reads model.limit.context from API |
+| **Context Alerts** | v1: toast + log; v2: server log only (v2 has no toast API for server plugins). The agent checks `check_context` and runs @checkpoint-writer itself — the plugin cannot dispatch agents |
+| **Dynamic Limits** | Reads the model's context limit from the provider list |
 | **Manual Check** | `/context` command for on-demand status |
 
 ### Usage
@@ -156,8 +154,8 @@ core/commands/
 ├── sds.md            # /sds → Generate System Design
 ├── commit.md         # /commit → Smart git commit
 ├── refactor.md       # /refactor → Refactor with SOLID
-
-└── docker.md         # /docker → Setup Docker config
+├── docker.md         # /docker → Setup Docker config
+└── context.md        # /context → Context usage + token breakdown
 ```
 
 ---
@@ -221,6 +219,19 @@ codexen/
 1. Clone or download this repository
 2. Run: `load install.md`
 3. Restart OpenCode
+
+### OpenCode v1 and v2
+
+CodeXen works on **OpenCode v1 (>= 1.18.29)** and **OpenCode v2**. Config stays in v1 syntax, which v2 reads through its compatibility layer.
+
+| Area | v1 | v2 |
+|------|----|----|
+| Agents, skills, commands | ✅ | ✅ (v1 format auto-converted) |
+| Context monitor plugin | ✅ toast + log | ✅ log only (no toast API for server plugins) |
+| `lsp: true` | ✅ | ignored (v2 has no LSP) |
+| `compaction.prune` | ✅ | ignored with a warning |
+| Project memory | `AGENTS.md` | `AGENTS.md` (the `instructions` key and `CLAUDE.md` fallback are not loaded in v2) |
+| Tool names in permissions | `bash`, `task` | `shell`, `subagent` (v1 names auto-converted) |
 
 ## New Project
 

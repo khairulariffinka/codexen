@@ -53,14 +53,13 @@ merge_json_file "$SCRIPT_DIR/core/opencode.json" "$OC_DIR/opencode.json" "openco
 echo ""
 echo "=== Installing Plugins ==="
 if [ -d "$SCRIPT_DIR/core/.opencode" ]; then
-  for f in "$SCRIPT_DIR"/core/.opencode/plugin/*.ts; do
+  for f in "$SCRIPT_DIR"/core/.opencode/plugins/*.ts; do
     [ -f "$f" ] || continue
-    copy_file "$f" "$OC_DIR/plugin/$(basename "$f")" "plugin/$(basename "$f")" overwrite
+    copy_file "$f" "$OC_DIR/plugins/$(basename "$f")" "plugins/$(basename "$f")" overwrite
   done
-  for f in "$SCRIPT_DIR"/core/.opencode/command/*.md; do
-    [ -f "$f" ] || continue
-    copy_file "$f" "$OC_DIR/command/$(basename "$f")" "command/$(basename "$f")" overwrite
-  done
+  # Older CodeXen used singular dirs; OpenCode loads both, so remove our old copies
+  remove_legacy "$OC_DIR/plugin/context-monitor.ts" "check_context" "plugin/context-monitor.ts"
+  remove_legacy "$OC_DIR/command/context.md" "check_context" "command/context.md"
   if [ -f "$SCRIPT_DIR/core/.opencode/package.json" ]; then
     merge_json_file "$SCRIPT_DIR/core/.opencode/package.json" "$OC_DIR/package.json" "package.json"
   fi

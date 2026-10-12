@@ -78,8 +78,8 @@ core_commands:
   - sds
   - commit
   - refactor
-
   - docker
+  - context
 
 template_skills:
   - setup-profile

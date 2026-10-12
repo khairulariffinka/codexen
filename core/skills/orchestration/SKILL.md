@@ -100,7 +100,7 @@ IF any step fails:
 
 ## Plugin-Based Context Monitoring
 
-Context monitoring is handled by `core/.opencode/plugin/context-monitor.ts`. The plugin tracks context size and **alerts the user** (TUI toast + app log) when thresholds are crossed. It cannot dispatch agents itself — the agent acts by calling the `check_context` tool.
+Context monitoring is handled by `core/.opencode/plugins/context-monitor.ts` (one file for OpenCode v1 and v2). The plugin tracks context size and **alerts the user** (v1: TUI toast + app log; v2: server log only) when thresholds are crossed. It cannot dispatch agents itself — the agent acts by calling the `check_context` tool.
 
 ### How It Works
 

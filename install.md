@@ -185,12 +185,15 @@ For each command file:
 
 ### Step 5c: Install plugins (.opencode)
 
-Copy plugins and commands from `core/.opencode/` to `~/.config/opencode/`.
+Copy plugins from `core/.opencode/` to `~/.config/opencode/`. The plugin is one file that works on OpenCode v1 (>= 1.18.29) and v2.
 
 **Files to copy:**
-- `core/.opencode/plugin/*.ts` → `~/.config/opencode/plugin/`
-- `core/.opencode/command/*.md` → `~/.config/opencode/command/`
-- `core/.opencode/package.json` → `~/.config/opencode/package.json`
+- `core/.opencode/plugins/*.ts` → `~/.config/opencode/plugins/` (plural — the official dir name)
+- `core/.opencode/package.json` → `~/.config/opencode/package.json` (v1 only needs it; v2 plugin has no runtime deps)
+
+**Legacy cleanup (upgrades from v0.9.x):** OpenCode loads both `plugin/` and `plugins/`, so the old copies would load twice. Remove these **only if they contain `check_context`** (i.e. they are CodeXen files):
+- `~/.config/opencode/plugin/context-monitor.ts`
+- `~/.config/opencode/command/context.md` (`/context` now lives in `commands/`)
 
 **Conflict resolution (same as agents/skills):**
 - If the file does not exist at destination: copy it (new install)

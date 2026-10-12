@@ -44,8 +44,15 @@ Create the following directories if they do not exist:
 
 Write `AGENTS.md` in the project root with this content, replacing placeholders:
 
+`AGENTS.md` is the **only** file OpenCode loads automatically (v1 and v2), so it is the single entry point. Do not add these files to `instructions` in `opencode.json` — OpenCode v2 ignores that key, and loading every context file each session wastes tokens.
+
 ```markdown
 # Project: {PROJECT_NAME}
+
+## Session Protocol
+1. Read `docs/current-state.md` first (status, branch, active decision).
+2. Read only the `docs/context/[module].md` relevant to the task — not all of them.
+3. Check `DECISIONS.md` before implementing; follow `docs/AI-AGENT-PROTOCOL.md` at session end.
 
 ## Tech Stack Index
 - **Frontend:** Refer to `docs/context/frontend.md`

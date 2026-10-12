@@ -47,14 +47,13 @@ done
 
 echo ""
 echo "=== Plugins (.opencode) ==="
-for f in core/.opencode/plugin/*.ts; do
+for f in core/.opencode/plugins/*.ts; do
   [ -f "$f" ] || continue
-  copy_file "$f" "$OC_DIR/plugin/$(basename "$f")" "plugin/$(basename "$f")" prompt
+  copy_file "$f" "$OC_DIR/plugins/$(basename "$f")" "plugins/$(basename "$f")" prompt
 done
-for f in core/.opencode/command/*.md; do
-  [ -f "$f" ] || continue
-  copy_file "$f" "$OC_DIR/command/$(basename "$f")" "command/$(basename "$f")" prompt
-done
+# Older CodeXen used singular dirs; OpenCode loads both, so remove our old copies
+remove_legacy "$OC_DIR/plugin/context-monitor.ts" "check_context" "plugin/context-monitor.ts"
+remove_legacy "$OC_DIR/command/context.md" "check_context" "command/context.md"
 if [ -f core/.opencode/package.json ]; then
   merge_json_file core/.opencode/package.json "$OC_DIR/package.json" "package.json"
 fi
@@ -88,7 +87,7 @@ echo "Files in $OC_DIR/:"
 echo "  Agents:   $(count "$OC_DIR/agents" 1 '*.md') files"
 echo "  Skills:   $(count "$OC_DIR/skills" 2 'SKILL.md') skills"
 echo "  Commands: $(count "$OC_DIR/commands" 1 '*.md') files"
-echo "  Plugins:  $(count "$OC_DIR/plugin" 1 '*.ts') files"
+echo "  Plugins:  $(count "$OC_DIR/plugins" 1 '*.ts') files"
 echo ""
 if [ "$DRY_RUN" = true ]; then
   echo "DRY-RUN complete. Run without --dry-run to apply."

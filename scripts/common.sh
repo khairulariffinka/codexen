@@ -158,6 +158,22 @@ merge_json_file() {
   esac
 }
 
+# remove_legacy <path> <marker> <label>
+# Removes a file left by an older CodeXen layout (e.g. singular plugin/ or command/
+# dirs that would load twice). Only removes it if it contains <marker>, so user
+# files with the same name are never deleted. Empty parent dir is removed too.
+remove_legacy() {
+  local path="$1" marker="$2" name="$3"
+  [ -f "$path" ] || return 0
+  if ! grep -q -- "$marker" "$path" 2>/dev/null; then
+    echo "Skipping legacy cleanup: $name (not a CodeXen file — left as-is)"
+    return 0
+  fi
+  if [ "$DRY_RUN" = true ]; then echo "[DRY-RUN] Would remove legacy: $name"; return 0; fi
+  rm -f "$path" && echo "Removed legacy: $name"
+  rmdir "$(dirname "$path")" 2>/dev/null || true
+}
+
 # backup_config: copy ~/.config/opencode to a unique timestamped folder
 backup_config() {
   [ "$DRY_RUN" = true ] && return 0
