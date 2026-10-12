@@ -1,4 +1,4 @@
-version: 0.9.1
+version: 0.10.0
 name: CodeXen
 description: Turn OpenCode into a full dev team — 25 agents, auto-memory, context monitoring, self-healing. Just tell it what to build.
 author: khairulariffinka
@@ -109,6 +109,9 @@ features:
   - budgeted-reading
   - auto-dream-check
   - auto-distill-check
+  - opencode-v2-compatible
+  - subagent-handoff
+  - goal-command
 
 paths:
   opencode_config: ~/.config/opencode

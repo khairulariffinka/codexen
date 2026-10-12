@@ -76,6 +76,26 @@ PY
   mv "$tmp" "$dest"
 }
 
+# is_pristine <src> <dest>
+# True if <dest> is byte-identical to some earlier CodeXen release of <src>
+# (its blob hash appears in the repo's git history for that path). Such a file
+# was never customised by the user, so updating it loses nothing.
+# Needs git + a clone with history; otherwise returns false (caller prompts).
+is_pristine() {
+  local src="$1" dest="$2" repo rel h
+  command -v git >/dev/null 2>&1 || return 1
+  repo="${SCRIPT_DIR:-$(pwd)}"
+  git -C "$repo" rev-parse --git-dir >/dev/null 2>&1 || return 1
+  case "$src" in
+    "$repo"/*) rel="${src#"$repo"/}" ;;
+    /*) return 1 ;;
+    *) rel="$src" ;;
+  esac
+  h=$(git hash-object "$dest" 2>/dev/null) || return 1
+  # grep must read all input: with pipefail, grep -q exiting early SIGPIPEs git → false negative
+  git -C "$repo" log --all --format= --raw --no-abbrev -- "$rel" 2>/dev/null | grep " $h " >/dev/null
+}
+
 # copy_file <src> <dest> <label> <mode>
 #   mode=overwrite : add if missing, overwrite if different (install; backup exists)
 #   mode=prompt    : add if missing, ask keep/overwrite/diff if different (default keep)
@@ -100,6 +120,12 @@ copy_file() {
       cp "$src" "$dest" && echo "Updated: $name"
       ;;
     prompt)
+      # Unmodified older CodeXen file → safe to update without asking
+      if is_pristine "$src" "$dest"; then
+        if [ "$DRY_RUN" = true ]; then echo "[DRY-RUN] Would update: $name (unmodified CodeXen file)"; return 0; fi
+        cp "$src" "$dest" && echo "Updated: $name (unmodified CodeXen file)"
+        return 0
+      fi
       if [ "$DRY_RUN" = true ]; then echo "[DRY-RUN] Would update: $name (CONFLICT)"; return 0; fi
       echo ""
       echo "CONFLICT: $name differs from CodeXen version"

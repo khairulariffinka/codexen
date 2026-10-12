@@ -21,7 +21,15 @@ That's it!
 
 ## Changelog
 
-### v0.9.1 (Current)
+### v0.10.0 (Current)
+- ADD: OpenCode v2 support (v1 >= 1.18.29 and v2); context monitor works on both
+- ADD: `/goal` slash command (13 commands)
+- FIX: subagents hand off via `## Handoff` (OpenCode subagents cannot call subagents)
+- FIX: agent permissions consistent between `.md` and `opencode.json`
+- CHANGE: plugin dir `plugin/` → `plugins/`; old CodeXen copies removed on install/update
+- CHANGE: `instructions` removed from `opencode.json` (AGENTS.md is the entry point)
+
+### v0.9.1
 - FIX: Context Monitor plugin now actually counts tokens (read wrong event field; always showed 0)
 - FIX: Context % uses latest message size + real model limit (was cumulative sum vs fixed 128K)
 - FIX: `/context` command frontmatter

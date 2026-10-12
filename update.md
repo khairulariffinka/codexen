@@ -23,7 +23,15 @@ To use, append after command: `"load update.md --dry-run"`
 
 ## Changelog
 
-### v0.9.1 (Current)
+### v0.10.0 (Current)
+- ADD: OpenCode v2 support (v1 >= 1.18.29 and v2); context monitor works on both
+- ADD: `/goal` slash command (13 commands)
+- FIX: subagents hand off via `## Handoff` (OpenCode subagents cannot call subagents)
+- FIX: agent permissions consistent between `.md` and `opencode.json`
+- CHANGE: plugin dir `plugin/` → `plugins/`; old CodeXen copies removed on install/update
+- CHANGE: `instructions` removed from `opencode.json` (AGENTS.md is the entry point)
+
+### v0.9.1
 - FIX: Context Monitor plugin now actually counts tokens (read wrong event field; always showed 0)
 - FIX: Context % uses latest message size + real model limit (was cumulative sum vs fixed 128K)
 - FIX: `/context` command frontmatter
@@ -98,306 +106,26 @@ When this file is loaded, AI must know:
 
 ## AI Execution
 
-When executing update, use conditional copy:
+Run the tested update script from the CodeXen repo folder — do **not** re-implement it step by step:
 
 ```bash
-# Check for dry-run mode
-DRY_RUN=false
-if [[ "$*" == *"--dry-run"* ]]; then
-  DRY_RUN=true
-  echo "🔍 DRY-RUN MODE: No changes will be made"
-  echo ""
-fi
-
-# Create backup before update (unless dry-run)
-if [ "$DRY_RUN" = false ]; then
-  BACKUP_DIR="$HOME/.config/opencode.backup-$(date +%Y-%m-%d-%H%M)"
-  if [ -d ~/.config/opencode ]; then
-    cp -r ~/.config/opencode "$BACKUP_DIR" && echo "✅ Backup created: $BACKUP_DIR"
-  fi
-fi
-
-# Function to update or preview with conflict resolution
-update_or_skip() {
-  local source="$1"
-  local dest="$2"
-  local name="$3"
-
-  if [ ! -f "$dest" ]; then
-    [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would add: $name" || cp "$source" "$dest" && echo "Added: $name"
-  elif ! diff -q "$source" "$dest" > /dev/null 2>&1; then
-    # File exists and is different - ask user
-    if [ "$DRY_RUN" = true ]; then
-      echo "[DRY-RUN] Would update: $name (CONFLICT - user has custom version)"
-      echo "         Run without --dry-run to resolve"
-    else
-      echo ""
-      echo "⚠️  CONFLICT: $name differs from CodeXen version"
-      echo "    [1] Keep mine (custom) - skip update"
-      echo "    [2] Use CodeXen version - overwrite"
-      echo "    [3] Show diff - see differences"
-      read -p "Choice [1]: " choice
-      case "$choice" in
-        2)
-          cp "$source" "$dest" && echo "Updated: $name"
-          ;;
-        3)
-          echo "--- Your version ---"
-          head -20 "$dest"
-          echo "--- CodeXen version ---"
-          head -20 "$source"
-          echo ""
-          read -p "Choose [1=keep mine, 2=use codexen]: " choice2
-          case "$choice2" in
-            2) cp "$source" "$dest" && echo "Updated: $name" ;;
-            *) echo "Keeping your version" ;;
-          esac
-          ;;
-        *)
-          echo "Keeping your version"
-          ;;
-      esac
-    fi
-  else
-    echo "Skipping: $name (unchanged)"
-  fi
-}
-
-echo ""
-echo "=== Updating Agents ==="
-mkdir -p ~/.config/opencode/agents
-
-# Find user's primary agent (mode: primary)
-primary_agent_file=$(ls ~/.config/opencode/agents/*.md 2>/dev/null | xargs -I{} grep -l "^mode: primary" {} 2>/dev/null | head -1)
-
-if [ -n "$primary_agent_file" ]; then
-  # User has primary agent - update content but preserve name and mode
-  primary_agent_name=$(basename "$primary_agent_file" .md)
-  echo "Found primary agent: $primary_agent_name"
-  if diff -q core/agents/codexen.md "$primary_agent_file" > /dev/null 2>&1; then
-    echo "Skipping: $primary_agent_name (unchanged)"
-  else
-    echo "⚠️  CONFLICT: $primary_agent_name differs from CodeXen version"
-    echo "    [1] Keep mine (custom) - skip update"
-    echo "    [2] Use CodeXen version - overwrite (preserves name & mode)"
-    read -p "Choice [1]: " choice
-    if [ "$choice" = "2" ]; then
-      cp core/agents/codexen.md "$primary_agent_file"
-      sed -i 's/^name: codexen$/name: '"$primary_agent_name"'/' "$primary_agent_file"
-      sed -i 's/^mode: subagent/mode: primary/' "$primary_agent_file"
-      echo "Updated: $primary_agent_name"
-    else
-      echo "Keeping your version"
-    fi
-  fi
-else
-  # No primary agent - create default
-  echo "No primary agent found, creating codexen.md"
-  update_or_skip "core/agents/codexen.md" "$HOME/.config/opencode/agents/codexen.md" "codexen"
-fi
-
-echo ""
-echo "=== Updating Subagents ==="
-for f in core/agents/*.md; do
-  agent_name=$(basename "$f")
-  dest=~/.config/opencode/agents/"$agent_name"
-  update_or_skip "$f" "$dest" "$agent_name"
-done
-
-echo ""
-echo "=== Updating Skills ==="
-for f in core/skills/*/*.md; do
-  skill_name=$(basename "$f")
-  skill_dir=$(basename "$(dirname "$f")")
-  dest=~/.config/opencode/skills/"$skill_dir"/"$skill_name"
-  mkdir -p ~/.config/opencode/skills/"$skill_dir"
-  update_or_skip "$f" "$dest" "$skill_dir"
-done
-
-echo ""
-echo "=== Updating Plugins (.opencode) ==="
-mkdir -p ~/.config/opencode/plugins
-
-# Update plugins (plugins/ = official plural dir; one file works on OpenCode v1 + v2)
-for f in core/.opencode/plugins/*.ts; do
-  if [ -f "$f" ]; then
-    fname=$(basename "$f")
-    dest=~/.config/opencode/plugins/"$fname"
-    update_or_skip "$f" "$dest" "plugins/$fname"
-  fi
-done
-
-# Legacy cleanup: OpenCode loads plugin/ AND plugins/ — remove old CodeXen copies only
-for old in ~/.config/opencode/plugin/context-monitor.ts ~/.config/opencode/command/context.md; do
-  if [ -f "$old" ] && grep -q "check_context" "$old"; then
-    [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would remove legacy: $old" || { rm -f "$old" && echo "Removed legacy: $old"; rmdir "$(dirname "$old")" 2>/dev/null || true; }
-  fi
-done
-
-# Update package.json (with conflict resolution)
-if [ -f core/.opencode/package.json ]; then
-  dest_pkg=~/.config/opencode/package.json
-  if [ ! -f "$dest_pkg" ]; then
-    [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would add: package.json" || cp core/.opencode/package.json "$dest_pkg" && echo "Added: package.json"
-  elif ! diff -q core/.opencode/package.json "$dest_pkg" > /dev/null 2>&1; then
-    if [ "$DRY_RUN" = true ]; then
-      echo "[DRY-RUN] Would update: package.json (CONFLICT - user has custom package.json)"
-    else
-      echo ""
-      echo "⚠️  CONFLICT: package.json differs from CodeXen version"
-      echo "    [1] Merge - keep your deps + add new CodeXen deps (RECOMMENDED)"
-      echo "    [2] Keep mine - skip"
-      echo "    [3] Use CodeXen version - overwrite"
-      read -p "Choice [1]: " choice
-      case "$choice" in
-        1)
-          if command -v jq >/dev/null 2>&1; then
-            jq -s '.[0] * .[1]' core/.opencode/package.json "$dest_pkg" > "$dest_pkg.tmp" && \
-            mv "$dest_pkg.tmp" "$dest_pkg" && \
-            echo "Merged: package.json"
-          else
-            # Manual merge for package.json
-            python3 -c "
-import json
-with open('$dest_pkg') as f:
-    user = json.load(f)
-with open('core/.opencode/package.json') as f:
-    codexen = json.load(f)
-# Merge dependencies
-if 'dependencies' in codexen:
-    if 'dependencies' not in user:
-        user['dependencies'] = {}
-    user['dependencies'].update(codexen['dependencies'])
-with open('$dest_pkg', 'w') as f:
-    json.dump(user, f, indent=2)
-print('Merged: package.json')
-" && echo "Merged: package.json" || echo "Merge failed - keeping your version"
-          fi
-          ;;
-        2) echo "Keeping your config" ;;
-        3) cp core/.opencode/package.json "$dest_pkg" && echo "Updated: package.json" ;;
-        *) echo "Keeping your config" ;;
-      esac
-    fi
-  else
-    echo "Skipping: package.json (unchanged)"
-  fi
-fi
-
-echo ""
-echo "=== Updating Config ==="
-# opencode.json - merge to preserve user settings
-if [ -f ~/.config/opencode/opencode.json ]; then
-  if ! diff -q core/opencode.json ~/.config/opencode/opencode.json > /dev/null 2>&1; then
-    # User has custom config - prompt with merge option
-    if [ "$DRY_RUN" = true ]; then
-      echo "[DRY-RUN] Would update: opencode.json (CONFLICT - user has custom config)"
-    else
-      echo ""
-      echo "⚠️  CONFLICT: opencode.json differs from CodeXen version"
-      echo "    [1] Merge - keep your settings + add new CodeXen keys (RECOMMENDED)"
-      echo "    [2] Keep mine - skip, don't change"
-      echo "    [3] Show diff - see before deciding"
-      read -p "Choice [1]: " choice
-      case "$choice" in
-        1)
-          # Merge JSON - user keys win on conflict, CodeXen adds new keys
-          if command -v jq >/dev/null 2>&1; then
-            jq -s '.[0] * .[1]' core/opencode.json ~/.config/opencode/opencode.json > ~/.config/opencode/opencode.json.tmp && \
-            mv ~/.config/opencode/opencode.json.tmp ~/.config/opencode/opencode.json && \
-            echo "Merged opencode.json (your settings kept + new CodeXen settings added)"
-          else
-            # No jq - manual merge: keep user keys, add missing CodeXen keys
-            echo "Merging manually (jq not found)..."
-            python3 -c "
-import json, sys
-
-with open('$HOME/.config/opencode/opencode.json') as f:
-    user = json.load(f)
-with open('core/opencode.json') as f:
-    codexen = json.load(f)
-
-# Keep user's top-level keys, add missing from CodeXen
-for key in codexen:
-    if key not in user:
-        user[key] = codexen[key]
-
-# Merge agent section: add new agents, keep existing
-if 'agent' in codexen:
-    if 'agent' not in user:
-        user['agent'] = {}
-    for agent_name, agent_cfg in codexen['agent'].items():
-        if agent_name not in user['agent']:
-            user['agent'][agent_name] = agent_cfg
-
-with open('$HOME/.config/opencode/opencode.json', 'w') as f:
-    json.dump(user, f, indent=2)
-print('Merged opencode.json (manual)')
-" && echo "Merged opencode.json" || echo "Merge failed - keeping your config"
-          fi
-          ;;
-        3)
-          echo "--- Your config ---"
-          cat ~/.config/opencode/opencode.json
-          echo "--- CodeXen config ---"
-          cat core/opencode.json
-          echo ""
-          read -p "Choose [1=merge, 2=overwrite, 3=keep mine]: " choice2
-          case "$choice2" in
-            1)
-              if command -v jq >/dev/null 2>&1; then
-                jq -s '.[0] * .[1]' core/opencode.json ~/.config/opencode/opencode.json > ~/.config/opencode/opencode.json.tmp && \
-                mv ~/.config/opencode/opencode.json.tmp ~/.config/opencode/opencode.json && \
-                echo "Merged opencode.json"
-              else
-                echo "jq not found - keeping your config"
-              fi
-              ;;
-            *) echo "Keeping your config" ;;
-          esac
-          ;;
-        *)
-          echo "Keeping your config"
-          ;;
-      esac
-    fi
-  else
-    echo "Skipping opencode.json (unchanged)"
-  fi
-else
-  [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would add: opencode.json" || cp core/opencode.json ~/.config/opencode/opencode.json && echo "Copied opencode.json"
-fi
-
-# global-memory - copy missing files only
-echo ""
-echo "=== Updating Global Memory ==="
-gm_dir="$HOME/.config/opencode/global-memory"
-mkdir -p "$gm_dir/work-diary/archive"
-for f in "$SCRIPT_DIR"/templates/global-memory/*; do
-  fname=$(basename "$f")
-  dest="$gm_dir/$fname"
-  if [ -f "$f" ]; then
-    if [ ! -f "$dest" ]; then
-      [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would add: $fname" || { cp "$f" "$dest" && echo "Added: $fname"; }
-    else
-      echo "Skipping: $fname (already exists)"
-    fi
-  fi
-done
-# Also copy work-diary template if missing
-if [ ! -f "$gm_dir/work-diary/diary-YYYY-MM.md" ]; then
-  [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would add: work-diary/diary-YYYY-MM.md" || { cp "$SCRIPT_DIR/templates/global-memory/work-diary/diary-YYYY-MM.md" "$gm_dir/work-diary/" && echo "Added: work-diary/diary-YYYY-MM.md"; }
-fi
-
-# validation script
-echo ""
-echo "=== Installing Validation Script ==="
-mkdir -p ~/.config/opencode/scripts
-update_or_skip "scripts/validate.sh" "$HOME/.config/opencode/scripts/validate.sh" "validate.sh"
-
-echo ""
-[ "$DRY_RUN" = true ] && echo "🔍 DRY-RUN complete. Run without --dry-run to apply." || echo "✅ Update complete!"
+cd /path/to/codexen          # the cloned repo (git pull first to get the latest version)
+git pull
+bash update_script.sh        # or: bash update_script.sh --dry-run   (preview, writes nothing)
 ```
+
+What the script does (covered by `tests/test-install.sh`):
+- Backs up `~/.config/opencode` first (unique timestamped folder).
+- Agents / skills / commands / plugins: a file that is an **unmodified older CodeXen release** (matched against the repo's git history) is updated automatically; a file **you customised** prompts you — Enter or no input keeps yours. (Zip downloads have no git history, so every changed file prompts.)
+- `opencode.json` / `package.json`: Enter = merge (your values win, new CodeXen keys added); no input = keep yours.
+- Removes old CodeXen copies in legacy singular dirs (`plugin/`, `command/`) so nothing loads twice.
+- Never overwrites global-memory (profile, diary, lessons).
+
+The script prompts on stdin. If you are running it for the user non-interactively, show them the conflict list from `--dry-run` first and ask which files to overwrite.
+
+After it finishes: tell the user to restart OpenCode, and run `bash ~/.config/opencode/scripts/validate.sh --installed`.
+
+---
 
 ## What It Does
 

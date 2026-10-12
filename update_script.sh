@@ -1,11 +1,13 @@
 #!/bin/bash
 set -euo pipefail
 
-# Update script for CodeXen v0.9.1
+# Update script for CodeXen v0.10.0
 # Usage: bash update_script.sh [--dry-run]
 #
 # Conflict defaults:
-#   agents/skills/commands/plugins : ask — Enter or no input = keep yours
+#   agents/skills/commands/plugins : unmodified older CodeXen file = updated automatically
+#                                    (matched against git history); customised file =
+#                                    ask — Enter or no input = keep yours
 #   opencode.json / package.json   : Enter = merge (your values win), no input = keep yours
 #   global-memory templates        : never overwritten (your profile/memory is yours)
 

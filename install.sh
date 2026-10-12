@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# Install script for CodeXen v0.9.1
+# Install script for CodeXen v0.10.0
 # Usage: bash install.sh [--dry-run]
 #
 # Conflict defaults:

@@ -6,6 +6,38 @@ Format based on [Keep a Changelog](https://keepachangelog.com/), versioning foll
 
 ---
 
+## [0.10.0] - 2026-10-12
+
+OpenCode v2 support, working multi-agent handoffs, and docs that match reality.
+
+### Added
+- **OpenCode v2 support**: CodeXen runs on OpenCode v1 (>= 1.18.29) and v2. Config stays in v1 syntax, which v2 converts automatically
+- **Context monitor for v1 + v2 in one file** (`core/.opencode/plugins/context-monitor.ts`): v1 uses `server()`, v2 uses `setup()`. v2 needs no npm dependency. v2 has no toast API for server plugins, so alerts go to the log there
+- **`/goal` slash command**: set, show or clear a goal the agent must meet before it stops (the protocol existed, the command did not)
+- **Handoff protocol**: subagents end with a `## Handoff` block; codexen dispatches the requested agents
+- **Smarter update**: `update_script.sh` updates unmodified older CodeXen files automatically (matched against git history) and only prompts for files you customised — previously pressing Enter kept every old file, so fixes never arrived
+- **validate.sh checks**: agent `.md` permissions vs `opencode.json`, no direct agent calls from subagents, and docs counts/versions vs files on disk (counts now come from `VERSION.yaml`, no hardcoded numbers)
+- Tests: plugin 31 (v1 + v2 adapters), install 55 (incl. legacy-dir migration and unmodified-file detection)
+
+### Fixed
+- **Subagents silently failed to call other agents**: OpenCode subagents cannot start subagents (`subagent_depth` = 1), so steps like coder's "MANDATORY @memory lessons" and "call @test-coder / @auditor" never ran. Subagents now grep lessons themselves and hand off the rest
+- **Permission conflicts** between agent `.md` files and `opencode.json`: planner can now write `planner.md`; `@security` can run `npm/composer/pip audit`; auditor, memory and doc-scout are consistently read-only; git-manager asks before `git push` / `git reset --hard`
+- Stale docs: wrong counts ("12 commands" when there were 11, ARCHITECTURE.md with 24 agents / 17 skills / switch-config), version strings (README footer 0.8.0, setup-guide 1.0.0), phantom "Gemini CLI" install option, `mode: all` in COMMANDS.md
+
+### Changed
+- Plugin directory `plugin/` → `plugins/` (official name). `/context` moved to `core/commands/`. Install/update remove the old CodeXen copies (only files containing `check_context`), so the plugin does not load twice
+- `instructions` removed from `opencode.json`: v2 ignores it, and it loaded every `docs/context/*.md` each session, against the "read only relevant context" protocol. `AGENTS.md` (auto-loaded by OpenCode) is the single entry point and now has a Session Protocol section
+- `update.md` now runs the tested `update_script.sh` instead of a 300-line inline copy that had drifted
+- Guardrails documented honestly: prompt-level rules vs what OpenCode permissions actually enforce
+- CI runs `validate.sh` + both test suites only (no duplicated hardcoded checks)
+
+### Upgrade notes
+- Run `bash update_script.sh` (or `load update.md`), then restart OpenCode
+- If you merged `instructions` into your own `opencode.json` before, it is kept (your values win). Remove it if you want the token savings
+- 13 commands, 25 agents, 19 skills
+
+---
+
 ## [0.9.1] - 2026-10-12
 
 ### Fixed

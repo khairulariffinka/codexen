@@ -133,6 +133,35 @@ H=$(legacy_home legacy-upd)
 printf '\n\n\n\n\n\n' | HOME=$H bash "$REPO/update_script.sh" >/dev/null 2>&1
 ok "$([ ! -e "$(oc "$H")/plugin/context-monitor.ts" ] && [ -f "$(oc "$H")/plugins/context-monitor.ts" ] && echo 0 || echo 1)" "update_script.sh migrates plugin/ -> plugins/"
 
+echo "== is_pristine: unmodified older CodeXen files update without asking =="
+R="$WORK/fake-repo"; mkdir -p "$R/core/agents" "$WORK/pri"
+git -C "$R" init -q && git -C "$R" config user.email t@t && git -C "$R" config user.name t
+echo "v1 agent" >"$R/core/agents/x.md"; git -C "$R" add -A && git -C "$R" commit -qm v1
+echo "v2 agent" >"$R/core/agents/x.md"; git -C "$R" commit -qam v2
+pristine() { ( set -euo pipefail; DRY_RUN=false; SCRIPT_DIR="$R"; source "$REPO/scripts/common.sh"; cd "$R"; is_pristine "$1" "$2" ) >/dev/null 2>&1; echo $?; }
+echo "v1 agent" >"$WORK/pri/old.md"; echo "my edit" >"$WORK/pri/custom.md"
+ok "$(pristine core/agents/x.md "$WORK/pri/old.md")" "older release detected as pristine (relative src, pipefail on)"
+ok "$(pristine "$R/core/agents/x.md" "$WORK/pri/old.md")" "older release detected as pristine (absolute src)"
+ok "$([ "$(pristine core/agents/x.md "$WORK/pri/custom.md")" != 0 ] && echo 0 || echo 1)" "customised file is not pristine"
+ok "$([ "$( ( DRY_RUN=false; SCRIPT_DIR="$WORK/pri"; source "$REPO/scripts/common.sh"; is_pristine x.md "$WORK/pri/old.md" ) >/dev/null 2>&1; echo $?)" != 0 ] && echo 0 || echo 1)" "no git repo → not pristine (falls back to prompt)"
+# Long history: match near the newest commit + >64KB of log after it. With pipefail,
+# `grep -q` would exit early and SIGPIPE git (false negative) — the real-repo bug.
+R2="$WORK/long-repo"; git init -q "$R2"
+{ for i in $(seq 1 800); do
+    c="version $i of agent"
+    printf 'blob\nmark :%d\ndata %d\n%s\n' "$i" "$(( ${#c} + 1 ))" "$c"
+    printf 'commit refs/heads/main\ncommitter t <t@t> %d +0000\ndata 2\nc\n' "$((1700000000 + i))"
+    printf 'M 100644 :%d core/agents/x.md\n\n' "$i"
+  done; } | git -C "$R2" fast-import --quiet
+echo "version 799 of agent" >"$WORK/pri/recent.md"
+ok "$( ( set -euo pipefail; DRY_RUN=false; SCRIPT_DIR="$R2"; source "$REPO/scripts/common.sh"; cd "$R2"; is_pristine core/agents/x.md "$WORK/pri/recent.md" ) >/dev/null 2>&1; echo $?)" "pristine found in long history under pipefail (no SIGPIPE false negative)"
+cp "$WORK/pri/old.md" "$WORK/pri/dest-old.md"; cp "$WORK/pri/custom.md" "$WORK/pri/dest-custom.md"
+( set -euo pipefail; DRY_RUN=false; SCRIPT_DIR="$R"; source "$REPO/scripts/common.sh"; cd "$R"
+  copy_file core/agents/x.md "$WORK/pri/dest-old.md" x-old prompt </dev/null
+  copy_file core/agents/x.md "$WORK/pri/dest-custom.md" x-custom prompt </dev/null ) >"$WORK/pri.log" 2>&1
+ok "$([ "$(cat "$WORK/pri/dest-old.md")" = "v2 agent" ] && echo 0 || echo 1)" "copy_file prompt: pristine file auto-updated"
+ok "$([ "$(cat "$WORK/pri/dest-custom.md")" = "my edit" ] && echo 0 || echo 1)" "copy_file prompt: customised file kept (no input)"
+
 echo "== update: global-memory never overwritten, conflicts default keep =="
 H=$(newhome upd)
 HOME=$H bash "$REPO/install.sh" </dev/null >/dev/null 2>&1
