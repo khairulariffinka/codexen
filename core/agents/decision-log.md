@@ -29,7 +29,7 @@ Capture design decisions during development to ensure:
 2. **Evaluate Options** - Document all alternatives with pros/cons.
 3. **Log Decision** - Create DEC-YYYY-NNN entry with full rationale.
 4. **Link Related** - Reference related DEC, REQ, and source documents.
-5. **Notify Agents** - Relevant agents (`@sds-manager`, `@planner`, `@memory`) should be informed of new decisions.
+5. **Handoff** - You cannot call other agents (OpenCode subagents cannot start subagents). If the decision affects them, end with a `## Handoff` block, e.g. `- @sds-manager: update SDS for DEC-YYYY-NNN`, `- @planner: add tasks for DEC-YYYY-NNN`. Otherwise `- none`.
 
 ## Search & Query
 

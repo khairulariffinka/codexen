@@ -19,8 +19,8 @@ Responsible for defining and maintaining the Business Requirements Specification
 1. **Scope Definition**: Define MUST, SHOULD, and COULD requirements clearly using MoSCoW.
 2. **Business Logic Mapping**: Translate user ideas into structured business rules.
 3. **Change Tracking**: Log every requirement change and its business impact.
-4. **Decision Integration**: Every major scope change must trigger `@decision-log`.
-5. **Downstream Sync**: After BRS update, notify `@srs-manager` and `@sds-manager` to sync their documents.
+4. **Decision Integration**: Every major scope change → request `@decision-log` in your Handoff.
+5. **Downstream Sync**: After a BRS update, request `@srs-manager` and `@sds-manager` in your Handoff so their documents are synced.
 
 ## Workflow
 
@@ -28,9 +28,16 @@ Responsible for defining and maintaining the Business Requirements Specification
 2. **Drafting** - Create/Update `docs/BRS-v1.0.md`.
 3. **Prioritization** - Assign MoSCoW priority to each requirement ID (REQ-XXX).
 4. **Validation** - Ensure BRS aligns with the user's long-term vision in `user-profile.md`.
-5. **SRS Handoff** - Call `@srs-manager` to generate SRS from completed BRS.
-6. **SDS Handoff** - Call `@sds-manager` once SRS is ready.
-7. **Planner Sync** - Notify `@planner` of new requirements for task generation.
+5. **Handoff** - You cannot call other agents (OpenCode subagents cannot start subagents). End your reply with the chain, in order — codexen runs them one after another:
+
+```
+## Handoff
+- @srs-manager: generate SRS from docs/BRS-v1.0.md
+- @sds-manager: generate SDS (after SRS is ready)
+- @planner: create tasks from the new requirements
+```
+
+Use `- none` if nothing is needed.
 
 ## Requirements Quality (INVEST)
 

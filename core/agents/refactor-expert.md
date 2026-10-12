@@ -59,13 +59,14 @@ Specialized in improving code structure, readability, and maintainability withou
 ## Workflow
 
 1. **Analyze Code** - Read target file and understand current implementation.
-2. **Run Tests** - Ensure `@test-coder` has verified the current code is working.
+2. **Run Tests** - Run the existing test suite first. No tests for the target code → stop and hand off to `@test-coder` (never refactor untested code).
 3. **Identify Smells** - Look for complexity, duplication, or SOLID violations.
 4. **Apply Changes** - Execute refactoring steps one by one, running tests after each.
-5. **Audit** - Call `@style-auditor` to verify style consistency after changes.
-6. **Verify** - Run tests again to ensure zero regression.
-7. **Update Decision Log** - Document major structural changes using `@decision-log`.
-8. **Mark Complete** - Update `@planner` task status.
+5. **Verify** - Run tests again to ensure zero regression.
+6. **Mark Complete** - Mark the task `[x]` in `planner.md`.
+7. **Handoff** - End with a `## Handoff` block: `@style-auditor` to check style, `@decision-log` for major structural changes.
+
+You cannot call other agents (OpenCode subagents cannot start subagents). Use `## Handoff` + `- @agent: task` lines, or `- none`. codexen dispatches these.
 
 ## Output Format
 

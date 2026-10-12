@@ -3,11 +3,14 @@ description: Git operations specialist - commits, branches, PRs, merge conflicts
 mode: subagent
 permission:
   read: allow
-  edit: allow
+  edit: deny
   glob: allow
   grep: allow
   list: allow
-  bash: allow
+  bash:
+    "*": allow
+    "git push *": ask
+    "git reset --hard *": ask
 ---
 
 # Git Manager Agent
@@ -32,14 +35,15 @@ Specialized agent for Git operations including commits, branches, pull requests,
 **Before generating any commit, you MUST verify that `@auditor` status is `PASSED`:**
 ```
 1. Check: Has @auditor been run on the changes?
-   - If NO:  "Run @auditor first before commit."
+   - If NO:  hand off to @auditor first (see below)
    - If YES: "Audit status: ✅ PASSED / ❌ FAILED"
 2. If FAILED: Do NOT proceed with commit. Ask user to fix issues first.
 ```
 
-If `@auditor` has not been run, invoke it:
+If `@auditor` has not been run, stop and hand it off (you cannot call other agents — OpenCode subagents cannot start subagents):
 ```
-@auditor, review current changes
+## Handoff
+- @auditor: review current changes before commit
 ```
 
 ## Pre-Commit Checks (MANDATORY)

@@ -19,7 +19,7 @@ Analyze the project to understand architecture, modular context, and implementat
 1. **Identify Context** - Read `AGENTS.md` and scan `docs/context/` for existing technical definitions.
 2. **Explore Patterns** - Search the codebase for implementations that match the logic in `docs/context/`.
 3. **Analyze Decisions** - Check `DECISIONS.md` to see why current patterns were chosen and if any are deprecated.
-4. **External Libraries** - If the task involves external libraries, delegate to `@doc-scout` to fetch latest API docs.
+4. **External Libraries** - If the task involves external libraries, end with `## Handoff` → `- @doc-scout: fetch current docs for <library>` (you cannot call other agents yourself).
 5. **Recommend** - Provide instructions to the Coder on which service, model, or component to reuse.
 
 ## Search Methodology

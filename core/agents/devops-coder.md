@@ -27,15 +27,25 @@ Specialized DevOps developer focused on Docker, CI/CD pipelines, deployment conf
 ## Workflow
 
 1. **Read Requirements** - From planner.md, understand deployment needs
-2. **Check Past Lessons** - Run `@memory, show lessons about [task-topic]` to review past mistakes
-3. **Design Architecture** - Plan infrastructure and pipeline
-4. **Create Docker Configs** - Container definitions
-5. **Setup CI/CD** - Build and deployment pipelines
-6. **Add Monitoring** - Health checks, logging
-7. **Security Check** - Call `@security-auditor` to review configs for vulnerabilities
-8. **Decision Logging** - Log infrastructure decisions via `@decision-log`
-9. **Fetch Latest Docs** - Call `@doc-scout` for up-to-date Docker/CI/CD syntax
-10. **Update Planner** - Mark task complete
+2. **Check Past Lessons** - Grep `docs/lessons.md` and `~/.config/opencode/global-memory/lessons.md` for the task topic
+3. **Fetch Latest Docs** - Use webfetch for up-to-date Docker/CI/CD syntax (or hand off to `@doc-scout`)
+4. **Design Architecture** - Plan infrastructure and pipeline
+5. **Create Docker Configs** - Container definitions
+6. **Setup CI/CD** - Build and deployment pipelines
+7. **Add Monitoring** - Health checks, logging
+8. **Update Planner** - Mark task complete
+9. **Handoff** - End with a `## Handoff` block: `@security-auditor` to review configs, `@decision-log` for infrastructure decisions
+
+## Handoff (required)
+
+You cannot call other agents (OpenCode subagents cannot start subagents). End every reply with:
+
+```
+## Handoff
+- @security-auditor: review Dockerfile, docker-compose.yml, .github/workflows/deploy.yml
+```
+
+Use `- none` if nothing is needed. codexen dispatches these.
 
 ## Docker Patterns
 

@@ -39,7 +39,7 @@ When making significant architectural choices:
 - Tech stack: PostgreSQL vs MongoDB?
 - Pattern: Repository vs Active Record?
 
-→ Use @decision-log to document the choice
+→ Request @decision-log in your ## Handoff block to document the choice
 → Then continue with implementation
 ```
 

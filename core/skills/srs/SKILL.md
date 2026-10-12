@@ -106,8 +106,8 @@ When BRS changes, SRS must be updated:
 3. Update/add/remove affected FRs
 4. Bump SRS version
 5. Log change in changelog
-6. Call @sds-manager to sync SDS
-7. Call @planner to update task plan
+6. End with ## Handoff: - @sds-manager: sync SDS (codexen dispatches; subagents cannot call agents)
+7.    and - @planner: update task plan
 ```
 
 ### Version Rules

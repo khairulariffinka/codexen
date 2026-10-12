@@ -158,7 +158,7 @@ fi
 echo "── Permission Consistency ──"
 perm_fail=0
 # Read-only auditors should have bash: deny + no edit
-for agent in style-auditor security-auditor performance-auditor research; do
+for agent in auditor style-auditor security-auditor performance-auditor research doc-scout; do
   f="$AGENTS_DIR/$agent.md"
   if [ -f "$f" ]; then
     if grep -q 'bash: deny' "$f" && ! grep -q 'edit: allow' "$f" 2>/dev/null; then
@@ -285,6 +285,72 @@ if [ "${1:-}" != "--installed" ]; then
   else
     check ".gitignore memory/ not root-scoped" "fail"
   fi
+fi
+
+# ── 13. Agent .md permissions match opencode.json (repo only) ──
+# OpenCode merges both; if they disagree, which one wins is not obvious to users.
+if [ "${1:-}" != "--installed" ]; then
+  echo "── Agent Permissions: .md vs opencode.json ──"
+  if command -v node >/dev/null 2>&1; then
+    perm_diff=$(node - "$ROOT" <<'NODE'
+const fs = require("fs"), path = require("path")
+const root = process.argv[2]
+const cfg = JSON.parse(fs.readFileSync(path.join(root, "core/opencode.json"), "utf8"))
+const norm = (v) => (v && typeof v === "object" && Object.keys(v).length === 1 && "*" in v) ? v["*"] : v
+const flat = (v) => typeof norm(v) === "string" ? norm(v) : JSON.stringify(norm(v))
+function frontmatter(file) {
+  const m = fs.readFileSync(file, "utf8").match(/^---\n([\s\S]*?)\n---/)
+  const out = {}; if (!m) return out
+  let inPerm = false, sub = null
+  for (const line of m[1].split("\n")) {
+    if (/^permission:\s*$/.test(line)) { inPerm = true; continue }
+    if (inPerm && /^\S/.test(line)) inPerm = false
+    if (!inPerm) continue
+    let mm
+    if ((mm = line.match(/^  ([\w-]+):\s*(\S.*)$/))) { out[mm[1]] = mm[2].replace(/^["']|["']$/g, ""); sub = null }
+    else if ((mm = line.match(/^  ([\w-]+):\s*$/))) { sub = mm[1]; out[sub] = {} }
+    else if (sub && (mm = line.match(/^    ["']?(.+?)["']?:\s*(\S+)$/))) out[sub][mm[1]] = mm[2]
+  }
+  return out
+}
+const issues = []
+for (const f of fs.readdirSync(path.join(root, "core/agents")).filter((f) => f.endsWith(".md"))) {
+  const name = f.slice(0, -3)
+  if (!cfg.agent || !cfg.agent[name]) { issues.push(`${name}: not registered in opencode.json`); continue }
+  const md = frontmatter(path.join(root, "core/agents", f)), js = cfg.agent[name].permission || {}
+  for (const k of Object.keys(md)) if (k in js && flat(md[k]) !== flat(js[k])) issues.push(`${name}.${k}: md=${flat(md[k])} json=${flat(js[k])}`)
+}
+console.log(issues.join("\n"))
+NODE
+)
+    if [ -z "$perm_diff" ]; then
+      check "Agent .md permissions match opencode.json" "pass"
+    else
+      check "Agent .md vs opencode.json permission mismatch: $(echo "$perm_diff" | tr '\n' ';')" "fail"
+    fi
+  else
+    yellow "  ⚠️  node not found — skipped .md vs opencode.json permission check"
+  fi
+fi
+
+# ── 14. Subagents never call other agents directly ──
+# OpenCode subagents cannot start subagents (subagent_depth = 1), so they must
+# request other agents through a "## Handoff" block that codexen dispatches.
+echo "── Subagent Handoff (no direct agent calls) ──"
+agent_alt=$(for f in "$AGENTS_DIR"/*.md; do basename "$f" .md; done | paste -sd'|' -)
+direct_calls=""
+for f in "$AGENTS_DIR"/*.md; do
+  self=$(basename "$f" .md)
+  [ "$self" = codexen ] && continue
+  hits=$(grep -inE "\b(call|invoke|run|consult|delegate|notify|trigger|dispatch|redirect to|route to)\b[^@]{0,12}\`?@($agent_alt)\b" "$f" 2>/dev/null \
+    | grep -viE "## Handoff|in your Handoff|hand off|hand it off|cannot" \
+    | grep -vE "@$self\b" || true)
+  [ -n "$hits" ] && direct_calls="$direct_calls $self:$(echo "$hits" | cut -d: -f1 | paste -sd, -)"
+done
+if [ -z "$direct_calls" ]; then
+  check "Subagents use ## Handoff instead of calling agents" "pass"
+else
+  check "Subagents call other agents directly (use ## Handoff):$direct_calls" "fail"
 fi
 
 # ── Summary ──

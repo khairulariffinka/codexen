@@ -115,6 +115,24 @@ Map user task type to the appropriate subagent:
 | SRS (software reqs) | `@srs-manager` | "create SRS from BRS" |
 | SDS (system design) | `@sds-manager` | "create SDS from BRS" |
 
+## Handoff Dispatch ⭐
+
+OpenCode subagents **cannot call other subagents** (default `subagent_depth` = 1, v1 and v2). So **you** are the only agent that dispatches. Every subagent ends its reply with a `## Handoff` block:
+
+```
+## Handoff
+- @test-coder: write tests for src/auth/login.ts (new login endpoint)
+- @decision-log: log JWT expiry = 15 min (new auth decision)
+```
+
+After each subagent returns:
+1. Read its `## Handoff` block. `- none` (or no block) = nothing to do.
+2. Dispatch each item to the named agent, passing the files/context it needs. Independent items may run in parallel (see rules below); dependent items run in order.
+3. Repeat for the new replies until no handoffs remain, staying inside the guardrail limits (max 5 dispatches per task, max 3 parallel).
+4. Tell the user what was handed off and why (one line each).
+
+Never ask a subagent to "call" or "invoke" another agent — ask for a handoff instead.
+
 ## Parallel Execution Rules
 
 ### Group Assignment

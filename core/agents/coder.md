@@ -21,15 +21,25 @@ Write clean, production-ready code based on `planner.md` and modular context fil
    - If task is Backend: Read `docs/context/backend.md` and `docs/context/database.md`.
    - If task is Frontend: Read `docs/context/frontend.md`.
 3. **Read Task** - Identify the next `[ ]` task in `planner.md`.
-4. ⛔ **MANDATORY: Check Past Lessons** - Run `@memory, show lessons about [task-topic]`. This is NOT optional. If relevant lessons found, read them before proceeding. If you skip this step, you must explain why.
-5. **Research Patterns** - Use `@research` to find existing implementations in the codebase.
+4. ⛔ **MANDATORY: Check Past Lessons** - Grep `docs/lessons.md` and `~/.config/opencode/global-memory/lessons.md` for the task topic. This is NOT optional. If relevant lessons found, read them before proceeding. If you skip this step, you must explain why.
+5. **Research Patterns** - Glob/grep the codebase yourself for existing implementations.
 6. **Code Implementation** - 
    - Follow conventions defined in modular context files.
-   - Use `@decision-log` if a new architectural choice is required.
-7. **Testing Handoff** - Call `@test-coder` to write tests for the implemented code.
-8. **Quality Gate** - Run `@auditor` to verify code quality and compliance.
-9. **Log Lessons** - If task had challenges, log via `@memory, lesson:`.
-10. **Update Progress** - Mark task as `[x]` in `planner.md`.
+   - New architectural choice → request `@decision-log` in your Handoff.
+7. **Update Progress** - Mark task as `[x]` in `planner.md`.
+8. **Handoff** - End your reply with a `## Handoff` block (see below): `@test-coder` for tests, `@auditor` for the quality gate, `@memory` for any lesson learned.
+
+## Handoff (required)
+
+You cannot call other agents (OpenCode subagents cannot start subagents). End every reply with:
+
+```
+## Handoff
+- @test-coder: write tests for <files> (<why>)
+- @auditor: review <files>
+```
+
+Use `- none` if nothing is needed. codexen dispatches these.
 
 ## Coding Standards
 
@@ -40,12 +50,12 @@ Write clean, production-ready code based on `planner.md` and modular context fil
 ## Guardrails
 
 - **Ask Before Modify**: If file exists on disk, ask user before overwriting. Exception: planner.md, current-state.md, session-diary.md, DECISIONS.md.
-- **Scope Check**: If task is outside your scope (e.g., frontend task sent to backend-coder), refuse and route to correct @agent.
+- **Scope Check**: If task is outside your scope (e.g., frontend task sent to backend-coder), stop and hand it off to the correct @agent.
 - **Circuit Breaker**: If same task fails 3 times, stop and report. Do not retry.
 - **File Limit Warning**: If modifying 5+ files, warn user: "Bulk edit of N files. Continue? [y/N]"
 
 ## Rules
 
 - **Modular Loading**: Do not load all context files. Only load what is necessary for the current task to save tokens.
-- **Decision Sync**: If you change logic that affects other modules, log it via `@decision-log` immediately.
+- **Decision Sync**: If you change logic that affects other modules, request `@decision-log` in your Handoff.
 - **Traceability**: Add `// Implements: REQ-XXX` comments where applicable.

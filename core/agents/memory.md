@@ -7,7 +7,7 @@ permission:
   glob: allow
   grep: allow
   list: allow
-  bash: allow
+  bash: deny
 ---
 
 # Memory Agent
@@ -103,16 +103,16 @@ This runs automatically via `@memory save` — no user action needed.
 
 ### Force-Check Lessons Before Any Task
 
-Before EVERY task, agent MUST run:
+Before EVERY task, the agent doing the work MUST check lessons itself (subagents cannot call `@memory` — OpenCode subagents cannot start subagents):
 
 ```
-⛔ MANDATORY: @memory, show lessons about [task-topic]
+⛔ MANDATORY: grep docs/lessons.md and ~/.config/opencode/global-memory/lessons.md for [task-topic]
 → If relevant lessons found → read them before proceeding
 → If no lessons found → proceed normally
 → If lessons ignored → agent must explain why
 ```
 
-This is enforced in `coder.md` workflow as step 2 (mandatory, not optional).
+This is enforced in the coder agents' workflows (mandatory, not optional). `@memory, show lessons about X` is for the user and codexen.
 
 ### User Rating Feedback Loop
 
@@ -319,7 +319,7 @@ Sessions older than 30 days are automatically summarized to save tokens.
 1. Read `AGENTS.md` for tech stack
 2. Read `docs/current-state.md` for project snapshot
 3. Read `DECISIONS.md` for active decisions
-4. Run `@memory, show lessons about [project-type]` — auto-check past mistakes
+4. Grep `lessons.md` (project + global) for the project type — auto-check past mistakes
 5. Check `docs/patterns.md` for applicable patterns
 6. **Auto-summary**: If session-diary > 50 sessions → summarize into patterns.md:
    ```
@@ -330,7 +330,7 @@ Sessions older than 30 days are automatically summarized to save tokens.
    ```
 
 ### During Session
-5. Log decisions via `@decision-log`
+5. New decision → end your reply with `## Handoff` → `- @decision-log: ...` (codexen dispatches it)
 6. Update `docs/current-state.md` as progress is made
 7. Mark tasks as `[x]` in `planner.md`
 

@@ -37,6 +37,7 @@ Every task follows this lifecycle. Skipping any step is a violation.
 | Step | Action | Mandatory |
 |------|--------|-----------|
 | 8 | Dispatch to specialized agents | ✅ YES |
+| 8b | Process each reply's `## Handoff` block — dispatch the requested agents (see Handoff Protocol) | ✅ YES |
 | 9 | Track agent performance (success/fail/duration) | ✅ YES |
 | 10 | Auto-save checkpoint if context > 80% | ✅ YES |
 
@@ -51,6 +52,26 @@ Every task follows this lifecycle. Skipping any step is a violation.
 | 15 | Run `@memory dream` (if 10+ sessions) | ✅ YES |
 | 16 | Run `@memory checkpoint save` (if context > 80%) | ✅ YES |
 | 17 | Invoke `@git-manager` ONLY if all checks PASS | ✅ YES |
+
+---
+
+## Handoff Protocol
+
+OpenCode subagents cannot start other subagents (`subagent_depth` defaults to 1 in v1 and v2). Only the primary agent (codexen) dispatches; every step in this skill that says "run @agent" is done **by codexen**, never by a subagent.
+
+Subagents end every reply with:
+
+```
+## Handoff
+- @agent: task (reason)
+```
+
+or `## Handoff` + `- none`. codexen then:
+1. Dispatches each item with the context it needs (parallel if independent, ordered if dependent).
+2. Repeats for new replies until no handoffs remain (max 5 dispatches per task, 3 parallel).
+3. Reports each handoff to the user in one line.
+
+Subagents do lookups themselves instead of handing off: past lessons = grep `docs/lessons.md` and `~/.config/opencode/global-memory/lessons.md`; existing code patterns = glob/grep the codebase.
 
 ---
 

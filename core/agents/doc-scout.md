@@ -3,11 +3,11 @@ description: Fetches live documentation for external libraries and packages to e
 mode: subagent
 permission:
   read: allow
-  edit: allow
+  edit: deny
   glob: allow
   grep: allow
   list: allow
-  bash: allow
+  bash: deny
   webfetch: allow
 ---
 

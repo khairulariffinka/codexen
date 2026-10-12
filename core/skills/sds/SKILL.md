@@ -139,8 +139,8 @@ When SRS changes, SDS must be updated:
 3. Update ERD, API contracts, deployment diagram
 4. Bump SDS version
 5. Log change in changelog
-6. Call @planner to update task estimates
-7. Notify @backend-coder and @frontend-coder of API changes
+6. End with ## Handoff: - @planner: update task estimates (codexen dispatches; subagents cannot call agents)
+7.    and - @backend-coder / - @frontend-coder: apply API changes
 ```
 
 ## Guidelines
