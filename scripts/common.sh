@@ -24,12 +24,13 @@ ensure_dir() {
 
 # json_merge <codexen.json> <user.json>
 # Deep merge: user values win, new CodeXen keys are added. Arrays are not merged
-# (user's array wins). Tries jq -> node -> python3. Returns 1 if none available
+# (user's array wins). Top-level CodeXen keys starting with "_" (comments) are
+# not copied. Tries jq -> node -> python3. Returns 1 if none available
 # or if either file is not valid JSON (e.g. JSONC with comments).
 json_merge() {
   local src="$1" dest="$2" tmp
   tmp=$(mktemp "${dest}.XXXXXX") || return 1
-  if command -v jq >/dev/null 2>&1 && jq -s '.[0] * .[1]' "$src" "$dest" >"$tmp" 2>/dev/null; then
+  if command -v jq >/dev/null 2>&1 && jq -s '(.[0] | with_entries(select(.key | startswith("_") | not))) * .[1]' "$src" "$dest" >"$tmp" 2>/dev/null; then
     :
   elif command -v node >/dev/null 2>&1 && node -e '
       const fs = require("fs");
@@ -41,7 +42,9 @@ json_merge() {
         for (const k of Object.keys(over)) r[k] = k in base ? merge(base[k], over[k]) : over[k];
         return r;
       };
-      const res = merge(JSON.parse(fs.readFileSync(a, "utf8")), JSON.parse(fs.readFileSync(b, "utf8")));
+      const base = JSON.parse(fs.readFileSync(a, "utf8"));
+      if (isObj(base)) for (const k of Object.keys(base)) if (k.startsWith("_")) delete base[k];
+      const res = merge(base, JSON.parse(fs.readFileSync(b, "utf8")));
       fs.writeFileSync(out, JSON.stringify(res, null, 2) + "\n");
     ' "$src" "$dest" "$tmp" 2>/dev/null; then
     :
@@ -56,7 +59,10 @@ def merge(base, over):
         r[k] = merge(base[k], v) if k in base else v
     return r
 with open(a) as fa, open(b) as fb:
-    res = merge(json.load(fa), json.load(fb))
+    base = json.load(fa)
+    if isinstance(base, dict):
+        base = {k: v for k, v in base.items() if not k.startswith("_")}
+    res = merge(base, json.load(fb))
 with open(out, "w") as fo:
     json.dump(res, fo, indent=2)
     fo.write("\n")

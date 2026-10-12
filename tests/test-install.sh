@@ -85,7 +85,7 @@ ok "$([ -z "$(find "$(oc "$H")" -maxdepth 1 -name 'opencode.json.*')" ] && echo 
 
 echo "== json_merge backends (jq / node / python3) =="
 cat >"$WORK/src.json" <<'EOF'
-{"a":1,"nested":{"x":1,"y":2},"arr":[1,2],"new":true}
+{"_comment":"drop me","a":1,"nested":{"x":1,"y":2},"arr":[1,2],"new":true}
 EOF
 for backend in jq node python3; do
   command -v "$backend" >/dev/null 2>&1 || { echo "  SKIP $backend (not installed)"; continue; }
@@ -101,8 +101,8 @@ for backend in jq node python3; do
     json_merge "$WORK/src.json" "$WORK/dst-$backend.json"
   ) >/dev/null 2>&1
   r=$?
-  got=$(node -e 'const o=JSON.parse(require("fs").readFileSync(process.argv[1]));console.log(JSON.stringify([o.a,o.nested.x,o.nested.y,o.arr,o.new]))' "$WORK/dst-$backend.json" 2>/dev/null)
-  ok "$([ $r = 0 ] && [ "$got" = '[9,9,2,[7],true]' ] && echo 0 || echo 1)" "$backend: user wins, new keys added ($got)"
+  got=$(node -e 'const o=JSON.parse(require("fs").readFileSync(process.argv[1]));console.log(JSON.stringify([o.a,o.nested.x,o.nested.y,o.arr,o.new,"_comment" in o]))' "$WORK/dst-$backend.json" 2>/dev/null)
+  ok "$([ $r = 0 ] && [ "$got" = '[9,9,2,[7],true,false]' ] && echo 0 || echo 1)" "$backend: user wins, new keys added, _comment dropped ($got)"
 done
 
 echo "== update: global-memory never overwritten, conflicts default keep =="
