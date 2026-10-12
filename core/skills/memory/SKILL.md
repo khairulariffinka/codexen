@@ -821,19 +821,17 @@ While agent is working, orchestration MUST:
 
 ### Auto-Checkpoint Enforcement
 
-Auto-checkpoint is handled by `core/.opencode/plugin/context-monitor.ts`. The plugin monitors context usage and triggers actions at thresholds.
+Context size is tracked by `core/.opencode/plugin/context-monitor.ts`. The plugin alerts the user (toast + log) at thresholds; the agent checks with the `check_context` tool and dispatches @checkpoint-writer itself.
 
 **Plugin → Memory Integration:**
 
 ```
 context-monitor.ts plugin
     ↓ (message.updated event)
-Tracks tokens: input, output, reasoning, cache
-    ↓ (at 80% context)
-Logs: "Context 80% — checkpoint triggered"
+Tracks latest context size vs model limit → toast to user at 70/80/90/95%
     ↓
-Orchestration detects log event
-    ↓
+Agent calls check_context (before big tasks / after long tool phases)
+    ↓ (≥ 80%)
 Dispatches @checkpoint-writer agent
     ↓
 @checkpoint-writer saves:
@@ -846,10 +844,10 @@ Dispatches @checkpoint-writer agent
 
 | Threshold | Action | What Happens |
 |-----------|--------|--------------|
-| **70%** | `warn` | Log warning message |
-| **80%** | `checkpoint` | Trigger @checkpoint-writer |
-| **90%** | `compress` | Auto-compress low-priority content |
-| **95%** | `critical` | Log error, prompt user to intervene |
+| **70%** | `warn` | Warning toast — plan to wrap up |
+| **80%** | `checkpoint` | Warning toast — agent dispatches @checkpoint-writer |
+| **90%** | `compress` | Error toast — checkpoint, then user runs /compact |
+| **95%** | `critical` | Error toast + log — stop new work, checkpoint + compact |
 
 **Manual checkpoint (fallback):**
 ```

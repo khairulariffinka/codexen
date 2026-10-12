@@ -55,7 +55,7 @@ echo ""
 # ── 1. Agent count ──
 echo "── Agent Count ──"
 agent_count=$(ls "$AGENTS_DIR"/*.md 2>/dev/null | wc -l)
-check "24 agent files (found: $agent_count)" "$([ "$agent_count" -eq 24 ] && echo "pass" || echo "fail")"
+check "25 agent files (found: $agent_count)" "$([ "$agent_count" -eq 25 ] && echo "pass" || echo "fail")"
 
 # ── 2. Skill count ──
 echo "── Skill Count ──"
@@ -217,7 +217,7 @@ for f in "${ref_files[@]}"; do
     [ -z "$ref" ] && continue
     agent_name="${ref#@}"
     case "$agent_name" in
-      codexen|coder|backend-coder|frontend-coder|test-coder|refactor-expert|devops-coder|auditor|security|security-auditor|performance-auditor|style-auditor|planner|research|memory|decision-log|git-manager|docs-manager|database-expert|api-designer|doc-scout|brs-manager|srs-manager|sds-manager) ;;
+      codexen|coder|backend-coder|frontend-coder|test-coder|refactor-expert|devops-coder|auditor|security|security-auditor|performance-auditor|style-auditor|planner|research|memory|decision-log|git-manager|docs-manager|database-expert|api-designer|doc-scout|brs-manager|srs-manager|sds-manager|checkpoint-writer) ;;
       *) continue ;;
     esac
     if ! echo "$valid_agents" | grep -qw "$agent_name"; then
@@ -256,8 +256,8 @@ fi
 # ── 10. Install/Update agent count (repo only) ──
 if [ "${1:-}" != "--installed" ]; then
   echo "── Install/Update File Counts ──"
-  install_match=$(grep -c '24 agents\|24 subagents' "$ROOT/install.md" 2>/dev/null || true)
-  update_match=$(grep -c '24 agents\|24 subagents' "$ROOT/update.md" 2>/dev/null || true)
+  install_match=$(grep -c '25 agents' "$ROOT/install.md" 2>/dev/null || true)
+  update_match=$(grep -c '25 agents' "$ROOT/update.md" 2>/dev/null || true)
   if [ "$install_match" -gt 0 ] && [ "$update_match" -gt 0 ]; then
     check "install/update.md reference correct agent count" "pass"
   else

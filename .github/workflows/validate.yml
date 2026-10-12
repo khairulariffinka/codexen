@@ -37,8 +37,20 @@ jobs:
       - name: Verify skill count
         run: |
           COUNT=$(ls core/skills/*/SKILL.md | wc -l)
-          if [ "$COUNT" -ne 17 ]; then
-            echo "❌ Expected 17 skills, found $COUNT"
+          if [ "$COUNT" -ne 19 ]; then
+            echo "❌ Expected 19 skills, found $COUNT"
             exit 1
           fi
-          echo "✅ 17 skills"
+          echo "✅ 19 skills"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Test install/update scripts (sandbox HOME)
+        run: bash tests/test-install.sh
+
+      - name: Test context-monitor plugin
+        run: |
+          (cd core/.opencode && npm install --no-audit --no-fund)
+          node tests/test-context-monitor.mts

@@ -6,13 +6,41 @@ Format based on [Keep a Changelog](https://keepachangelog.com/), versioning foll
 
 ---
 
+## [0.9.1] - 2026-10-12
+
+### Fixed
+- **Context Monitor plugin did not work**: it read `event.properties.message` but OpenCode sends `properties.info`, so it never counted anything (`check_context` always showed 0)
+- **Context % calculation**: now uses the latest assistant message (input + cache read/write + output + reasoning) instead of summing every `message.updated` event, which overcounted heavily
+- **Context limit**: looked up from the provider's model list (was always the 128K default)
+- **Thresholds per session**: alerts once per threshold per session, re-armed after compaction; shows a TUI toast
+- **Cost**: uses real per-message `cost` instead of hardcoded Sonnet pricing
+- **`/context` command**: added missing frontmatter
+- **install.sh / update_script.sh**: now install the 11 slash commands from `core/commands/`
+- **Conflict prompts**: Enter now selects Merge for opencode.json/package.json (was "Keep mine" despite the label); no input (EOF) keeps the user's file instead of aborting the script halfway
+- **Merge without jq**: falls back to node or python3; invalid JSON/JSONC is never overwritten
+- **`--dry-run`** no longer creates folders or files
+- **update_script.sh**: never overwrites global-memory (profile/memory); now makes a backup; package.json uses merge
+- **Backups**: unique per second, no nested folder on re-run
+- **CI**: validation expected 24 agents / 17 skills (repo has 25 / 19) and was failing
+
+### Changed
+- Docs (README, orchestration and memory skills) now describe what the plugin really does: it alerts the user, and the agent calls `check_context` and dispatches @checkpoint-writer itself (the plugin cannot dispatch agents)
+- Shared install helpers moved to `scripts/common.sh`
+
+### Added
+- `tests/test-install.sh` — 38 sandbox checks for install/update (never touches real `~/.config`)
+- `tests/test-context-monitor.mts` — 14 plugin unit tests with a mock client
+- CI runs both test suites
+
+---
+
 ## [0.9.0] - 2026-06-18
 
 ### Added
 - **Context Monitor Plugin**: `core/.opencode/plugin/context-monitor.ts` — event-based context monitoring via `message.updated` hooks
 - **Token Tracking**: Input, output, reasoning, cache.read, cache.write tokens
 - **Threshold Actions**: 70% warn, 80% checkpoint, 90% compress, 95% critical
-- **Auto-Checkpoint**: Triggers @checkpoint-writer agent at 80% context
+- **Auto-Checkpoint**: Triggers @checkpoint-writer agent at 80% context _(corrected in 0.9.1: plugin alerts, agent dispatches)_
 - **`/context` Command**: Manual context check with detailed breakdown
 - **Checkpoint Writer Agent**: `core/agents/checkpoint-writer.md` — auto-writes checkpoints when context is full
 - **`@memory read-budgeted`**: Token-budgeted file reading (~10 tokens/line) with priority-based compression

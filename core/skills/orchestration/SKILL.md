@@ -100,34 +100,33 @@ IF any step fails:
 
 ## Plugin-Based Context Monitoring
 
-Context monitoring is handled by `core/.opencode/plugin/context-monitor.ts`. This plugin automatically tracks token usage and triggers actions at predefined thresholds.
+Context monitoring is handled by `core/.opencode/plugin/context-monitor.ts`. The plugin tracks context size and **alerts the user** (TUI toast + app log) when thresholds are crossed. It cannot dispatch agents itself — the agent acts by calling the `check_context` tool.
 
 ### How It Works
 
-1. **Event-driven:** Monitors `message.updated` events in real-time
-2. **Token tracking:** Counts input, output, reasoning, cache tokens
-3. **Dynamic limits:** Reads `model.limit.context` from each message
-4. **Auto-trigger:** Fires actions when thresholds are crossed
+1. **Event-driven:** Listens to `message.updated` events
+2. **Context size:** Uses the latest assistant message's tokens (input + cache read/write + output + reasoning) — not a running sum
+3. **Real limits:** Looks up the model's `limit.context` via the provider list (fallback 200K)
+4. **Alerts once per threshold per session**, re-armed after compaction
+5. **`check_context` tool / `/context` command:** Reads fresh data from the session API
 
 ### Threshold Actions
 
-| Threshold | Action | What Happens |
-|-----------|--------|--------------|
-| **70%** | `warn` | Log warning message |
-| **80%** | `checkpoint` | Trigger `@checkpoint-writer` agent |
-| **90%** | `compress` | Auto-compress low-priority content |
-| **95%** | `critical` | Log error, prompt user to intervene |
+| Threshold | Plugin does | Agent should |
+|-----------|-------------|--------------|
+| **70%** | Warning toast | Plan to wrap up the current task |
+| **80%** | Warning toast | Dispatch `@checkpoint-writer` |
+| **90%** | Error toast | Checkpoint, then ask user to `/compact` |
+| **95%** | Error toast + error log | Stop new work; checkpoint and compact now |
 
 ### Plugin → Agent Handoff
 
+Call `check_context` before starting a large task and after long tool-heavy phases.
+
 ```
-Context Monitor Plugin
-    ↓ (at 80%)
-Logs: "Context 80% — checkpoint triggered"
+check_context → percent ≥ 80%
     ↓
-Orchestration detects log event
-    ↓
-Dispatches @checkpoint-writer agent
+Dispatch @checkpoint-writer agent
     ↓
 @checkpoint-writer saves:
   - docs/checkpoint.md (5K tokens max)

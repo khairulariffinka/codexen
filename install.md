@@ -21,7 +21,17 @@ That's it!
 
 ## Changelog
 
-### v0.9.0 (Current)
+### v0.9.1 (Current)
+- FIX: Context Monitor plugin now actually counts tokens (read wrong event field; always showed 0)
+- FIX: Context % uses latest message size + real model limit (was cumulative sum vs fixed 128K)
+- FIX: `/context` command frontmatter
+- FIX: install/update now copy the 11 slash commands (`core/commands/`)
+- FIX: Enter on opencode.json/package.json conflict = Merge; no input = keep yours (script no longer aborts)
+- FIX: Merge works without jq (falls back to node or python3); invalid JSON/JSONC is never overwritten
+- FIX: `--dry-run` writes nothing; update never overwrites global-memory; update makes a backup
+- ADD: `tests/test-install.sh` and `tests/test-context-monitor.mts` (run in CI)
+
+### v0.9.0
 - ADD: Context Monitor Plugin (`core/.opencode/plugin/context-monitor.ts`)
 - ADD: `/context` slash command (`core/.opencode/command/context.md`)
 - ADD: Checkpoint Writer agent (`core/agents/checkpoint-writer.md`)
@@ -252,7 +262,7 @@ Next steps:
 
 | Action | Location |
 |--------|---------|
-| Copies 24 agents (with conflict resolution) | `~/.config/opencode/agents/` |
+| Copies 25 agents (with conflict resolution) | `~/.config/opencode/agents/` |
 | Copies 19 skills (with conflict resolution) | `~/.config/opencode/skills/` |
 | Copies 11 commands (with conflict resolution) | `~/.config/opencode/commands/` |
 | Copies opencode.json (with merge option) | `~/.config/opencode/opencode.json` |

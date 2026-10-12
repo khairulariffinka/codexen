@@ -1,6 +1,14 @@
 #!/bin/bash
 set -euo pipefail
 
+# Update script for CodeXen v0.9.1
+# Usage: bash update_script.sh [--dry-run]
+#
+# Conflict defaults:
+#   agents/skills/commands/plugins : ask — Enter or no input = keep yours
+#   opencode.json / package.json   : Enter = merge (your values win), no input = keep yours
+#   global-memory templates        : never overwritten (your profile/memory is yours)
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
@@ -11,185 +19,79 @@ if [[ "${1:-}" == "--dry-run" ]]; then
   echo ""
 fi
 
+# shellcheck source=scripts/common.sh
+source "$SCRIPT_DIR/scripts/common.sh"
+
 echo "=== Updating CodeXen ==="
+backup_config
 echo ""
 
-# Function: update or skip with conflict resolution
-update_or_skip() {
-  local source="$1"
-  local dest="$2"
-  local name="$3"
-
-  if [ ! -f "$dest" ]; then
-    [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would add: $name" || { cp "$source" "$dest" && echo "Added: $name"; }
-  elif ! diff -q "$source" "$dest" > /dev/null 2>&1; then
-    if [ "$DRY_RUN" = true ]; then
-      echo "[DRY-RUN] Would update: $name (CONFLICT)"
-    else
-      echo ""
-      echo "CONFLICT: $name differs from CodeXen version"
-      echo "  [1] Keep mine (custom) - skip"
-      echo "  [2] Use CodeXen version - overwrite"
-      echo "  [3] Show diff"
-      read -p "Choice [1]: " choice
-      case "$choice" in
-        2) cp "$source" "$dest" && echo "Updated: $name" ;;
-        3)
-          echo "--- Your version ---"
-          head -20 "$dest"
-          echo "--- CodeXen version ---"
-          head -20 "$source"
-          echo ""
-          read -p "Choose [1=keep, 2=use codexen]: " choice2
-          case "$choice2" in
-            2) cp "$source" "$dest" && echo "Updated: $name" ;;
-            *) echo "Keeping your version" ;;
-          esac
-          ;;
-        *) echo "Keeping your version" ;;
-      esac
-    fi
-  else
-    echo "Skipping: $name (unchanged)"
-  fi
-}
-
 echo "=== Agents ==="
-mkdir -p ~/.config/opencode/agents
 for f in core/agents/*.md; do
-  agent_name=$(basename "$f")
-  dest=~/.config/opencode/agents/"$agent_name"
-  update_or_skip "$f" "$dest" "agent/$agent_name"
+  copy_file "$f" "$OC_DIR/agents/$(basename "$f")" "agent/$(basename "$f")" prompt
 done
 
 echo ""
 echo "=== Skills ==="
 for f in core/skills/*/*.md; do
-  skill_name=$(basename "$f")
   skill_dir=$(basename "$(dirname "$f")")
-  dest=~/.config/opencode/skills/"$skill_dir"/"$skill_name"
-  mkdir -p ~/.config/opencode/skills/"$skill_dir"
-  update_or_skip "$f" "$dest" "skill/$skill_dir/$skill_name"
+  copy_file "$f" "$OC_DIR/skills/$skill_dir/$(basename "$f")" "skill/$skill_dir/$(basename "$f")" prompt
+done
+
+echo ""
+echo "=== Commands ==="
+for f in core/commands/*.md; do
+  [ -f "$f" ] || continue
+  copy_file "$f" "$OC_DIR/commands/$(basename "$f")" "commands/$(basename "$f")" prompt
 done
 
 echo ""
 echo "=== Plugins (.opencode) ==="
-mkdir -p ~/.config/opencode/plugin ~/.config/opencode/command
-
 for f in core/.opencode/plugin/*.ts; do
-  if [ -f "$f" ]; then
-    fname=$(basename "$f")
-    dest=~/.config/opencode/plugin/"$fname"
-    update_or_skip "$f" "$dest" "plugin/$fname"
-  fi
+  [ -f "$f" ] || continue
+  copy_file "$f" "$OC_DIR/plugin/$(basename "$f")" "plugin/$(basename "$f")" prompt
 done
-
 for f in core/.opencode/command/*.md; do
-  if [ -f "$f" ]; then
-    fname=$(basename "$f")
-    dest=~/.config/opencode/command/"$fname"
-    update_or_skip "$f" "$dest" "command/$fname"
-  fi
+  [ -f "$f" ] || continue
+  copy_file "$f" "$OC_DIR/command/$(basename "$f")" "command/$(basename "$f")" prompt
 done
-
-# package.json
 if [ -f core/.opencode/package.json ]; then
-  dest_pkg=~/.config/opencode/package.json
-  update_or_skip core/.opencode/package.json "$dest_pkg" "package.json"
+  merge_json_file core/.opencode/package.json "$OC_DIR/package.json" "package.json"
 fi
 
 echo ""
 echo "=== Config (opencode.json) ==="
 if [ -f core/opencode.json ]; then
-  dest_json=~/.config/opencode/opencode.json
-  if [ ! -f "$dest_json" ]; then
-    [ "$DRY_RUN" = true ] && echo "[DRY-RUN] Would add: opencode.json" || { cp core/opencode.json "$dest_json" && echo "Added: opencode.json"; }
-  elif ! diff -q core/opencode.json "$dest_json" > /dev/null 2>&1; then
-    if [ "$DRY_RUN" = true ]; then
-      echo "[DRY-RUN] Would update: opencode.json (CONFLICT)"
-    else
-      echo ""
-      echo "CONFLICT: opencode.json differs from CodeXen version"
-      echo "  [1] Merge - keep your settings + add new CodeXen keys (RECOMMENDED)"
-      echo "  [2] Keep mine - skip (no changes)"
-      echo "  [3] Use CodeXen version - overwrite"
-      echo "  [4] Show diff"
-      read -p "Choice [1]: " choice
-      case "$choice" in
-        1)
-          if command -v jq >/dev/null 2>&1; then
-            jq -s '.[0] * .[1]' core/opencode.json "$dest_json" > "$dest_json.tmp" && \
-            mv "$dest_json.tmp" "$dest_json" && \
-            echo "Merged: opencode.json (your settings kept + new CodeXen keys added)"
-          else
-            echo "jq not found - keeping your config. Install jq for merge."
-          fi
-          ;;
-        2) echo "Keeping your config" ;;
-        3) cp core/opencode.json "$dest_json" && echo "Updated: opencode.json" ;;
-        4)
-          echo "--- Your version ---"
-          cat "$dest_json"
-          echo "--- CodeXen version ---"
-          cat core/opencode.json
-          echo ""
-          read -p "Choose [1=merge, 2=overwrite, 3=keep mine]: " choice2
-          case "$choice2" in
-            1)
-              if command -v jq >/dev/null 2>&1; then
-                jq -s '.[0] * .[1]' core/opencode.json "$dest_json" > "$dest_json.tmp" && \
-                mv "$dest_json.tmp" "$dest_json" && \
-                echo "Merged: opencode.json"
-              else
-                echo "jq not found - keeping your config"
-              fi
-              ;;
-            2) cp core/opencode.json "$dest_json" && echo "Updated: opencode.json" ;;
-            *) echo "Keeping your config" ;;
-          esac
-          ;;
-        *) echo "Keeping your config" ;;
-      esac
-    fi
-  else
-    echo "Skipping: opencode.json (unchanged)"
-  fi
+  merge_json_file core/opencode.json "$OC_DIR/opencode.json" "opencode.json"
 fi
 
 echo ""
 echo "=== Global Memory Templates ==="
-mkdir -p ~/.config/opencode/global-memory/work-diary/archive
-
+ensure_dir "$OC_DIR/global-memory/work-diary/archive"
 for f in templates/global-memory/*.md; do
-  if [ -f "$f" ]; then
-    fname=$(basename "$f")
-    dest=~/.config/opencode/global-memory/"$fname"
-    update_or_skip "$f" "$dest" "global-memory/$fname"
-  fi
+  [ -f "$f" ] || continue
+  copy_file "$f" "$OC_DIR/global-memory/$(basename "$f")" "global-memory/$(basename "$f")" keep
 done
-
-# work-diary template
-if [ ! -d ~/.config/opencode/global-memory/work-diary ]; then
-  mkdir -p ~/.config/opencode/global-memory/work-diary
-fi
-if [ ! -f ~/.config/opencode/global-memory/work-diary/diary-YYYY-MM.md ]; then
-  if [ -f templates/global-memory/work-diary/diary-YYYY-MM.md ]; then
-    cp templates/global-memory/work-diary/diary-YYYY-MM.md ~/.config/opencode/global-memory/work-diary/ && echo "Added: work-diary/diary-YYYY-MM.md"
-  fi
+if [ -f templates/global-memory/work-diary/diary-YYYY-MM.md ]; then
+  copy_file templates/global-memory/work-diary/diary-YYYY-MM.md \
+    "$OC_DIR/global-memory/work-diary/diary-YYYY-MM.md" "work-diary/diary-YYYY-MM.md" keep
 fi
 
 echo ""
 echo "=== Validation Script ==="
-mkdir -p ~/.config/opencode/scripts
-update_or_skip scripts/validate.sh ~/.config/opencode/scripts/validate.sh "validate.sh"
+copy_file scripts/validate.sh "$OC_DIR/scripts/validate.sh" "validate.sh" prompt
 
+count() { find "$1" -maxdepth "$2" -name "$3" 2>/dev/null | wc -l; }
 echo ""
 echo "=== Summary ==="
+echo "Files in $OC_DIR/:"
+echo "  Agents:   $(count "$OC_DIR/agents" 1 '*.md') files"
+echo "  Skills:   $(count "$OC_DIR/skills" 2 'SKILL.md') skills"
+echo "  Commands: $(count "$OC_DIR/commands" 1 '*.md') files"
+echo "  Plugins:  $(count "$OC_DIR/plugin" 1 '*.ts') files"
 echo ""
-echo "Files in ~/.config/opencode/:"
-echo "  Agents: $(ls ~/.config/opencode/agents/*.md 2>/dev/null | wc -l) files"
-echo "  Skills: $(ls -d ~/.config/opencode/skills/*/ 2>/dev/null | wc -l) directories"
-echo "  Plugins: $(ls ~/.config/opencode/plugin/*.ts 2>/dev/null | wc -l) files"
-echo "  Commands: $(ls ~/.config/opencode/command/*.md 2>/dev/null | wc -l) files"
-echo ""
-[ "$DRY_RUN" = true ] && echo "DRY-RUN complete. Run without --dry-run to apply." || echo "Update complete!"
+if [ "$DRY_RUN" = true ]; then
+  echo "DRY-RUN complete. Run without --dry-run to apply."
+else
+  echo "Update complete! Restart OpenCode to load changes."
+fi

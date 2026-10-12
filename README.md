@@ -2,7 +2,7 @@
 
 **Turn OpenCode into a full dev team — 25 agents, auto-memory, context monitoring, self-healing. Just tell it what to build.**
 
-![Version](https://img.shields.io/badge/version-0.9.0-blue)
+![Version](https://img.shields.io/badge/version-0.9.1-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Agents](https://img.shields.io/badge/agents-25-blue)
 ![Skills](https://img.shields.io/badge/skills-19-blue)
@@ -127,7 +127,7 @@ core/.opencode/
 |---------|-------------|
 | **Token Tracking** | Input, output, reasoning, cache tokens |
 | **Thresholds** | 70% warn, 80% checkpoint, 90% compress, 95% critical |
-| **Auto-Checkpoint** | Triggers @checkpoint-writer at 80% context |
+| **Context Alerts** | Toast at 70/80/90/95% context; agent runs @checkpoint-writer at 80% |
 | **Dynamic Limits** | Reads model.limit.context from API |
 | **Manual Check** | `/context` command for on-demand status |
 
@@ -187,7 +187,7 @@ Cross-project memory that follows you:
 
 ### OpenCode Native Integration
 
-CodeXen v0.9.0 is fully optimized for OpenCode:
+CodeXen v0.9.1 is fully optimized for OpenCode:
 - **Agent system**: All 25 agents with fine-grained permissions
 - **Skill system**: All 19 skills with `SKILL.md` format and valid frontmatter
 - **Custom commands**: 12 slash commands for common workflows

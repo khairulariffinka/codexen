@@ -75,7 +75,7 @@ Check that files are in place:
 ├── skills/
 │   ├── greeting/     ← Greeting system
 │   ├── modes/        ← Operating modes
-│   └── ... (17 skills total)
+│   └── ... (19 skills total)
 ├── commands/
 │   ├── audit.md      ← /audit
 │   ├── test.md       ← /test
