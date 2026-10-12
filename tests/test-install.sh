@@ -162,6 +162,34 @@ cp "$WORK/pri/old.md" "$WORK/pri/dest-old.md"; cp "$WORK/pri/custom.md" "$WORK/p
 ok "$([ "$(cat "$WORK/pri/dest-old.md")" = "v2 agent" ] && echo 0 || echo 1)" "copy_file prompt: pristine file auto-updated"
 ok "$([ "$(cat "$WORK/pri/dest-custom.md")" = "my edit" ] && echo 0 || echo 1)" "copy_file prompt: customised file kept (no input)"
 
+echo "== json_refresh_defaults: old CodeXen defaults updated, user choices kept =="
+R3="$WORK/json-repo"; mkdir -p "$R3/core"; git -C "$R3" init -q; git -C "$R3" config user.email t@t; git -C "$R3" config user.name t
+cat >"$R3/core/opencode.json" <<'EOF'
+{"lsp":true,"small_model":"cx/cheap","instructions":["AGENTS.md"],"agent":{"p":{"permission":{"edit":"deny"}},"t":{"permission":{"task":{"*":"allow"}}},"s":{"permission":{"bash":"deny"}}},"w":{"a":1,"b":2}}
+EOF
+git -C "$R3" add -A; git -C "$R3" commit -qm v1
+cat >"$R3/core/opencode.json" <<'EOF'
+{"_comment":"x","lsp":true,"agent":{"p":{"permission":{"edit":"allow"}},"t":{"permission":{"task":"allow"}},"s":{"permission":{"bash":"allow"}},"n":{"mode":"subagent"}},"w":"flat"}
+EOF
+git -C "$R3" commit -qam v2
+cat >"$WORK/ju.json" <<'EOF'
+{"model":"me/x","small_model":"cx/cheap","instructions":["AGENTS.md"],"lsp":false,"agent":{"p":{"permission":{"edit":"deny"}},"t":{"permission":{"task":{"*":"allow"}}},"s":{"permission":{"bash":"ask"}}},"w":{"b":2,"a":1}}
+EOF
+printf '1\n' | bash -c "DRY_RUN=false; SCRIPT_DIR='$R3'; cd '$R3'; source '$REPO/scripts/common.sh'; merge_json_file core/opencode.json '$WORK/ju.json' opencode.json" >"$WORK/ju.log" 2>&1
+jr() { jget "$WORK/ju.json" "$1"; }
+ok "$([ "$(jr agent.p.permission.edit)" = allow ] && echo 0 || echo 1)" "old default edit:deny → new allow"
+ok "$([ "$(node -e 'const o=JSON.parse(require("fs").readFileSync(process.argv[1]));console.log(JSON.stringify(o.agent.t.permission.task))' "$WORK/ju.json")" = '"allow"' ] && echo 0 || echo 1)" "old object default → new string value"
+ok "$([ "$(jr instructions)" = undefined ] && echo 0 || echo 1)" "retired key with old default removed"
+ok "$([ "$(jr small_model)" = cx/cheap ] && echo 0 || echo 1)" "dropped-but-not-retired key kept (user choice)"
+ok "$([ "$(jr agent.s.permission.bash)" = ask ] && echo 0 || echo 1)" "customised value kept"
+ok "$([ "$(jr lsp)" = false ] && echo 0 || echo 1)" "customised top-level value kept"
+ok "$([ "$(jr model)" = me/x ] && [ "$(jr agent.n.mode)" = subagent ] && echo 0 || echo 1)" "user key kept + new CodeXen agent added"
+ok "$([ "$(jr w)" = flat ] && echo 0 || echo 1)" "old default matched regardless of key order"
+ok "$(grep -q 'Refreshed old CodeXen defaults' "$WORK/ju.log" && echo 0 || echo 1)" "refresh reported to user"
+cp "$WORK/ju.json" "$WORK/ju2.json"
+printf '1\n' | bash -c "DRY_RUN=false; SCRIPT_DIR='$WORK'; source '$REPO/scripts/common.sh'; json_refresh_defaults '$R3/core/opencode.json' '$WORK/ju2.json'" >/dev/null 2>&1
+ok "$(cmp -s "$WORK/ju.json" "$WORK/ju2.json" && echo 0 || echo 1)" "no git history → no refresh (plain merge only)"
+
 echo "== update: global-memory never overwritten, conflicts default keep =="
 H=$(newhome upd)
 HOME=$H bash "$REPO/install.sh" </dev/null >/dev/null 2>&1

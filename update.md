@@ -23,7 +23,10 @@ To use, append after command: `"load update.md --dry-run"`
 
 ## Changelog
 
-### v0.10.0 (Current)
+### v0.10.1 (Current)
+- FIX: opencode.json merge now updates old CodeXen defaults you never changed (e.g. planner/security permissions) and removes retired keys (`instructions`); your own values still win
+
+### v0.10.0
 - ADD: OpenCode v2 support (v1 >= 1.18.29 and v2); context monitor works on both
 - ADD: `/goal` slash command (13 commands)
 - FIX: subagents hand off via `## Handoff` (OpenCode subagents cannot call subagents)
@@ -117,7 +120,7 @@ bash update_script.sh        # or: bash update_script.sh --dry-run   (preview, w
 What the script does (covered by `tests/test-install.sh`):
 - Backs up `~/.config/opencode` first (unique timestamped folder).
 - Agents / skills / commands / plugins: a file that is an **unmodified older CodeXen release** (matched against the repo's git history) is updated automatically; a file **you customised** prompts you — Enter or no input keeps yours. (Zip downloads have no git history, so every changed file prompts.)
-- `opencode.json` / `package.json`: Enter = merge (your values win, new CodeXen keys added); no input = keep yours.
+- `opencode.json` / `package.json`: Enter = merge (your values win, new CodeXen keys added); no input = keep yours. Values still equal to an older CodeXen default are updated to the current default first (removed keys are deleted only if retired, e.g. `instructions`; model choices are never deleted).
 - Removes old CodeXen copies in legacy singular dirs (`plugin/`, `command/`) so nothing loads twice.
 - Never overwrites global-memory (profile, diary, lessons).
 

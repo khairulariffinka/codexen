@@ -6,6 +6,16 @@ Format based on [Keep a Changelog](https://keepachangelog.com/), versioning foll
 
 ---
 
+## [0.10.1] - 2026-10-12
+
+### Fixed
+- **Updates never delivered config fixes**: the `opencode.json` / `package.json` merge is "your values win", so old CodeXen defaults in your file counted as *your* values and were kept forever. v0.10.0's permission fixes (planner can write `planner.md`, `@security` can run audits) and the `instructions` removal therefore never reached existing users. Now, before merging, any value that still equals what an earlier CodeXen release shipped at the same path (checked against git history) is updated to the current default. Values you changed are untouched
+- Keys CodeXen dropped are only deleted if explicitly retired (`instructions`); user choices that once matched a default (e.g. `small_model`) are never deleted
+- Needs git history + node; zip downloads fall back to the plain merge
+- Tests: install 65 (new refresh cases, key-order independent)
+
+---
+
 ## [0.10.0] - 2026-10-12
 
 OpenCode v2 support, working multi-agent handoffs, and docs that match reality.

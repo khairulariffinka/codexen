@@ -96,6 +96,64 @@ is_pristine() {
   git -C "$repo" log --all --format= --raw --no-abbrev -- "$rel" 2>/dev/null | grep " $h " >/dev/null
 }
 
+# json_refresh_defaults <codexen.json> <user.json>
+# Before a user-wins merge: any value in the user's file that equals the value an
+# earlier CodeXen release had at the same path (git history of <codexen.json>) was
+# never customised, so it is replaced by the current CodeXen value. Keys CodeXen
+# dropped are removed ONLY if listed in CODEXEN_RETIRED_KEYS (e.g. user choices like
+# small_model once shipped as a default must never be deleted). Customised values
+# are untouched. Prints changed paths.
+# Needs git history + node; otherwise does nothing (plain merge still runs).
+CODEXEN_RETIRED_KEYS="${CODEXEN_RETIRED_KEYS:-instructions}"
+json_refresh_defaults() {
+  local src="$1" dest="$2" repo rel hist commit n=0
+  command -v git >/dev/null 2>&1 && command -v node >/dev/null 2>&1 || return 0
+  repo="${SCRIPT_DIR:-$(pwd)}"
+  git -C "$repo" rev-parse --git-dir >/dev/null 2>&1 || return 0
+  case "$src" in
+    "$repo"/*) rel="${src#"$repo"/}" ;;
+    /*) return 0 ;;
+    *) rel="$src" ;;
+  esac
+  hist=$(mktemp -d) || return 0
+  while read -r commit; do
+    [ -n "$commit" ] || continue
+    git -C "$repo" show "$commit:$rel" >"$hist/$n.json" 2>/dev/null || rm -f "$hist/$n.json"
+    n=$((n + 1))
+  done < <(git -C "$repo" log --all --format=%H -- "$rel" 2>/dev/null)
+  RETIRED="$CODEXEN_RETIRED_KEYS" node - "$src" "$dest" "$hist" <<'NODE' || true
+const fs = require("fs"), path = require("path")
+const [src, dest, dir] = process.argv.slice(2)
+const isObj = (v) => v && typeof v === "object" && !Array.isArray(v)
+const canon = (v) => isObj(v) ? Object.fromEntries(Object.keys(v).sort().map((k) => [k, canon(v[k])])) : Array.isArray(v) ? v.map(canon) : v
+const eq = (a, b) => JSON.stringify(canon(a)) === JSON.stringify(canon(b))
+let user, cur
+try { user = JSON.parse(fs.readFileSync(dest, "utf8")); cur = JSON.parse(fs.readFileSync(src, "utf8")) } catch { process.exit(0) }
+const olds = []
+for (const f of fs.readdirSync(dir)) { try { olds.push(JSON.parse(fs.readFileSync(path.join(dir, f), "utf8"))) } catch {} }
+const DROP = Symbol("drop"), changed = []
+const retired = new Set((process.env.RETIRED || "").split(/[\s,]+/).filter(Boolean))
+function refresh(u, now, prev, at) {
+  if (at && prev.some((o) => eq(o, u)) && !eq(u, now)) {
+    if (now !== undefined) { changed.push(at); return now }
+    if (retired.has(at)) { changed.push(at + " (removed)"); return DROP }
+  }
+  if (!isObj(u)) return u
+  for (const k of Object.keys(u)) {
+    const r = refresh(u[k], isObj(now) ? now[k] : undefined, prev.filter(isObj).map((o) => o[k]).filter((v) => v !== undefined), at ? `${at}.${k}` : k)
+    if (r === DROP) delete u[k]; else u[k] = r
+  }
+  return u
+}
+const out = refresh(user, cur, olds, "")
+if (changed.length && out !== DROP) {
+  fs.writeFileSync(dest, JSON.stringify(out, null, 2) + "\n")
+  console.log(changed.join(", "))
+}
+NODE
+  rm -rf "$hist"
+}
+
 # copy_file <src> <dest> <label> <mode>
 #   mode=overwrite : add if missing, overwrite if different (install; backup exists)
 #   mode=prompt    : add if missing, ask keep/overwrite/diff if different (default keep)
@@ -173,6 +231,9 @@ merge_json_file() {
   fi
   case "$choice" in
     1)
+      local refreshed
+      refreshed=$(json_refresh_defaults "$src" "$dest")
+      [ -n "$refreshed" ] && echo "Refreshed old CodeXen defaults in $name: $refreshed"
       if json_merge "$src" "$dest"; then
         echo "Merged: $name (your settings kept + new CodeXen keys added)"
       else

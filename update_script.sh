@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# Update script for CodeXen v0.10.0
+# Update script for CodeXen v0.10.1
 # Usage: bash update_script.sh [--dry-run]
 #
 # Conflict defaults:

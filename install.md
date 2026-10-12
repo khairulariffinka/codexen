@@ -21,7 +21,10 @@ That's it!
 
 ## Changelog
 
-### v0.10.0 (Current)
+### v0.10.1 (Current)
+- FIX: opencode.json merge now updates old CodeXen defaults you never changed (e.g. planner/security permissions) and removes retired keys (`instructions`); your own values still win
+
+### v0.10.0
 - ADD: OpenCode v2 support (v1 >= 1.18.29 and v2); context monitor works on both
 - ADD: `/goal` slash command (13 commands)
 - FIX: subagents hand off via `## Handoff` (OpenCode subagents cannot call subagents)
